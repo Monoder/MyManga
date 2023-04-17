@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" href="../css/dataTables/datatables.css">
+    <link rel="stylesheet" href="../css/dataTables/jquery.dataTables.css">
+    <link rel="stylesheet" href="../css/dataTables/select.dataTables.css">
+    <link rel="stylesheet" href="../css/dataTables/buttons.dataTables.css">
+
+    <script src="../js/frame/jquery-3.6.0.js"></script>
+    <script src="../js/dataTables/datatables.min.js"></script>
+    <script src="../js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="../js/dataTables/dataTables.select.min.js"></script>
+    <script src="../js/dataTables/dataTables.buttons.min.js"></script>
+    <script src="../js/dataTables/dataTables.editor.min.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<button class="btn btn-danger btn-group-lg" id="handle_Select">批量处理</button>
+<table id="jq-table" class="table datatable-default" width="100%">
+    <colgroup>
+        <col style="width:3%;">
+        <col style="width:5%;">
+        <col style="width:22%;">
+        <col style="width:20%;">
+        <col style="width:5%;">
+        <col style="width:5%;">
+        <col style="width:10%;">
+        <col style="width:15%;">
+        <col style="width:15%;">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>
+            <input id="select_All" data-flag="0" type="checkbox" name="select_all"
+                   class="checkbox-custom checkbox-default">
+        </th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Trans Name</th>
+        <th>Remark</th>
+        <th>Liked</th>
+        <th>Category</th>
+        <th>Update Time</th>
+        <th>Create Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+</body>
+<script>
+
+    let editor;
+    $( document ).ready( function () {
+
+        editor = new $.fn.dataTable.Editor( {
+            ajax: {
+                create: {
+                    url: "",
+                    type: "Post",
+                    dataType: "json",
+                    data: function ( data ) {
+                        var Person = {};
+                        var id;
+                        mydata = data.data;
+                        for ( var key in mydata ) {
+                            console.log( "check create row id:" + key );
+                            id = key;
+                        }
+                        if ( key == "0" )//新增模式
+                        {
+                            console.log( "entry create mode:" );
+                            Person.Name = mydata[ 0 ].Name;
+                            Person.Position = mydata[ 0 ].Position;
+                            Person.Office = mydata[ 0 ].Office;
+                            Person.Age = mydata[ 0 ].Age;
+                            Person.Salary = mydata[ 0 ].Salary;
+                            Person.Gender = mydata[ 0 ].Gender;
+                            Person.Level = mydata[ 0 ].Level;
+                            Person.Date = mydata[ 0 ].Date;
+                        } else {//复制模式
+                            console.log( "entry duplicate mode:" );
+                            Person.Name = mydata[ id ].Name;
+                            Person.Position = mydata[ id ].Position;
+                            Person.Office = mydata[ id ].Office;
+                            Person.Age = mydata[ id ].Age;
+                            Person.Salary = mydata[ id ].Salary;
+                            Person.Gender = mydata[ id ].Gender;
+                            Person.Level = mydata[ id ].Level;
+                            Person.Date = mydata[ id ].Date;
+                        }
+                        return Person;
+                    },
+                    success: function ( json ) {
+                        var DT_RowId = GetRandomRowID();
+                        console.log( 'new row id:' + DT_RowId );//前台打印DT_RowId
+                        json.data[ 0 ].DT_RowId = DT_RowId;//对新增的数据生成随机字符串作为主键
+                    },
+                },
+                edit: {
+                    type: 'Post',
+                    url: '',
+                    dataType: 'json',
+                    data: function ( data ) {
+                        var returndata = { data: [] };
+                        var DT_RowId;
+                        var datas = data.data;
+                        for ( var key in datas ) {
+                            console.log( 'editor row id:' + key );//前台打印DT_RowId
+                            DT_RowId = key;//获取DT_RowId
+                            var mydata = datas[ DT_RowId ];
+                            var data = {};
+                            data.DT_RowId = DT_RowId;
+                            data.Name = mydata.Name;
+                            data.Position = mydata.Position;
+                            data.Office = mydata.Office;
+                            data.Age = mydata.Age;
+                            data.Salary = mydata.Salary;
+                            data.Gender = mydata.Gender;
+                            data.Level = mydata.Level;
+                            data.Date = mydata.Date;
+                            returndata.data.push( data );
+                        }
+                        return returndata;
+
+                    },
+                    success: function ( json ) {
+
+                    },
+                },
+                remove: {
+                    url: '',
+                    type: 'Post',
+                    dataType: "json",
+                    data: function ( data ) {
+                        var returndata = { data: [] };
+                        var DT_RowId;
+                        var datas = data.data;
+                        for ( var key in datas ) {
+                            console.log( 'remove row id:' + key );//前台打印DT_RowId
+                            DT_RowId = key;//获取DT_RowId
+
+                            var mydata = datas[ DT_RowId ];
+                            var data = {};
+                            data.DT_RowId = DT_RowId;
+                            data.Name = mydata.Name;
+                            data.Position = mydata.Position;
+                            data.Office = mydata.Office;
+                            data.Age = mydata.Age;
+                            data.Salary = mydata.Salary;
+                            data.Gender = mydata.Gender;
+                            data.Level = mydata.Level;
+                            data.Date = mydata.Date;
+                            returndata.data.push( data );
+                        }
+                        //var returndata = JSON.stringify(Persons)
+                        return returndata;
+                    },
+                    success: function ( json ) {
+                        //return json;
+                    },
+                }
+            },
+            table: "#jq-table",
+            //idSrc: 'Name',
+            fields: [
+                { label: "ID", name: "ID" },
+                { label: "Name", name: "Name" },
+                { label: "Trans Name", name: "Trans Name" },
+                { label: "Remark", name: "Remark" },
+                { label: "Liked", name: "Liked" },
+                { label: "Category", name: "Category" }
+            ]
+        } );
+
+
+        let dataTable = $( '#jq-table' ).DataTable( {
+            dom: "Bfrtip",
+            processing: true,
+            serverSide: true,
+            paging: true,
+            lengthMenu: [ 10, 20, 50, 100, 200 ],
+            pageLength: 20,
+            paginate: true,
+            ajax: {
+                url: "/TagDetail/listTagDetail",
+                type: "post",
+                data: function ( postData ) {
+                    // 删除 [columns] [order] [search] 请求参数
+                    for ( let key in postData ) {
+                        if ( key.indexOf( "columns" ) == 0 || key.indexOf( "order" ) == 0 || key.indexOf( "search" ) == 0 ) {
+                            delete postData[ key ];
+                        }
+                    }
+                    // 添加查询参数
+                    let searchParams = {
+                        pageNum: postData.start == 0 ? 1 : (postData.start / postData.length + 1),
+                        pageSize: postData.length
+                    };
+                    // 给 postData 扩展查询参数
+                    if ( searchParams ) {
+                        $.extend( postData, searchParams );
+                    }
+                },
+                dataType: "Json",
+                dataFilter: function ( response ) {
+                    // 后端返回的数据转 Json 对象
+                    let result = JSON.parse( response );
+                    if ( result == null || response == "" ) {
+                        alert( "服务器繁忙！！！" )
+                    } else {
+                        let returnData = {};
+                        returnData.draw = result.draw;
+                        // 返回数据全部记录
+                        returnData.recordsTotal = result.data.total;
+                        // 后台不实现过滤功能，每次查询均视作全部结果
+                        returnData.recordsFiltered = result.data.total;
+                        // 返回的数据列表
+                        returnData.data = result.data.list;
+                        return JSON.stringify( returnData );
+                    }
+                }
+            },
+            // dom: 'Bfrtip',
+            select: {
+                style: "multi",
+                selector: "td:first-child"
+            },
+            buttons: [
+                { extend: "create", editor: editor },
+                { extend: "edit",   editor: editor },
+                { extend: "remove", editor: editor }
+            ],
+            columns: [
+                {
+                    data: null,
+                    defaultContent: '',
+                    orderable: false,
+                    className: 'select-checkbox',
+                },
+                { title: "Name", data: "Name" },
+                { title: "Position", data: "Position" },
+                { title: "Office", data: "Office" },
+                { title: "Age", data: "Age" },
+                { title: "Salary", data: "Salary" },
+                {
+                    title: "Gender", data: "Gender",
+                    render: function ( val, type, row ) {
+                        return val == "1" ? "男" : "女";
+                    }
+                },
+                { title: "Level", data: "Level", className: "dt-body-center" },
+                { title: "Date", data: "Date", }
+
+            ],
+            language: {
+                processing: "正在获取数据，请稍后...",
+                search: "搜索",
+                lengthMenu: "显示 _MENU_ 条",
+                info: "当前显示的第是 _START_ 到 _END_ 行数据,共 _TOTAL_ 行数据",
+                infoEmpty: "记录数为0",
+                infoFiltered: "((全部记录数 _MAX_ 条))",
+                infoPostFix: "",
+                loadingRecords: "系统处理中,请稍等...",
+                zeroRecords: "没有您要搜索的内容",
+                emptyTable: "没有数据",
+                paginate: {
+                    first: "第一页",
+                    previous: "上一页",
+                    next: "下一页",
+                    last: "最后一页"
+                },
+                aria: {
+                    sortAscending: "以升序排列此列",
+                    sortDescending: "以降序排列此列"
+                }
+            }
+        } );
+
+        // dataTable.page( "next" ).draw( "page" );
+
+        $( '#handle_Select' ).click( function () {//处理
+            var array = [];
+            console.log( dataTable.rows( { selected: true } ) )
+            array = dataTable.rows( { selected: true } ).data().toArray();
+            if ( array.length === 0 ) {//如果一个没有勾选
+                console.log( {    //提示框
+                    title: "批量处理失败",
+                    text: "请先勾选需要处理的数据",
+                    type: "error",
+                    showConfirmButton: false,
+                    timer: 2000
+                } );
+            } else {
+                console.log( {
+                    title: "处理预警信息",
+                    text: "<span style='color:#F44336;'>处理后改预警信息恢复正常</span>",
+                    type: "info",
+                    showCancelButton: true,
+                    confirmButtonColor: "#2196F3",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                    html: true
+                }, function () {
+                    for ( var i = 0; i < array.length; i++ ) {
+                        //写处理逻辑的函数
+                    }
+                } );
+            }
+        } )
+
+
+    } );
+
+
+</script>
+</html>
+

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin-Manga</title>
+
+    <link rel="stylesheet" href="../../css/public-frame.css">
+    <link rel="stylesheet" href="../../css/dataTables/datatables.css">
+    <link rel="stylesheet" href="../../css/dataTables/jquery.dataTables.css">
+
+    <script src="../../js/frame/jquery-3.6.0.js"></script>
+    <script src="../../js/public/public-frame.js"></script>
+    <script src="../../js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="../../js/dataTables/datatables.min.js"></script>
+    <script src="../../js/dataTables/dataTables.editor.min.js"></script>
+
+</head>
+<style>
+    .dataTables_scrollHeadInner,
+    dataTables_scrollHeadInner > table {
+        width: 100%;
+    }
+
+    table.dataTable tbody tr {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .dataTables_scroll {
+
+    }
+
+    .dataTables_scrollBody {
+        height: 700px;
+    }
+
+    div.dataTables_wrapper {
+        padding: 5px 0 0 0;
+    }
+
+    #jq-table {
+        width: 100%;
+        white-space: pre-wrap !important;
+    }
+</style>
+<body>
+<!-- Navigation-->
+
+<!-- Body -->
+<div class="page_content" style="max-width:1370px">
+    <!-- BodyHeader -->
+    <h1 class="head_title">Monoder - Just For Fun</h1>
+    <div id="head_wrapper">
+        <div class="head_form_wrapper">
+        </div>
+    </div>
+
+    <!-- BodyContent -->
+    <!-- 从后端获取数据 ajax 加入该类中 -->
+    <div id="manga-wrapper">
+        <table id="jq-table" class="table table-striped table-over table-bordered"
+               style="white-space: nowrap;width:100%;cursor:pointer" cellspacing="0">
+            <colgroup>
+                <col style="width:3%;">
+                <col style="width:15%;">
+                <col style="width:36%;">    <!--Name-->
+                <!--<col style="width:18%;">-->    <!--Trans Name-->
+                <col style="width:10%;">    <!--Remark-->
+                <col style="width:6%;">     <!--Liked-->
+                <col style="width:10%;">    <!--Category-->
+                <col style="width:5%;">    <!--pageCount-->
+                <col style="width:15%;">    <!--Update Time-->
+            </colgroup>
+            <thead>
+            <tr>
+                <th style="width: 3%">
+                    <input id="select_All" data-flag="0" type="checkbox" name="select_all"
+                           class="checkbox-custom checkbox-default" width="5%">
+                </th>
+                <th>Wrapper</th>
+                <th>Name</th>
+                <th>Remark</th>
+                <th>Liked</th>
+                <th>Category</th>
+                <th>Count</th>
+                <th>Update Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+</body>
+<script src="../../js/public/public-navigation.js"></script>
+<script>
+    $( document ).ready( function () {
+
+        let dataTableEditor = new $.fn.dataTable.Editor( {
+            ajax: {
+                create: {
+                    type: "POST",
+                    url: "", // /TagDetail/addMangaInfo
+                    dataType: "JSON",
+                    contentType: "application/json;charset=utf-8",
+                    data: function ( value ) {
+                        let valueData = value.data;
+                        let postData = getTagDetails( valueData );
+                        return JSON.stringify( postData );
+                    },
+                    success: function ( result ) {
+                        if ( result.guid !== null ) {
+                            alert( "新增成功!" );
+                            dataTable.draw();
+                        }
+                    }
+                },
+                edit: {
+                    type: "POST",
+                    url: "", // /TagDetail/updateMangaInfo
+                    dataType: "JSON",
+                    contentType: "application/json;charset=utf-8",
+                    data: function ( value ) {
+                        let valueData = value.data;
+                        let postData = getTagDetails( valueData );
+                        return JSON.stringify( postData );
+                    },
+                    success: function ( result ) {
+                        if ( result.guid !== null ) {
+                            alert( "修改成功!" );
+                            dataTable.draw();
+                        }
+                    }
+                },
+                remove: {
+                    type: "POST",
+                    url: "", // /TagDetail/deleteMangaInfo
+                    datatype: "JSON",
+                    contentType: "application/json;charset=utf-8",
+                    data: function ( value ) {
+                        return JSON.stringify( Object.keys( value.data ) );
+                    },
+                    success: function ( result ) {
+                        alert( "删除成功，本次删除数据: " + result[ "rows" ] + "行！" )
+                    }
+                },
+                upload: {
+                    type: "POST",
+                    url: "http://localhost:8080/wrapperUpload",
+                    datatype: false,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                }
+            },
+            table: "#jq-table",
+            // row 唯一标识符
+            idSrc: "guid",
+            fields: [
+                {
+                    label: "Wrapper", name: "wrapper", type: "upload", noFileText: "No images",
+                    ajaxData: function ( ajaxData ) {
+                        return ajaxData;
+                    },
+                    display: function ( wrapper ) {
+                        return '<img src="' + wrapper + '"/>';
+                    },
+                    dragDrop: false,
+                    uploadText: "Choose Image"
+
+                },
+                { label: "Name", name: "name" },
+                { label: "Trans Name", name: "transName" },
+                { label: "Remark", name: "remark" },
+                { label: "Liked", name: "isLiked", type: "radio", def: "2", options: [ { label: "喜欢", value: 1 }, { label: "不喜欢", value: 2 } ] },
+                { label: "Category", name: "dicEnumCategory.dicCode", type: "select" }
+            ],
+        } );
+        dataTableEditor.field( "dicEnumCategory.dicCode" ).update( getCategoryList( "MANGA" ) );
+        dataTableEditor.on( "preSubmit", function ( element, data, action ) {
+            if ( action !== "remove" ) {
+                let name = this.field( "name" );
+                let transName = this.field( "transName" );
+                let remark = this.field( "remark" );
+                if ( !name.val() ) {
+                    name.error( "A \"Name\" must be given" );
+                }
+                if ( name.val().length > 200 ) {
+                    name.error( "The \"Name\" length must be less than 200" )
+                }
+                if ( transName.val().length > 200 ) {
+                    name.error( "The \"Name\" length must be less than 200" )
+                }
+                if ( remark.val().length > 200 ) {
+                    name.error( "The \"Name\" length must be less than 200" )
+                }
+                if ( this.inError() ) {
+                    return false;
+                }
+            }
+        } );
+
+        dataTableEditor.on( "preUpload", function ( element, fieldName, file, ajaxData ) {
+            let flag = file.type.indexOf( "image" );
+            if ( flag === 0 ) {
+                return true;
+            } else {
+                dataTableEditor.field( fieldName ).error( "The upload file format can only be a picture! " );
+                return false;
+            }
+
+
+            // https://editor.datatables.net/reference/event/preUpload
+
+        } );
+
+
+        let dataTable = $( "#jq-table" ).DataTable( {
+            // 设置 dom，不然不加载按钮
+            dom: "Bfrtip",
+            processing: true,
+            serverSide: true,
+            paging: true,
+            lengthMenu: [ 10, 20, 50, 100, 200 ],
+            pageLength: 20,
+            paginate: true,
+            ajax: {
+                type: "POST",
+                url: "/MangaInfo/listMangaInfo",
+                dataType: "JSON",
+                contentType: "application/json;charset=utf-8",
+                data: function ( originalData ) {
+                    let postData = dataTablePostData( originalData );
+                    return JSON.stringify( postData );
+                },
+                dataFilter: function ( response ) {
+                    // 后端返回的数据转 Json 对象
+                    let result = JSON.parse( response );
+                    if ( result == null || response == "" ) {
+                        alert( "服务器繁忙！！！" )
+                    } else {
+                        let data = result.data.list;
+                        let transData = [];
+                        for ( let key in data ) {
+                            let mangaInfo = {
+                                "guid": data[ key ].guid,
+                                "name": data[ key ].name,
+                                "transName": data[ key ].transName,
+                                "wrapper": null,
+                                "remark": data[ key ].remark,
+                                "isLiked": data[ key ].isLiked,
+                                "dicEnumCategory": data[ key ].dicEnumCategory,
+                                "pageCount": data[ key ].pageCount,
+                                "updateTime": data[ key ].updateTime,
+                                "CreateTime": data[ key ].CreateTime,
+                            };
+                            transData.push( mangaInfo );
+                        }
+                        let responseData = {
+                            "draw": result.dataTables.draw,
+                            // 返回数据全部记录
+                            "recordsTotal": result.data.total,
+                            // 后台不实现过滤功能，每次查询均视作全部结果
+                            "recordsFiltered": result.data.total,
+                            // 返回的数据列表
+                            "data": transData
+                        };
+                        return JSON.stringify( responseData );
+                    }
+                }
+            },
+            deferRender: false,
+            scrollX: true,
+            scrollCollapse: true,
+            height: 100,
+            columns: [
+                { data: null, defaultContent: "" },
+                { data: "wrapper", defaultContent: "" },
+                { data: "name", defaultContent: "" },
+                { data: "remark", defaultContent: "" },
+                { data: "isLiked", defaultContent: "" },
+                { data: "dicEnumCategory.dicCode", defaultContent: "" },
+                { data: "pageCount", defaultContent: "" },
+                { data: "updateTime", defaultContent: "" },
+            ],
+            columnDefs: [
+                { targets: 0, orderable: false, className: "select-checkbox" },
+                { targets: 1, data: "wrapper" },
+                { targets: 2, data: "name" },
+                { targets: 3, data: "remark" },
+                {
+                    targets: 4, orderable: false, data: "isLiked", render: function ( data, type, row, meta ) {
+                        if ( row.isLiked === 1 ) return "喜欢"; else if ( row.isLiked === 2 ) return "不喜欢"; else return null;
+                    }
+                },
+                {
+                    targets: 5, data: "dicEnumCategory.dicCode", render: function ( data, type, row, meta ) {
+                        return row.dicEnumCategory.dicName;
+                    }
+                },
+                { targets: 6, data: "pageCount" },
+                {
+                    targets: 6, data: "updateTime", type: "date", render: function ( data, type, row, meta ) {
+                        return dateFormat( row.updateTime );
+                    }
+                },
+            ],
+            rowCallback: function ( row, data, index ) {
+                // 可以用来渲染数据样式
+                // https://datatables.net/reference/option/rowCallback
+                if ( data.transName != null ) {
+                    $( "td:eq( 2 )", row ).attr( "title", data.transName );
+                }
+                if ( data.guid != null ) {
+                    $( "td:eq( 1 )", row ).text( null ).html( "<img src=\"\" alt=\"" + data.guid + "\" style=\"max-width: 100px; max-height: 100px\">" );
+                    let getWrapper = $.ajax( {
+                        type: "post",
+                        datatype: "String",
+                        data: { guid: data.guid },
+                        url: "/MangaInfo/getWrapper",
+                        success: function ( wrapperSource ) {
+                            data.wrapper = wrapperSource;
+                            // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
+                            $( "td:eq( 1 )>img", row ).attr( "src", wrapperSource );
+                        }
+                    } )
+                }
+                if ( data.dicEnumCategory.dicCode != null ) {
+                    let dicCode = data.dicEnumCategory.dicCode.toString().substring( 5 );
+                    let className = "cat-" + dicCode;
+                    $( "td:eq( 5 )", row ).html( "<div \" class=\"category " + className + "\">" + data.dicEnumCategory.dicName + "</div>" )
+                }
+
+            },
+            select: { style: "multi", selector: "td:first-child" },
+            buttons: [
+                { extend: "create", text: "新增", editor: dataTableEditor },
+                { extend: "edit", text: "修改", editor: dataTableEditor },
+                { extend: "remove", text: "删除", editor: dataTableEditor }
+            ],
+            language: {
+                processing: "处理中...",
+                zeroRecords: "没有匹配结果",
+                info: "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                infoEmpty: "显示第 0 至 0 项结果，共 0 项",
+                infoFiltered: "(由 _MAX_ 项结果过滤)",
+                infoPostFix: "",
+                search: "搜索:",
+                url: "",
+                emptyTable: "没有数据",
+                loadingRecords: "载入中...",
+                infoThousands: "20",
+                paginate: { first: "首页", previous: "上页", next: "下页", last: "末页" }
+            }
+        } );
+
+    } )
+
+    function getObjectURL( file ) {
+        let url = null;
+        // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+        if ( window.createObjectURL != undefined ) {   // basic
+            url = window.createObjectURL( file );
+        } else if ( window.URL != undefined ) {        // mozilla(firefox)
+            url = window.URL.createObjectURL( file );
+        } else if ( window.webkitURL != undefined ) {  // webkit or chrome
+            url = window.webkitURL.createObjectURL( file );
+        }
+        return url;
+    }
+
+</script>
+</html>

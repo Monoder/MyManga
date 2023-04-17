@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monoder.mymanga.mapper.TagDetailMapper">
+
+    <resultMap id="TagDetailEntityMap" type="com.monoder.mymanga.entity.dto.TagDTO">
+        <id column="GUID" property="guid" jdbcType="VARCHAR"/>
+        <result column="ID" property="id" jdbcType="NUMERIC"/>
+        <result column="TAG_NAME" property="tagName" jdbcType="VARCHAR"/>
+        <result column="TRANS_NAME" property="transName" jdbcType="VARCHAR"/>
+        <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+        <result column="IS_DELETED" property="isDeleted" jdbcType="NUMERIC"/>
+        <result column="IS_LIKED" property="isLiked" jdbcType="NUMERIC"/>
+        <result column="CATEGORY_GUID" property="categoryGuid" jdbcType="VARCHAR"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR"/>
+
+        <association column="DicEnum_Category" property="dicEnumCategoryDTO" javaType="com.monoder.mymanga.entity.dto.DicEnumCategoryDTO">
+            <id column="Dic_Guid" property="guid" jdbcType="VARCHAR"/>
+            <result column="Dic_Category_Code" property="categoryCode" jdbcType="VARCHAR"/>
+            <result column="Dic_ID" property="dicEnumID" jdbcType="NUMERIC"/>
+            <result column="Dic_Name" property="dicEnumName" jdbcType="VARCHAR"/>
+            <result column="Dic_Trans_Name" property="transName" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+     <!-- 增 -->
+    <insert id="addTag" parameterType="com.monoder.mymanga.entity.po.TagDetail">
+        INSERT INTO Manga.Tag_Detail t(t.guid, t.id, t.tag_name, t.trans_name, t.remark, t.is_deleted, t.is_liked, t.category_guid, t.update_time, create_time, t.creator)
+        VALUES ( sys_guid(),
+            #{id, jdbcType=NUMERIC},
+            #{tagName, jdbcType=VARCHAR},
+            #{transName, jdbcType=VARCHAR},
+            #{remark, jdbcType=VARCHAR},
+            #{isDeleted, jdbcType=NUMERIC},
+            #{isLiked, jdbcType=NUMERIC},
+            #{categoryGuid, jdbcType=VARCHAR},
+            #{updateTime, jdbcType=VARCHAR},
+            #{createTime, jdbcType=VARCHAR},
+            #{creator, jdbcType=VARCHAR} )
+    </insert>
+
+    <!-- 删 -->
+    <delete id="logicalDeleteByGuids" >
+        UPDATE Manga.Tag_Detail t
+        SET t.Is_Deleted = '1', t.Update_Time = to_char( SYSDATE, 'yyyyMMddHHmmssSSS' )
+        WHERE t.Guid IN
+        <foreach collection="tagGuids" item="guid" separator=", " open="( " close=" )">
+            #{guid,  jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <!-- 改 -->
+    <update id="updateTagDetail" parameterType="com.monoder.mymanga.entity.po.TagDetail">
+        UPDATE Manga.Tag_Detail t
+        SET t.tag_name = #{tagName, jdbcType=VARCHAR},
+            t.Trans_Name = #{transName, jdbcType=VARCHAR},
+            t.Remark = #{remark, jdbcType=VARCHAR},
+            t.Is_Liked = #{isLiked, jdbcType=NUMERIC},
+            t.Category_Guid = #{categoryGuid, jdbcType=VARCHAR},
+            t.Update_Time = #{updateTime, jdbcType=VARCHAR}
+        WHERE t.Guid = #{guid, jdbcType=VARCHAR}
+    </update>
+
+    <!-- 查 -->
+    <select id="listTagDetail" resultMap="TagDetailEntityMap" parameterType="com.monoder.mymanga.entity.dto.TagDTO">
+        SELECT t.Guid, t.Id, t.Tag_Name, t.Trans_Name, t.Remark, t.Is_Deleted, t.Is_Liked, t.Update_Time, t.Create_Time,
+            a.Guid AS dic_Guid,
+            a.DicEnum_ID AS dic_ID,
+            a.Dicenum_Name AS dic_Name,
+            a.Trans_Name AS dic_Trans_Name
+        FROM Manga.Tag_Detail t
+        LEFT JOIN Manga.Dicenum_Category a
+        ON a.Category_Code = 'TAG' AND a.Guid = t.Category_Guid
+        WHERE t.Is_Deleted = '2'
+        <if test="order!=null">
+            ORDER BY
+            <foreach collection="order" item="order" separator=", " open=" " close=" ">
+                <choose>
+                    <when test="order.orderColumn=='tagName'">
+                        t.Tag_Name ${ order.orderType }
+                    </when>
+                    <when test="order.orderColumn=='transName'">
+                        t.Trans_Name ${ order.orderType }
+                    </when>
+                    <when test="order.orderColumn=='updateTime'">
+                        t.Update_Time ${ order.orderType }
+                    </when>
+                    <when test="order.orderColumn=='createTime'">
+                        t.Create_Time ${ order.orderType }
+                    </when>
+                    <when test="order.orderColumn=='dicEnumCategoryDTO.dicEnumID'">
+                        a.DicEnum_ID ${ order.orderType }
+                    </when>
+                    <when test="order.orderColumn!=null">
+                        ${ order.orderColumn } ${ order.orderType }
+                    </when>
+                    <otherwise>
+                        t.Update_Time DESC
+                    </otherwise>
+                </choose>
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="getTagDetailById" resultMap="TagDetailEntityMap" parameterType="Integer">
+        SELECT t.Guid,t.Id,t.Tag_Name,t.Trans_Name,t.Remark,t.Is_Deleted,t.Is_Liked,t.Update_Time,t.Create_Time,
+               a.Guid         AS dic_Guid,
+               a.DicEnum_ID   AS dic_ID,
+               a.Dicenum_Name AS dic_Name,
+               a.Trans_Name   AS dic_Trans_Name
+        FROM Manga.Tag_Detail t
+                 LEFT JOIN Manga.Dicenum_Category a
+                           ON a.Category_Code = 'TAG' AND a.Guid = t.Category_Guid
+        WHERE t.Is_Deleted = '2'
+          AND t.Id = #{id, jdbcType=NUMERIC}
+    </select>
+
+    <select id="getTagDetailByGuid" resultMap="TagDetailEntityMap" parameterType="String">
+        SELECT t.Guid,t.Id,t.Tag_Name,t.Trans_Name,t.Remark,t.Is_Deleted,t.Is_Liked,t.Update_Time,t.Create_Time,
+               a.Guid         AS dic_Guid,
+               a.DicEnum_ID   AS dic_ID,
+               a.Dicenum_Name AS dic_Name,
+               a.Trans_Name   AS dic_Trans_Name
+        FROM Manga.Tag_Detail t
+                 LEFT JOIN Manga.Dicenum_Category a
+                           ON a.Category_Code = 'TAG' AND a.Guid = t.Category_Guid
+        WHERE t.Is_Deleted = '2'
+          AND t.Guid = #{guid, jdbcType=VARCHAR}
+    </select>
+
+    <select id="findTagByName" resultType="Integer" parameterType="String">
+        SELECT count( t.guid )
+        FROM Manga.Tag_Detail t
+        WHERE t.is_deleted = '2' AND t.tag_name = #{guid, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getMaxTagDetailId" resultType="Integer">
+        SELECT MAX(t.id)
+        FROM Manga.Tag_Detail t
+        WHERE t.is_deleted = '2'
+    </select>
+
+
+
+</mapper>

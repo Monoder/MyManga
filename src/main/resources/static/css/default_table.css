@@ -1,0 +1,8 @@
+table {line-height: 25px;border-collapse: collapse;padding: 2px;}
+table, td, tt {border: 1px solid green;}
+button {font-family: 等线, sans-serif;background-color: #4CAF50;border: none;color: white;font-weight: bold;font-size: 16px;text-align: center;text-decoration: none;height: 24px; /*width: 60px;*/display: inline-block;vertical-align: middle;}
+button:hover {background-color: #F5F5F5;color: #4CAF50;}
+thead, th, tbody {border: 1px solid green}
+thead, th {background-color: rgba(0, 0, 0, 0.6);color: white;}
+tbody, td {background-color: rgba(255, 255, 0, 0.6);color: black;text-align: center}
+td:hover {background-color: #F5F5F5;}

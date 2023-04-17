@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" href="../../css/public-frame.css">
+    <script src="../../js/frame/jquery-3.6.0.js"></script>
+    <script src="../../js/index.js"></script>
+    <style>
+        @supports (display:grid) {
+            .manga_gld {
+                display: grid;
+                grid-template-columns:repeat(5, 1fr)
+            }
+
+            .wrapper_content {
+                min-width: 250px;
+                max-width: 400px
+            }
+
+            @media screen and (max-width: 1360px) {
+                .manga_gld {
+                    grid-template-columns:repeat(4, 1fr)
+                }
+
+                .wrapper_content:nth-child(8n+1), .wrapper_content:nth-child(8n+3), .wrapper_content:nth-child(8n+6), .wrapper_content:nth-child(8n+8) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+
+                .wrapper_content:nth-child(8n+2), .wrapper_content:nth-child(8n+4), .wrapper_content:nth-child(8n+5), .wrapper_content:nth-child(8n+7) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+            }
+            @media screen and (max-width: 1090px) {
+                .manga_gld {
+                    grid-template-columns:repeat(3, 1fr)
+                }
+
+                .wrapper_content:nth-child(2n+1) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+
+                .wrapper_content:nth-child(2n+2) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+            }
+            @media screen and (max-width: 820px) {
+                .manga_gld {
+                    grid-template-columns:repeat(2, 1fr)
+                }
+
+                .wrapper_content:nth-child(4n+1), .wrapper_content:nth-child(4n+4) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+
+                .wrapper_content:nth-child(4n+2), .wrapper_content:nth-child(4n+3) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation-->
+
+<!-- Body -->
+<div class="page_content" style="max-width:1370px">
+
+    <!-- BodyHeader -->
+    <h1 class="head_title">Monoder - Just For Fun</h1>
+    <div id="head_wrapper">
+        <div class="head_form_wrapper">
+
+        </div>
+    </div>
+
+    <!-- BodyContent -->
+    <div id="body_wrapper">
+        <p class="info">Showing results</p>
+        <p class="info"></p>
+        <table class="page_bar" style="margin:2px auto 0px">
+            <tr>
+                <td class="page_change">&lt;</td>
+                <td class="page_num"><a href="" onclick="return false">1</a></td>
+                <td class="page_change">&gt;</td>
+            </tr>
+        </table>
+
+        <!-- 从后端获取数据 ajax 加入该类中 -->
+        <div id="manga-wrapper" class="manga_grid">
+
+        </div>
+
+
+        <table class="page_bar" style="margin:0px auto">
+            <tr>
+                <td class="page_change">&lt;</td>
+                <td class="page_num"><a href="" onclick="return false">1</a></td>
+                <td class="page_change">&gt;</td>
+            </tr>
+        </table>
+    </div>
+    <p class="info">
+    </p>
+</div>
+</body>
+<script src="../../js/public/public-navigation.js"></script>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" href="../css/default.css">
+    <link rel="stylesheet" href="../css/public-frame.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <script src="../js/frame/jquery-3.6.0.js"></script>
+    <script src="../js/index.js"></script>
+    <style>
+        @supports (display:grid) {
+            .manga_gld {
+                display: grid;
+                grid-template-columns:repeat(5, 1fr)
+            }
+
+            .wrapper_content {
+                min-width: 250px;
+                max-width: 400px
+            }
+
+            @media screen and (max-width: 1360px) {
+                .manga_gld {
+                    grid-template-columns:repeat(4, 1fr)
+                }
+
+                .wrapper_content:nth-child(8n+1), .wrapper_content:nth-child(8n+3), .wrapper_content:nth-child(8n+6), .wrapper_content:nth-child(8n+8) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+
+                .wrapper_content:nth-child(8n+2), .wrapper_content:nth-child(8n+4), .wrapper_content:nth-child(8n+5), .wrapper_content:nth-child(8n+7) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+            }
+            @media screen and (max-width: 1090px) {
+                .manga_gld {
+                    grid-template-columns:repeat(3, 1fr)
+                }
+
+                .wrapper_content:nth-child(2n+1) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+
+                .wrapper_content:nth-child(2n+2) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+            }
+            @media screen and (max-width: 820px) {
+                .manga_gld {
+                    grid-template-columns:repeat(2, 1fr)
+                }
+
+                .wrapper_content:nth-child(4n+1), .wrapper_content:nth-child(4n+4) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+
+                .wrapper_content:nth-child(4n+2), .wrapper_content:nth-child(4n+3) {
+                    background-color: rgba(72, 61, 139, 0.3);
+                }
+            }
+        }
+    </style>
+    <script>
+        $( document ).ready( function () {
+            $.ajax( {
+                type: "get",
+                datatype: "String",
+                url: "/MangaInfo/listMangaInfoByPage",
+                success: function ( result ) {
+
+                    let listMangaInfo = result.list;
+                    let pageSize = result.size;
+
+                    $( "#body_wrapper .info" ).text( "Showing " + result.total + " results" );
+
+                    // 遍历添加 Dom 节点框架
+                    for ( let i = 0; i < pageSize; i++ ) {
+                        let mangaGuid = listMangaInfo[ i ].guid;
+                        let mangaName = listMangaInfo[ i ].name;
+                        let mangaPageCount = listMangaInfo[ i ].pageCount;
+                        $( ".manga_wrapper" ).append(
+                                "            <div class=\"wrapper_content\">\n" +
+                                "                <a href=\"/web/MangaDetail.html?mainGuid=" + mangaGuid + "\"><div class=\"wrapper_title wrapper_name wrapper_link\" title = \"" + mangaName + "\">" + mangaName + "</div></a>\n" +
+                                "                <div class=\"wrapper_body\" style=\"height:340px;width:240px\">\n" +
+                                "                    <a class='wrapper_source' href=\"/web/MangaDetail.html?mainGuid=" + mangaGuid + "\">\n" +
+                                "                        <img id=\"" + mangaGuid + "\" alt=\"" + mangaName + "\" />\n" +
+                                "                    </a>\n" +
+                                "                </div>\n" +
+                                "                <div class=\"wrapper_foot\">\n" +
+                                "                    <div>\n" +
+                                "                        <div class=\"wrapper_category category_05\" >Non-H</div>\n" +
+                                "                        <div onclick=\"\" id=\"\">2020-02-27 14:54</div>\n" +
+                                "                    </div>\n" +
+                                "                    <div><div>" + mangaPageCount + " pages</div></div>\n" +
+                                "                </div>\n" +
+                                "            </div>" );
+                    }
+
+                    // 遍历，在框架中根据封面 Guid 请求图片流，并进行添加
+                    for ( let i = 0; i < pageSize; i++ ) {
+                        let mangaGuid = $( ".wrapper_body img" )[ i ].id;
+                        console.log( "wrapperId: " + mangaGuid );
+                        $.ajax( {
+                            type: "post",
+                            datatype: "String",
+                            data: { guid: mangaGuid },
+                            url: "/MangaInfo/getWrapper",
+                            success: function ( wrapperSource ) {
+                                // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
+                                let manga_img = $( ".wrapper_body img" ).eq( i );
+                                manga_img.attr( "src", wrapperSource );
+                            }
+                        } );
+                    }
+                }
+            } );
+        } );
+        // src=\"data:image/jpeg;base64," + wrapper.wrapperSource
+
+    </script>
+</head>
+<body>
+<!-- Navigation-->
+<script src="js/NavigationBar.js"></script>
+<!-- Body -->
+<div class="page_content" style="max-width:1370px">
+    <!-- BodyHeader -->
+    <h1 class="head_title">Monoder - Just For Fun</h1>
+    <div id="head_wrapper">
+
+        <div class="head_form_wrapper">
+            <div class="category_wrapper">
+                <table id="category_table">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="category category_00">Doujinshi</div>
+                        </td>
+                        <td>
+                            <div class="category category_01">Manga</div>
+                        </td>
+                        <td>
+                            <div class="category category_02">Artist CG</div>
+                        </td>
+                        <td>
+                            <div class="category category_03">Game CG</div>
+                        </td>
+                        <td>
+                            <div class="category category_04">Western</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="category category_05">Non-H</div>
+                        </td>
+                        <td>
+                            <div class="category category_06">Image Set</div>
+                        </td>
+                        <td>
+                            <div class="category category_07">Cosplay</div>
+                        </td>
+                        <td>
+                            <div class="category category_08">Asian Porn</div>
+                        </td>
+                        <td>
+                            <div class="category category_09">Misc</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <form id="search_form" name="" action="">
+                <span class="bg search_input_wrapper delete_wrap">
+                    <input id="search_know" name="" class="search_input" value="" maxlength="255" autocomplete="off">
+                </span><span class="bg search_btn_wr"><input type="submit" id="" value="Search" class="bg search_btn">
+            </span>
+            </form>
+        </div>
+    </div>
+    <!-- BodyContent -->
+    <div id="body_wrapper">
+        <!--        <p class="info">Showing 6 results</p>-->
+        <p class="info"></p>
+        <table class="page_bar" style="margin:2px auto 0px">
+            <tr>
+                <td class="page_change">&lt;</td>
+                <td class="page_num"><a href="" onclick="return false">1</a></td>
+                <td class="page_change">&gt;</td>
+            </tr>
+        </table>
+
+        <!-- 从后端获取数据 ajax 加入该类中 -->
+        <div class="manga_wrapper manga_gld">
+        </div>
+
+
+        <table class="page_bar" style="margin:0px auto">
+            <tr>
+                <td class="page_change">&lt;</td>
+                <td class="page_num"><a href="" onclick="return false">1</a></td>
+                <td class="page_change">&gt;</td>
+            </tr>
+        </table>
+    </div>
+    <p class="info">
+    </p>
+</div>
+</body>
+</html>

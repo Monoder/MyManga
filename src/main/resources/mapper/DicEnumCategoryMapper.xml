@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.monoder.mymanga.mapper.DicEnumCategoryMapper">
+
+    <resultMap id="DicEnumCategoryEntityMap" type="com.monoder.mymanga.entity.dto.DicEnumCategoryDTO">
+        <id column="Guid" property="guid" jdbcType="VARCHAR"/>
+        <result column="Category_Code" property="categoryCode" jdbcType="VARCHAR"/>
+        <result column="DicEnum_ID" property="dicEnumID" jdbcType="NUMERIC"/>
+        <result column="DicEnum_Name" property="dicEnumName" jdbcType="VARCHAR"/>
+        <result column="Trans_Name" property="transName" jdbcType="VARCHAR"/>
+        <result column="Remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="Create_Time" property="createTime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="listDicEnumCategory" resultMap="DicEnumCategoryEntityMap">
+        SELECT Guid,Category_Code,DicEnum_ID,DicEnum_Name,Trans_Name,Status,Remark,Create_Time
+        FROM Manga.Dicenum_Category T
+        WHERE T.Category_Code = #{categoryCode, jdbcType=VARCHAR} AND T.Status = '1'
+    </select>
+
+    <select id="getGuidByID" resultType="String" parameterType="Integer">
+        SELECT Guid FROM Manga.Dicenum_Category T
+        WHERE T.DicEnum_ID = #{dicEnumID, jdbcType=NUMERIC} AND T.Status = '1'
+    </select>
+
+
+</mapper>

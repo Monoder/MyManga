@@ -1,0 +1,67 @@
+@charset "utf-8";
+img {border:0;}
+p {margin:0;padding:3px 1px;}
+
+
+map {cursor:pointer;}
+
+.head_form_wrapper {z-index:100;width:600px;height:146px;margin:0 auto;padding:5px;border-collapse:collapse;text-align:left;}
+
+    /* Category Form */
+.category_wrapper {position:relative;z-index:0;height:80px;min-height:30px;max-height:260px;padding-bottom:10px;text-align:center;}
+#category_table {margin:0 auto;border-spacing:6px;}
+.category_wrapper td {padding:0;}
+.category_wrapper a {text-decoration:none;color:rgba(225, 225, 200, 1);}
+    /* Search Form */
+#search-form {z-index:1;}
+
+#search-form .bg, .search_btn_wr .bg, .search_input_wrapper .bg {background-image:none;}
+#head_wrapper .search_btn_wr, #head_wrapper .search_input_wrapper {display:inline-block;vertical-align:top;background:0 0;zoom:1;}
+#head_wrapper #search_know {width:512px;height:16px;overflow:hidden;margin:0;padding:12px 16px;border-radius:10px 0 0 10px;box-shadow:none;outline:0;font-size:16px;vertical-align:top;-webkit-tap-highlight-color:transparent;color:#222;background:#FFF;border:2px solid #C4C7CE;box-sizing:content-box;}
+#head_wrapper #search_know:focus {border-color:#4E6EF2 !important;opacity:1;filter:alpha(opacity=100);}
+#head_wrapper .search_input_wrapper {position:relative;width:500px;}
+#head_wrapper .search_input_wrapper:hover #search_know {border-color:#A7AAB5;}
+.search_input::placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+.search_input::-moz-placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+.search_input::placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+.search_input::-moz-placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+.search_input:-ms-input-placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+.search_input:-ms-input-placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+.search_input::-webkit-input-placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+.search_input::-webkit-input-placeholder {padding-left:3px;font-size:13px;color:#AAA;}
+#head_wrapper .search_btn_wr {position:relative;z-index:2;width:100px;height:44px;}
+#head_wrapper .search_btn {width:100px;height:44px;padding:0;border-radius:0 10px 10px 0;box-shadow:none;outline:0;font-family:等线, sans-serif;font-size:17px;line-height:45px;line-height:44px \9;font-weight:400;color:#FFF;background:#4E6EF2 0 0;cursor:pointer;border:none;}
+#head_wrapper .search_btn:active {background:radial-gradient(#4662D9,#4662D9) !important;}
+#head_wrapper .search_btn:hover {outline:0;background-color:#4662D9 !important;}
+#head_wrapper .search_btn:focus {outline:0;background-color:#4662D9 !important;}
+
+/* Body */
+.wrapper_content {margin: 5px;display: flex;width: 258px;height: 427px;padding-bottom: 2px;flex-direction: column;border: 1px solid rgba(72, 61, 139, 0.8);}
+
+.wrapper_content:nth-child(2n+1){background-color:rgba(72,61,139,0.2);}
+.wrapper_content:nth-child(2n+2){background-color:rgba(72,61,139,0.2);}
+.wrapper_title{min-height:32px;max-height:32px;display:-webkit-box;overflow:hidden;margin:6px 5px 0;font-size:10pt;line-height:16px;text-align:center;-webkit-box-orient:vertical;-webkit-line-clamp:2;}
+.wrapper_name a :not(.wrapper_link),a .wrapper_name :not(.wrapper_link){color:#5C0D11;}
+a:visited .wrapper_link,a:active .wrapper_link{color:#373737;}
+a:hover .wrapper_link{color:#c8c8c8;}
+.wrapper_body{margin: auto;max-height: 340px;max-width: 240px;top: -2px;display: flex;align-items: center;}
+.wrapper_body>a>img{top: -2px;max-width: 100%;max-height: 100%;background: rgba(0, 0, 0, 0.3);border: 1px solid #000000;border-radius: 5px;margin: 0 auto;}
+.wrapper_foot{display:flex;height:46px;margin:auto auto 0 auto;flex-direction:row;justify-content:center;}
+.wrapper_foot>div{position:relative;}
+.wrapper_foot>div:nth-child(1){min-width:110px;max-width:110px;padding-right:10px;}
+.wrapper_foot>div:nth-child(1)>div:nth-child(1){position:absolute;top:4px;left:0;width:110px;height:18px;line-height:18px;}
+.wrapper_foot>div:nth-child(1)>div:nth-child(2){position:absolute;top:27px;left:3px;width:102px;padding:1px 0;font-size: 15px;border-radius:4px;text-align:center;white-space:nowrap;cursor:pointer;border:2px groove transparent;}
+.wrapper_foot>div:nth-child(2){margin:0 auto;min-width:80px;max-width:80px;font-size: 15px;}
+.wrapper_foot>div:nth-child(2)>div:nth-child(1){position:absolute;top:7px;left:10px;font-weight:bold;color:#373737;}
+.wrapper_foot>div:nth-child(2)>div:nth-child(2){position:absolute;top:29px;left:0;width:65px;text-align:center;}
+.wrapper_foot>div:nth-child(2)>div:nth-child(3){position:absolute;top:28px;left:65px;width:15px;height:15px;}
+
+/* MangaInfo Wrapper */
+table#manga-wrapper{width:99%;max-width:1180px;margin:0 auto;padding:3px;border-collapse:collapse;font-size:9pt;text-align:left;border:2px ridge #5C0D12;}
+table#manga-wrapper>tbody>tr>th{padding:3px 4px;font-weight:bold;background:#E0DED3;}
+table#manga-wrapper>tbody>tr:nth-child(2n+1){background:#F2F0E4;}
+table#manga-wrapper>tbody>tr:nth-child(2n+2){background:#EDEBDF;}
+#manga-wrapper a{ margin: auto 0; height:100%; width:100%; text-decoration:none;padding-bottom: 5px}
+
+
+
