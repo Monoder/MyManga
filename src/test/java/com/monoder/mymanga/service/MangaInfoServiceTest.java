@@ -8,21 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-@SpringBootTest
 @RunWith( SpringRunner.class )
-public class TagDetailServiceTest {
+@SpringBootTest
+public class MangaInfoServiceTest{
     @Autowired
-    private ITagDetailService iTagDetailService;
-
+    private IMangaInfoService iMangaInfoService;
     @Test
-    public void listTagDetail( ) {
+    public void listMangaInfo(){
+
         DataTables dataTables = new DataTables();
         dataTables.setPageNum( 1 );
         dataTables.setPageSize( 2 );
-        JsonResult< Object > jsonResult = new JsonResult<>( dataTables );
-        System.out.println( iTagDetailService.listTagDetail( jsonResult ) );
+
+        JsonResult jsonResult = new JsonResult<>( dataTables );
+
+        JsonResult result = iMangaInfoService.listMangaInfo( jsonResult );
 
     }
 }

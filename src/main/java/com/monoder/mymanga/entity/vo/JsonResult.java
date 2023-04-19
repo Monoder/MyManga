@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class JsonResult < E > implements Serializable{
+public class JsonResult< E > implements Serializable{
     /**
      * 定义jackson对象
      */
@@ -39,7 +39,7 @@ public class JsonResult < E > implements Serializable{
         this.dataTables = dataTables;
     }
 
-    public JsonResult ( Integer status, Integer rows ) {
+    public JsonResult( Integer status, Integer rows ){
         this.status = status;
         this.rows = rows;
     }

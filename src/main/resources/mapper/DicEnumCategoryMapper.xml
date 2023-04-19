@@ -6,7 +6,7 @@
 
 <mapper namespace="com.monoder.mymanga.mapper.DicEnumCategoryMapper">
 
-    <resultMap id="DicEnumCategoryEntityMap" type="com.monoder.mymanga.entity.dto.DicEnumCategoryDTO">
+    <resultMap id="dicEnumCategoryMap" type="com.monoder.mymanga.entity.dto.DicEnumCategoryDTO">
         <id column="Guid" property="guid" jdbcType="VARCHAR"/>
         <result column="Category_Code" property="categoryCode" jdbcType="VARCHAR"/>
         <result column="DicEnum_ID" property="dicEnumID" jdbcType="NUMERIC"/>
@@ -16,7 +16,7 @@
         <result column="Create_Time" property="createTime" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="listDicEnumCategory" resultMap="DicEnumCategoryEntityMap">
+    <select id="listDicEnumCategory" resultMap="dicEnumCategoryMap">
         SELECT Guid,Category_Code,DicEnum_ID,DicEnum_Name,Trans_Name,Status,Remark,Create_Time
         FROM Manga.Dicenum_Category T
         WHERE T.Category_Code = #{categoryCode, jdbcType=VARCHAR} AND T.Status = '1'

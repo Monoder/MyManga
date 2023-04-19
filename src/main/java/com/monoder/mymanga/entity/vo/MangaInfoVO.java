@@ -1,13 +1,11 @@
-package com.monoder.mymanga.entity.po;
+package com.monoder.mymanga.entity.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class MangaInfo{
+public class MangaInfoVO{
     private String guid;
     private String mangaName;
     private String transName;
@@ -17,8 +15,13 @@ public class MangaInfo{
     private String isLiked;
     private String pageCount;
     private String categoryGuid;
-    private String  updateTime;
-    private String  createTime;
+    private DicEnumCategoryVO dicEnumCategoryVO;
+    private String updateTime;
+    private String createTime;
     private String creator;
 
+    public MangaInfoVO(){
+        // 在构造函数中创建 DicEnumCategoryDTO 对象并设置给 dicEnumCategoryDTO 属性
+        this.dicEnumCategoryVO = new DicEnumCategoryVO();
+    }
 }

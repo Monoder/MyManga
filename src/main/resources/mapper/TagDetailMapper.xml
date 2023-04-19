@@ -75,34 +75,6 @@
         LEFT JOIN Manga.Dicenum_Category a
         ON a.Category_Code = 'TAG' AND a.Guid = t.Category_Guid
         WHERE t.Is_Deleted = '2'
-        <if test="order!=null">
-            ORDER BY
-            <foreach collection="order" item="order" separator=", " open=" " close=" ">
-                <choose>
-                    <when test="order.orderColumn=='tagName'">
-                        t.Tag_Name ${ order.orderType }
-                    </when>
-                    <when test="order.orderColumn=='transName'">
-                        t.Trans_Name ${ order.orderType }
-                    </when>
-                    <when test="order.orderColumn=='updateTime'">
-                        t.Update_Time ${ order.orderType }
-                    </when>
-                    <when test="order.orderColumn=='createTime'">
-                        t.Create_Time ${ order.orderType }
-                    </when>
-                    <when test="order.orderColumn=='dicEnumCategoryDTO.dicEnumID'">
-                        a.DicEnum_ID ${ order.orderType }
-                    </when>
-                    <when test="order.orderColumn!=null">
-                        ${ order.orderColumn } ${ order.orderType }
-                    </when>
-                    <otherwise>
-                        t.Update_Time DESC
-                    </otherwise>
-                </choose>
-            </foreach>
-        </if>
 
     </select>
 

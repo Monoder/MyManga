@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monoder.mymanga.mapper.MangaInfoMapper">
+
+    <resultMap id="mangaInfoMap" type="com.monoder.mymanga.entity.vo.MangaInfoVO">
+        <id column="GUID" property="guid"/>
+        <result column="MANGA_NAME" property="mangaName"/>
+        <result column="TRANS_NAME" property="transName"/>
+        <result column="WRAPPER" property="wrapper"/>
+        <result column="REMARK" property="remark"/>
+        <result column="IS_DELETED" property="isDeleted"/>
+        <result column="IS_LIKED" property="isLiked"/>
+        <result column="PAGE_COUNT" property="pageCount"/>
+        <result column="CATEGORY_GUID" property="categoryGuid"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATOR" property="creator"/>
+
+        <!-- 使用 association 标签关联 DicEnum_Category 表 -->
+        <association property="dicEnumCategoryVO" javaType="com.monoder.mymanga.entity.vo.DicEnumCategoryVO">
+            <id column="DIC_GUID" property="guid"/>
+            <result column="DIC_CODE" property="categoryCode"/>
+            <result column="DIC_ID" property="dicEnumID"/>
+            <result column="DICENUM_NAME" property="dicEnumName"/>
+            <result column="TRANS_NAME" property="transName"/>
+            <result column="STATUS" property="status"/>
+            <result column="REMARK" property="remark"/>
+            <result column="CREATE_TIME" property="createTime"/>
+        </association>
+    </resultMap>
+
+    <!-- 查 -->
+    <select id="listMangaInfo" resultMap="mangaInfoMap">
+        SELECT t.guid,
+               t.manga_name,
+               t.trans_name,
+               t.wrapper,
+               t.remark,
+               t.is_deleted,
+               t.is_liked,
+               t.page_count,
+               t.category_guid,
+               t.update_time,
+               t.create_time,
+               t.creator,
+               a.guid as dic_Guid,
+               a.category_code as dic_Code,
+               a.dicenum_id as dic_ID,
+               a.dicenum_name as dic_Name,
+               a.trans_name as dic_Trans_Name,
+               a.status as dic_status,
+               a.remark as dic_remark,
+               a.create_time as dic_create_time
+        FROM Manga.Manga_info t
+        LEFT JOIN Manga.DicEnum_Category a
+            ON a.Category_Code = 'MANGA' AND a.Guid = t.Category_Guid
+        WHERE t.is_deleted = '2'
+    </select>
+
+</mapper>
