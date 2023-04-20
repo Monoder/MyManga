@@ -8,18 +8,19 @@ import java.util.Date;
 public class SystemInfoTools{
 
     public static void main ( String[] args ) {
-        String now = getNow ( );
-        String getCurrentTime = getCurrentTime ();
-        System.out.println ( now );
-        System.out.println ( getCurrentTime );
-        System.out.println ( getUser () );
+        String gitTime = getGitTime ( );
+        System.out.println( "gitTime = " + gitTime );
+        String dataBaseTime = getDataBaseTime();
+        System.out.println( "dataBaseTime = " + dataBaseTime );
+        String user = getUser();
+        System.out.println( "user = " + user );
     }
 
     /**
      * 用于 git 同步时间戳
      * @return
      */
-    public static String getNow ( ) {
+    public static String getGitTime ( ) {
         //设置日期格式
         SimpleDateFormat df = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss" );
         // new Date()为获取当前系统时间
@@ -31,7 +32,7 @@ public class SystemInfoTools{
      * 数据库时间戳
      * @return
      */
-    public static String getCurrentTime ( ) {
+    public static String getDataBaseTime( ) {
         //设置日期格式
         SimpleDateFormat df = new SimpleDateFormat ( "yyyyMMddHHmmssSSS" );
         // new Date()为获取当前系统时间

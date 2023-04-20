@@ -6,12 +6,22 @@ import com.monoder.mymanga.entity.vo.DicEnumCategoryVO;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
+@RunWith( SpringRunner.class )
+@SpringBootTest
 public class BeanConvertUtilsTest{
 
+    /**
+     * VO --> DTO
+     */
     @Test
     public void convert(){
 
@@ -27,6 +37,25 @@ public class BeanConvertUtilsTest{
                 "dicEnumCategoryVO", DicEnumCategoryDTO.class );
         System.out.println( mangaInfoVO );
         System.out.println( mangaInfoDTO );
+    }
+
+    @Test
+    public void convertListWithNested(){
+        DicEnumCategoryVO dicEnumCategoryVO = new DicEnumCategoryVO();
+        dicEnumCategoryVO.setGuid( "dicEnumCategoryVOGuid" );
+
+        MangaInfoVO mangaInfoVO = new MangaInfoVO();
+        mangaInfoVO.setGuid( "TestGuid" );
+        mangaInfoVO.setDicEnumCategoryVO( dicEnumCategoryVO );
+
+        List<MangaInfoVO> mangaInfoVOS = new ArrayList<>();
+        mangaInfoVOS.add( mangaInfoVO );
+
+        List< MangaInfoDTO > mangaInfoDTOS =BeanConvertUtils.convertListWithNested(
+                mangaInfoVOS, MangaInfoDTO.class,
+                "dicEnumCategoryVO", DicEnumCategoryDTO.class );
+        System.out.println( mangaInfoVOS.get( 0 ) );
+        System.out.println( mangaInfoDTOS.get( 0 ) );
     }
 
     @Test

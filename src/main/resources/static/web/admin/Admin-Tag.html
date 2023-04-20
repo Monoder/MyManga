@@ -82,31 +82,12 @@
 </body>
 <script src="../../js/public/public-navigation.js"></script>
 <script>
-    $(document).ready(function () {
-        let dicEnumCategoryDTO = {dicEnumID: null, guid: null, dicEnumName: null, transName: null};
-        let dataList = {
-            guid: null,
-            id: null,
-            name: null,
-            transName: null,
-            remark: null,
-            isLiked: null,
-            isDeleted: null,
-            dicEnumCategoryDTO: {dicEnumID: null, guid: null, dicEnumName: null, transName: null},
-            updateTime: null,
-            createTime: null,
-            creator: null
-        };
-        let datatables = {draw: null, start: null, length: null, pageNum: null, pageSize: null, order: null};
-        let tagDetail = {
-            guid: null,
-            name: null,
-            transName: null,
-            remark: null,
-            isLiked: null,
-            dicEnumCategoryDTO: {dicEnumID: null, guid: null, dicEnumName: null, transName: null}
-        }
+    let dicEnumCategoryDTO = {dicEnumID: null, guid: null, dicEnumName: null, transName: null};
+    let dataList = {guid: null, id: null, name: null, transName: null, remark: null, isLiked: null, isDeleted: null, dicEnumCategoryDTO: {dicEnumID: null, guid: null, dicEnumName: null, transName: null}, updateTime: null, createTime: null, creator: null};
+    let datatables = {draw: null, start: null, length: null, pageNum: null, pageSize: null, order: null};
+    let tagDetail = {guid: null, name: null, transName: null, remark: null, isLiked: null, dicEnumCategoryDTO: {dicEnumID: null, guid: null, dicEnumName: null, transName: null}}
 
+    $(document).ready(function () {
         let dataTableEditor = new $.fn.dataTable.Editor({
             ajax: {
                 create: {
@@ -125,8 +106,9 @@
                         }
                     },
                     error: (xhr, textStatus, errorThrown) => {
-                        console.log(xhr.responseText);
-                        alert("新增失败: " + xhr.responseText);
+                        let errorMessage = "新增失败: " + xhr.responseText;
+                        console.log(errorMessage);
+                        alert(errorMessage);
                     }
                 },
                 edit: {
@@ -175,7 +157,11 @@
             i18n: {
                 create: {title: "新增", submit: "确定"},
                 edit: {title: "修改", submit: "确定"},
-                remove: {title: "删除", submit: "确定", confirm: {_: "您确定要删除这 %d 条记录吗?", 1: "您确定要删除这条记录吗?"}},
+                remove: {
+                    title: "删除",
+                    submit: "确定",
+                    confirm: {_: "您确定要删除这 %d 条记录吗?", 1: "您确定要删除这条记录吗?"}
+                },
                 error: {system: "系统错误，请联系管理员！"}
             }
         });
@@ -222,7 +208,7 @@
                 dataType: "JSON",
                 contentType: "application/json;charset=utf-8",
                 data: function (originalData) {
-                    let dataTables = dataTablePostData(originalData);
+                    let dataTables = getDataTablesPostData(originalData);
                     return JSON.stringify(dataTables);
                 },
                 dataFilter: function (response) {

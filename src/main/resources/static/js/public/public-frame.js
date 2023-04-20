@@ -20,14 +20,14 @@ function dateFormat( dateString ) {
 
 /**
  *
- * @param originalData dataTables 发送的原始数据
+ * @param dataTablesData dataTables 发送的原始数据
  */
-function dataTablePostData( originalData ) {
-    let dataDraw = originalData.draw;
-    let dataStart = originalData.start;
-    let dataLength = originalData.length;
-    let dataColumns = originalData.columns;
-    let dataOrder = originalData.order;
+function getDataTablesPostData( dataTablesData ) {
+    let dataDraw = dataTablesData.draw;
+    let dataStart = dataTablesData.start;
+    let dataLength = dataTablesData.length;
+    let dataColumns = dataTablesData.columns;
+    let dataOrder = dataTablesData.order;
     // 发送的 postData - order 字段
     let order = [];
     for ( let key in dataOrder ) {

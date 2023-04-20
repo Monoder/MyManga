@@ -231,7 +231,7 @@
                 dataType: "JSON",
                 contentType: "application/json;charset=utf-8",
                 data: function ( originalData ) {
-                    let postData = dataTablePostData( originalData );
+                    let postData = getDataTablesPostData( originalData );
                     return JSON.stringify( postData );
                 },
                 dataFilter: function ( response ) {
@@ -245,7 +245,7 @@
                         for ( let key in data ) {
                             let mangaInfo = {
                                 "guid": data[ key ].guid,
-                                "name": data[ key ].name,
+                                "mangaName": data[ key ].mangaName,
                                 "transName": data[ key ].transName,
                                 "wrapper": null,
                                 "remark": data[ key ].remark,

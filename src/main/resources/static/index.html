@@ -76,36 +76,36 @@
                     <tbody>
                     <tr>
                         <td>
-                            <div data-id="00" class="category cat-00">Doujinshi</div>
+                            <div data-id="42390000" class="category cat-00 selected">Doujinshi</div>
                         </td>
                         <td>
-                            <div data-id="01" class="category cat-01">Manga</div>
+                            <div data-id="42391111" class="category cat-01 selected">Manga</div>
                         </td>
                         <td>
-                            <div data-id="02" class="category cat-02">Artist CG</div>
+                            <div data-id="42392222" class="category cat-02 selected">Artist CG</div>
                         </td>
                         <td>
-                            <div data-id="03" class="category cat-03">Game CG</div>
+                            <div data-id="42393333" class="category cat-03 selected">Game CG</div>
                         </td>
                         <td>
-                            <div data-id="04" class="category cat-04">Western</div>
+                            <div data-id="42394444" class="category cat-04 selected">Western</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div data-id="05" class="category cat-05">Non-H</div>
+                            <div data-id="42395555" class="category cat-05 selected">Non-H</div>
                         </td>
                         <td>
-                            <div data-id="06" class="category cat-06">Image Set</div>
+                            <div data-id="42396666" class="category cat-06 selected">Image Set</div>
                         </td>
                         <td>
-                            <div data-id="07" class="category cat-07">Cosplay</div>
+                            <div data-id="42397777" class="category cat-07 selected">Cosplay</div>
                         </td>
                         <td>
-                            <div data-id="08" class="category cat-08">Asian Porn</div>
+                            <div data-id="42398888" class="category cat-08 selected">Asian Porn</div>
                         </td>
                         <td>
-                            <div data-id="09" class="category cat-09">Misc</div>
+                            <div data-id="42399999" class="category cat-09 selected">Misc</div>
                         </td>
                     </tr>
                     </tbody>
@@ -131,17 +131,8 @@
     <div id="body_wrapper">
         <p class="info">Showing results</p>
         <!--        <p class="info"></p>-->
-        <table class="page_bar" style="margin:2px auto 0px">
+        <table class="page_bar" style="margin:2px auto 0">
             <tr>
-                <td class="page_change" onclick="getPreviousPage()">&lt;</td>
-                <!--
-                                                <td class="page_num"><a href="" onclick="">1</a></td>
-                                                <td class="page_num"><a href="" onclick="return false">2</a></td>
-                                                <td class="page_num"><a href="" onclick="return false">3</a></td>
-                                                <td class="page_num"><a>…</a></td>
-                                                <td class="page_num"><a href="" onclick="return false">7</a></td>
-                -->
-                <td class="page_change" onclick="getNextPage()">&gt;</td>
             </tr>
         </table>
 
@@ -150,19 +141,8 @@
 
         </div>
 
-        <table class="page_bar" style="margin:0px auto">
+        <table class="page_bar" style="margin:0 auto">
             <tr>
-                <td class="page_change" onclick="getPreviousPage()">&lt;</td>
-                <!--
-                <td class="page_num"><a href="" onclick="return false">1</a></td>
-                <td class="page_num"><a>…</a></td>
-                <td class="page_num"><a href="" onclick="return false">4</a></td>
-                <td class="page_num"><a href="" onclick="return false">5</a></td>
-                <td class="page_num"><a href="" onclick="return false">6</a></td>
-                <td class="page_num"><a>…</a></td>
-                <td class="page_num"><a href="" onclick="return false">7</a></td>
-                -->
-                <td class="page_change" onclick="getNextPage()">&gt;</td>
             </tr>
         </table>
     </div>
@@ -173,315 +153,282 @@
 <script type="text/javascript" src="js/public/public-navigation.js"></script>
 <script>
 
-    let pageNumURL = getUrlParam( "pageNum" );
-    let pageNum = pageNumURL;
+    // 设置页数
+    let pages = 2;
+    let pageNum = 1;
 
-    if ( pageNum == null ) {
-        pageNum = 1
-    }
-
+    // 选择器
+    let dom_category = $(".category");
+    let dom_mangaWrapper = $("#manga-wrapper");
 
     // 加载框架
-    $( document ).ready( function () {
-        let originalData = { "pageNum": pageNum };
-        let postData = dataTablePostData( originalData );
-
-        let listMangeInfo = $.ajax( {
+    $(document).ready(function () {
+        // 封装 DataTables 类型数据用于发送请求
+        let dataTablesData = {pageNum: pageNum};
+        let postData = getDataTablesPostData(dataTablesData);
+        let listMangeInfo = $.ajax({
             type: "POST",
             url: "/MangaInfo/listMangaInfo",
             dataType: "JSON",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(postData),
-            success: function ( response ) {
-                let pageInfo = response.data;
-
-                // 渲染页面提示信息
-                $( "#body_wrapper .info" ).text( "Showing " + pageInfo.total + " results" );
-
-                // 渲染图片框架
-                let dom_mangaWrapper = $( "#manga-wrapper" );
-                initWrapperContainer( dom_mangaWrapper, pageInfo );
-
-                // 图片资源渲染
-                let wrapperImg = $( ".wrapper_body img" );
-                initWrapperSource( wrapperImg, pageInfo )
-
-                // 分页实现
-                let dom_pageBar_tr = $( ".page_bar tr" );
-                initPageBar( dom_pageBar_tr, pageInfo );
-
+            success: (response) => {
+                pageReload(response);
             },
-            error: function () {
-
+            error: () => {
             }
+        });
 
-        } );
+        // listMangeInfo 加载完成后执行
+        listMangeInfo.done(function (response) {
+            let searchData = response.searchData;
+            initCategoryBar(dom_category, searchData.searchText, searchData.categoryIdList);
 
-        let searchText = getUrlParam( "searchValue" );
-        let categoryList = getCategoryList( getUrlParam( "catsStr" ) );
+        });
 
-        // dom_category 加载完成后执行
-        let dom_category = $( ".category" );
-        dom_category.ready( function () {
-            initCategoryBar( dom_category, searchText, categoryList );
-        } );
-
-        // dom_category 点击事件
-        dom_category.click( function () {
-            let that = $( this );
-            let isChoose = that.attr( "data-isChoose" );
-            if ( isChoose === "true" ) {
-                that.attr( "data-isChoose", false )
-            } else if ( isChoose === "false" ) {
-                that.attr( "data-isChoose", true )
+        // 分类的点击切换事件
+        dom_category.click(function () {
+            let that = $(this);
+            let isChoose = that.attr("data-isChoose");
+            if (isChoose === "true") {
+                that.attr("data-isChoose", false)
+            } else if (isChoose === "false") {
+                that.attr("data-isChoose", true)
             }
-        } )
+        })
 
-        // 分页点击切换
-
-
-    } );
+    });
 
     // 搜索框提交
     function searchSubmit() {
-        let searchValue = $( "#search_know" ).val();
-        let catsStr = listCategory( $( ".category" ) );
-        let subData = { searchValue: searchValue, catsStr: catsStr };
-        $( window ).attr( "location", "index.html?" + $.param( subData ) );
-    }
-
-
-    /**
-     * 获取当前 url 地址，正则提取 get 传递的参数
-     * @param name  需要提取的参数名
-     * @returns {string|null} 参数值
-     */
-    function getUrlParam( name ) {
-        //构造一个含有目标参数的正则表达式对象
-        let reg = new RegExp( "(^|&)" + name + "=([^&]*)(&|$)" );
-        //匹配目标参数
-        let r = window.location.search.substr( 1 ).match( reg );
-        if ( r != null ) return unescape( r[ 2 ] );
-        //返回参数值
-        return null;
-    }
-
-    /**
-     *
-     * @param catsStr  从 url 获取的 cats 字符串
-     * @returns {null|*} 分割开的 list 集合
-     */
-    function getCategoryList( catsStr ) {
-        if ( catsStr === null ) {
-            return null;
-        }
-        return catsStr.split( "_" )
-    }
-
-
-    /**
-     *
-     * @param dom_category  .category 的 jQuery 对象
-     * @returns {null}  data-isChoose = true 的 dom_catId 集合
-     */
-    function listCategory( dom_category ) {
-        let catsStr = null;
-        for ( let i = 0; i < dom_category.length; i++ ) {
-            let flag = dom_category.eq( i ).attr( "data-isChoose" );
-            let dom_catId = dom_category.eq( i ).attr( "data-id" );
-            if ( flag === "true" ) {
-                if ( catsStr === null ) {
-                    catsStr = dom_catId;
-                } else {
-                    catsStr = catsStr + "_" + dom_catId;
-                }
+        // 获取搜索内容
+        let searchText = $("#search_know").val();
+        // 遍历获取CategoryIdList
+        let categoryIdList = [];
+        dom_category.each(function () {
+            if ($(this).attr("data-isChoose") === "true") {
+                categoryIdList.push($(this).attr("data-id"));
             }
-        }
-        return catsStr;
+        });
+        // 封装 SearchData 类型数据用于发送请求
+        let searchData = {searchText: searchText, categoryIdList: categoryIdList};
+        // 发送请求重载页面
+        searchPageLoad(searchData);
     }
 
 
     /**
-     *  渲染生成页面图片容器框架
-     * @param dom_mangaWrapper  .wrapper_body img 的 jQuery 对象
-     * @param pageInfo  pageInfo 结果集合
+     *  渲染页面漫画封面的容器框架部分
+     *  let dom_mangaWrapper = $("#manga-wrapper");
+     * @param dom_mangaWrapper  ( #manga-wrapper ) 漫画封面的 jQuery 对象
+     * @param pageInfo  PageHelper 分页后的结果集合
      */
-    function initWrapperContainer( dom_mangaWrapper, pageInfo ) {
-
+    function initWrapperContainer(dom_mangaWrapper, pageInfo) {
+        // 获取数据
         let listMangaInfo = pageInfo.list;
-        // 遍历添加 MangaWrapper 节点框架
-        for ( let i = 0; i < pageInfo.size; i++ ) {
-            let mangaGuid = listMangaInfo[ i ].guid;
-            let mangaName = listMangaInfo[ i ].name;
-            let mangaPageCount = listMangaInfo[ i ].pageCount;
-            $( "#manga-wrapper" ).append(
-                    "            <div class=\"wrapper_content\">\n" +
-                    "                <div class=\"wrapper_title\" title = \"" + mangaName + "\">\n" +
-                    "                    <a href=\"/web/MangaDetail.html?mainGuid=" + mangaGuid + "\">" + mangaName + "</a>\n" +
-                    "                </div>\n" +
-                    "                <div class=\"wrapper_body\">\n" +
-                    "                    <a class=\"wrapper_source\" href=\"/web/MangaDetail.html?mainGuid=" + mangaGuid + "\">\n" +
-                    "                        <img data-id=\"" + mangaGuid + "\" alt=\"" + mangaName + "\" />\n" +
-                    "                    </a>\n" +
-                    "                </div>\n" +
-                    "                <div class=\"wrapper_foot\">\n" +
-                    "                    <div>\n" +
-                    "                        <div class=\"wrapper_category cat-05\">Non-H</div>\n" +
-                    "                        <div onclick=\"\" id=\"\">2020-02-27 14:54</div>\n" +
-                    "                    </div>\n" +
-                    "                    <div>\n" +
-                    "                    <div><div>" + mangaPageCount + " pages</div></div>\n" +
-                    "                </div>\n" +
-                    "            </div>\n"
-            )
-        }
-
+        console.log( listMangaInfo );
+        listMangaInfo.forEach((mangaInfo) => {
+            let {guid: mangaGuid, mangaName, pageCount: mangaPageCount, updateTime: mangaUpdateTime} = mangaInfo;
+            // 使用模板字符串
+            $("#manga-wrapper").append(`
+    <div class="wrapper_content">
+        <div class="wrapper_title" title="${mangaName}">
+            <a href="/web/MangaDetail.html?mainGuid=${mangaGuid}">${mangaName}</a>
+        </div>
+        <div class="wrapper_body">
+            <a class="wrapper_source" href="/web/MangaDetail.html?mainGuid=${mangaGuid}">
+                <img data-id="${mangaGuid}" alt="${mangaName}"/>
+            </a>
+        </div>
+        <div class="wrapper_foot">
+            <div>
+                <div class="wrapper_category cat-05">Non-H</div>
+                <div onClick="" id="">${mangaUpdateTime}</div>
+            </div>
+            <div>
+                <div>
+                    <div>${mangaPageCount} pages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `);
+        });
     }
 
-
     /**
-     *  请求加载后端图片数据
-     * @param dom_wrapperImg  .wrapper_body img 的 jQuery 对象
-     * @param pageInfo  pageInfo 结果集合
+     * 请求并渲染页面的漫画封面
+     * let wrapperImg = $(".wrapper_body img");
+     * @param dom_wrapperImg (.wrapper_body img) 漫画封面图片部分的 jQuery 对象
      */
-    function initWrapperSource( dom_wrapperImg, pageInfo ) {
-        // 遍历，在框架中根据封面 Guid 请求封面图片
-        for ( let i = 0; i < pageInfo.size; i++ ) {
-            let wrapperGuid = dom_wrapperImg.eq( i ).attr( "data-id" );
-            $.ajax( {
+    function initWrapperSource(dom_wrapperImg) {
+        // 在框架中根据封面 Guid 循环请求封面图片
+        dom_wrapperImg.each((index, element) => {
+            let wrapperGuid = $(element).attr("data-id");
+            $.ajax({
                 type: "post",
                 datatype: "String",
-                data: { guid: wrapperGuid },
+                data: {mangaGuid: wrapperGuid},
                 url: "/MangaInfo/getWrapper",
-                success: function ( wrapperSource ) {
-                    // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
-                    let manga_img = dom_wrapperImg.eq( i );
-                    manga_img.attr( "src", wrapperSource );
+                success: (wrapperSource) => {
+                    $(element).attr("src", wrapperSource);
+                },
+                error: (xhr, textStatus, errorThrown) => {
+                    console.log(xhr.responseText);
                 }
-            } );
-        }
+            })
+        });
     }
 
-
     /**
-     * 渲染生成导航栏
-     * @param dom_pageBar  .page_bar tr 的 jQuery 对象
-     * @param pageInfo  pageInfo 结果集合
-     */
-    function initPageBar( dom_pageBar, pageInfo ) {
-        // 当前页码
-        let pageNum = pageInfo.pageNum;
-        // 总页码
-        let pages = pageInfo.pages;
-        // 上一页、下一页
-        let dom_pageChange = $( ".page_change" );
-        init( dom_pageChange.eq( 1 ) );
-        init( dom_pageChange.eq( 3 ) );
-
-        function init( dom_nextPage ) {
-            // 总页数小于5， 直接生成  < 1 2 3 4 5 >
-            if ( pages <= 5 ) {
-                for ( let i = 1; i <= pages; i++ ) {
-                    dom_nextPage.before( "<td class=\"page_num\" onclick=\"pageChange( " + i + " )\">" + i + "</td>" );
-                }
-            }
-            // 总页数大于5，分情况生成
-            else if ( pages > 5 ) {
-                // 页码小于3，生成 < 1 2 3 … n >
-                if ( pageNum <= 3 ) {
-                    for ( let i = 1; i <= 3; i++ ) {
-                        dom_nextPage.before( "<td class=\"page_num\" onclick=\"pageChange( " + i + " )\">" + i + "</td>" );
-                    }
-                    dom_nextPage.before( "<td class=\"page_num\">…</td>" )
-                            .before( "<td class=\"page_num\" onclick=\"pageChange( " + pages + " )\">" + pages + "</td>" );
-                }
-                // 页码大于3，小于等于总页码-3，生成 < 1 … 4 5 6 … n >
-                else if ( pageNum > 3 && pageNum <= (pages - 3) ) {
-                    dom_nextPage.before( "<td class=\"page_num\" onclick=\"pageChange( 1 )\">1</td>" )
-                            .before( "<td class=\"page_num\">…</td>" )
-                            .before( "<td class=\"page_num\" onclick=\"pageChange( " + (pageNum - 1) + " )\">" + (pageNum - 1) + "</td>" )
-                            .before( "<td class=\"page_num\" onclick=\"pageChange( " + pageNum + " )\">" + pageNum + "</td>" )
-                            .before( "<td class=\"page_num\" onclick=\"pageChange( " + (pageNum + 1) + " )\">" + (pageNum + 1) + "</td>" )
-                            .before( "<td class=\"page_num\">…</td>" )
-                            .before( "<td class=\"page_num\" onclick=\"pageChange( " + pages + " )\">" + pages + "</td>" );
-                }
-                // 页码大于总页码-3，小于总页码-3，生成 < 1 … 6 7 8 >
-                else if ( pageNum > pages - 3 ) {
-                    dom_nextPage.before( "<td class=\"page_num\" onclick=\"pageChange( 1 )\">1</td>" )
-                            .before( "<td class=\"page_num\">…</td>" );
-                    for ( let i = pageNum - 1; i <= pages; i++ ) {
-                        dom_nextPage.before( "<td class=\"page_num\" onclick=\"pageChange( " + i + " )\">" + i + "</td>" );
-                    }
-                }
-            }
-        }
-
-        // 修改当前页样式
-        let dom_pageNum = $( ".page_num" );
-        for ( let i = 0; i < dom_pageNum.length; i++ ) {
-            if ( dom_pageNum[ i ].innerText == pageNum ) {
-                dom_pageNum.eq( i ).attr( "data-isCurrent", "true" );
-            }
-        }
-
-        // 控制页码切换隐藏
-        if ( pageInfo.hasPreviousPage == false ) {
-            dom_pageChange.eq( 0 ).attr( "data-isShow", "false" );
-            dom_pageChange.eq( 2 ).attr( "data-isShow", "false" );
-        }
-        if ( pageInfo.hasNextPage == false ) {
-            dom_pageChange.eq( 1 ).attr( "data-isShow", "false" );
-            dom_pageChange.eq( 3 ).attr( "data-isShow", "false" );
-        }
-
-    }
-
-
-    /**
-     *  分类栏加载后的事件
+     * 分类栏加载后渲染分类栏的 data-isChoose，使得支持点击切换样式
      *  let dom_category = $( ".category" );
-     * @param dom_category  .category 的 jQuery 对象
+     * @param dom_category  ( .category ) 的 jQuery 对象
      * @param searchText  搜索框搜索内容文本
-     * @param categoryList  选择搜索的分类集合
+     * @param categoryIdList  选择的分类ID集合
      */
-    function initCategoryBar( dom_category, searchText, categoryList ) {
-        // 判断 URL - categoryList 是否为空，为空则默认加载为 true
-        if ( categoryList === null ) {
-            dom_category.attr( "data-isChoose", true );
+    function initCategoryBar(dom_category, searchText, categoryIdList) {
+        // 判断 categoryIdList 是否为空，为空则默认加载为 true
+        if (categoryIdList.length === 0) {
+            dom_category.attr("data-isChoose", true);
         } else {
-            // URL - categoryList 有传参，则遍历 dom 树，判断传参集合里是否包含 dom 树 data-id
-            for ( let i = 0; i < dom_category.length; i++ ) {
-                let dom_cat = dom_category.eq( i );
-                let dom_catId = dom_cat.attr( "data-id" );
-                if ( categoryList.indexOf( dom_catId ) < 0 ) {
-                    // 包含则设为 false
-                    dom_cat.attr( "data-isChoose", false )
+            // categoryIdList 不为空，则遍历 dom 树，判断传参集合里是否包含 dom 的 data-id
+            dom_category.each((index, element) => {
+                let dom_cat = $(element);
+                let dom_catId = dom_cat.attr("data-id");
+                if (categoryIdList.length === 0 || categoryIdList.indexOf(dom_catId) >= 0) {
+                    dom_cat.attr("data-isChoose", true);
                 } else {
-                    dom_cat.attr( "data-isChoose", true )
+                    dom_cat.attr("data-isChoose", false);
                 }
-            }
+            });
         }
     }
 
-    function pageChange( targetPageNum ) {
-        pageNum = targetPageNum
-        let subData = { pageNum: targetPageNum }
-        $( window ).attr( "location", "index.html?" + $.param( subData ) );
+    /**
+     * 渲染分页栏
+     * let dom_pageBar_tr = $(".page_bar tr");
+     * @param dom_pageBar   ( .page_bar tr ) 分页栏渲染的 jQuery 对象
+     * @param pageInfo - PageHelper 分页后的结果集合
+     */
+    function initPageBar(dom_pageBar, pageInfo) {
+        // 获取当前页和总页数
+        let {pageNum, pages} = pageInfo;
+
+        // 定义跳转页数的函数
+        let changePage = newPageNum => {
+            pageNum = newPageNum;
+            pageChangeLoad(pageNum);
+        };
+
+        // 计算页码的起始和结束位置
+        let pageStart = 1;
+        let pageEnd = pages;
+        if (pages > 5) {
+            if (pageNum <= 3) {
+                pageEnd = 5;
+            } else if (pageNum >= pages - 2) {
+                pageStart = pages - 4;
+            } else {
+                pageStart = pageNum - 2;
+                pageEnd = pageNum + 2;
+            }
+        }
+
+        // 渲染页码元素
+        dom_pageBar.empty().append(`
+    <td class="page_change" onclick="getPreviousPage()" data-isShow="${pageInfo.hasPreviousPage}">&lt;</td>
+    ${pageStart > 1 ? `<td class="page_num" onclick="pageChange(1)">1</td>
+                        <td class="page_num" onclick="pageChange(${pageStart - 1})">...</td>` : ""}
+    ${Array.from({length: pageEnd - pageStart + 1}, (_, i) => pageStart + i)
+            .map(page => `<td class="page_num" onclick="pageChange(${page})" data-isCurrent="${page === pageNum}">${page}</td>`)
+            .join("")}
+    ${pageEnd < pages ? `<td class="page_num" onclick="pageChange(${pageEnd + 1})">...</td>
+                        <td class="page_num" onclick="pageChange(${pages})">${pages}</td>` : ""}
+    <td class="page_change" onclick="getNextPage()" data-isShow="${pageInfo.hasNextPage}">&gt;</td>
+  `);
+    }
+
+    function pageChange(targetPageNum) {
+        pageNum = targetPageNum;
+        pageChangeLoad(pageNum);
     }
 
     function getPreviousPage() {
-        pageNum--;
-        let subData = { pageNum: pageNum }
-        $( window ).attr( "location", "index.html?" + $.param( subData ) );
+        if (pageNum > 1) {
+            pageNum--;
+            pageChangeLoad(pageNum);
+        }
     }
 
     function getNextPage() {
-        pageNum++;
-        let subData = { pageNum: pageNum }
-        $( window ).attr( "location", "index.html?" + $.param( subData ) );
+        if (pageNum < pages) {
+            pageNum++;
+            pageChangeLoad(pageNum);
+        }
     }
 
-    // src=\"data:image/jpeg;base64," + wrapper.wrapperSource
+
+    function pageReload(responseData) {
+        let pageInfo = responseData.data;
+        pages = pageInfo.pages;
+
+        // 渲染页面提示信息
+        let dom_bodyInfo=$("#body_wrapper .info");
+        dom_bodyInfo.empty().text("Showing " + pageInfo.total + " results");
+
+        // 渲染图片框架
+        let dom_mangaWrapper = $("#manga-wrapper");
+        dom_mangaWrapper.empty();
+        initWrapperContainer(dom_mangaWrapper, pageInfo);
+
+        // 图片资源渲染
+        let dom_wrapperImg = $(".wrapper_body img");
+        dom_wrapperImg.empty();
+        initWrapperSource(dom_wrapperImg);
+
+        // 分页实现
+        let dom_pageBar = $(".page_bar tr");
+        dom_pageBar.empty();
+        initPageBar(dom_pageBar, pageInfo);
+    }
+
+    /**
+     * 根据页码请求后台新的分页数据
+     * @param pageNum
+     */
+    function pageChangeLoad(pageNum) {
+        let originalData = {pageNum};
+        let postData = getDataTablesPostData(originalData);
+        postData.dataTables.pageNum = pageNum;
+        $.ajax({
+            type: "POST",
+            url: "/MangaInfo/listMangaInfo",
+            dataType: "JSON",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(postData),
+            success: function (response) {
+                pageReload(response);
+            }
+        });
+    }
+
+    function searchPageLoad(searchData) {
+        let searchPostData = {searchData: searchData};
+        $.ajax({
+            url: "/MangaInfo/search",
+            type: "POST",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "JSON",
+            data: JSON.stringify(searchPostData),
+            success: function (response) {
+                pageReload(response);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    }
 
 </script>
 </html>

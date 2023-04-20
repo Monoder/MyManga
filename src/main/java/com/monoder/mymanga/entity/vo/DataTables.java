@@ -27,6 +27,9 @@ public class DataTables{
      * 页面大小
      */
     private Integer pageSize;
+    /**
+     * 排序字段
+     */
     private List< Order > order = new ArrayList<>();
 
     @Data

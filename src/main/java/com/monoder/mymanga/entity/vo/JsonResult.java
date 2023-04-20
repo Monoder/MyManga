@@ -27,16 +27,16 @@ public class JsonResult< E > implements Serializable{
      * DataTables 返回固定格式数据
      */
     private DataTables dataTables;
+
+    private SearchData searchData;
     /**
      * 响应中的数据
      */
     private Object data;
 
     public JsonResult(){
-    }
-
-    public JsonResult( DataTables dataTables ){
-        this.dataTables = dataTables;
+        this.dataTables = new DataTables();
+        this.searchData = new SearchData();
     }
 
     public JsonResult( Integer status, Integer rows ){

@@ -24,20 +24,44 @@
             <id column="DIC_GUID" property="guid"/>
             <result column="DIC_CODE" property="categoryCode"/>
             <result column="DIC_ID" property="dicEnumID"/>
-            <result column="DICENUM_NAME" property="dicEnumName"/>
-            <result column="TRANS_NAME" property="transName"/>
-            <result column="STATUS" property="status"/>
-            <result column="REMARK" property="remark"/>
-            <result column="CREATE_TIME" property="createTime"/>
+            <result column="DIC_NAME" property="dicEnumName"/>
+            <result column="DIC_TRANS_NAME" property="transName"/>
+            <result column="DIC_STATUS" property="status"/>
+            <result column="DIC_REMARK" property="remark"/>
+            <result column="DIC_CREATE_TIME" property="createTime"/>
         </association>
     </resultMap>
+
+    <!--  增  -->
+    <insert id="batchAddMangaInfo" parameterType="java.util.List" >
+        INSERT ALL
+        <foreach collection="mangaInfoList" item="mangaInfo" separator=" ">
+            INTO Manga.MANGA_INFO ( GUID, MANGA_NAME, TRANS_NAME, WRAPPER, REMARK, IS_DELETED, IS_LIKED, PAGE_COUNT, CATEGORY_GUID, UPDATE_TIME,
+            CREATE_TIME, CREATOR )
+            VALUES
+            (
+            sys_guid(),
+            #{mangaInfo.mangaName, jdbcType=VARCHAR},
+            #{mangaInfo.transName, jdbcType=VARCHAR},
+            #{mangaInfo.wrapper, jdbcType=BLOB},
+            #{mangaInfo.remark, jdbcType=VARCHAR},
+            #{mangaInfo.isDeleted, jdbcType=VARCHAR},
+            #{mangaInfo.isLiked, jdbcType=VARCHAR},
+            #{mangaInfo.pageCount, jdbcType=VARCHAR},
+            #{mangaInfo.categoryGuid, jdbcType=VARCHAR},
+            #{mangaInfo.updateTime, jdbcType=VARCHAR},
+            #{mangaInfo.createTime, jdbcType=VARCHAR},
+            #{mangaInfo.creator, jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT 1 FROM DUAL
+    </insert>
 
     <!-- 查 -->
     <select id="listMangaInfo" resultMap="mangaInfoMap">
         SELECT t.guid,
                t.manga_name,
                t.trans_name,
-               t.wrapper,
                t.remark,
                t.is_deleted,
                t.is_liked,
@@ -58,6 +82,14 @@
         LEFT JOIN Manga.DicEnum_Category a
             ON a.Category_Code = 'MANGA' AND a.Guid = t.Category_Guid
         WHERE t.is_deleted = '2'
+        ORDER BY t.update_time DESC
     </select>
+
+    <select id="getWrapperByGuid" resultType="com.monoder.mymanga.entity.po.MangaInfo">
+        SELECT t.guid, t.manga_name, t.wrapper
+        FROM manga.manga_info t
+        WHERE t.is_deleted = '2' AND guid = #{guid, jdbcType=VARCHAR}
+    </select>
+
 
 </mapper>

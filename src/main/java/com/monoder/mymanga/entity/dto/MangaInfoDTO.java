@@ -1,8 +1,10 @@
 package com.monoder.mymanga.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class MangaInfoDTO{
     private String guid;
     private String mangaName;

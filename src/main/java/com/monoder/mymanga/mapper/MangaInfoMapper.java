@@ -11,9 +11,13 @@ import java.util.List;
 @Mapper
 public interface MangaInfoMapper{
 
-    List< MangaInfoVO > listMangaInfo ( DataTables dataTables );
+    Integer batchAddMangaInfo( List< MangaInfo > mangaInfoList );
 
-    List< MangaInfoVO > listMangaInfo ( );
+    List< MangaInfoVO > listMangaInfo( DataTables dataTables );
 
-    List< DicEnumCategory> listDicEnumCategory();
+    List< MangaInfoVO > listMangaInfo();
+
+    MangaInfo getWrapperByGuid( String guid );
+
+    List< DicEnumCategory > listDicEnumCategory();
 }

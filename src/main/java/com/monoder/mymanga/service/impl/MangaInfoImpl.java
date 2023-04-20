@@ -2,26 +2,48 @@ package com.monoder.mymanga.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.monoder.mymanga.common.constant.MangaWrapperConstants;
+import com.monoder.mymanga.common.enums.ImageFormat;
 import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
+import com.monoder.mymanga.entity.po.MangaInfo;
 import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import com.monoder.mymanga.mapper.MangaInfoMapper;
 import com.monoder.mymanga.service.IMangaInfoService;
+import com.monoder.mymanga.service.ITagDetailService;
+import com.monoder.mymanga.service.exception.SelectException;
 import com.monoder.mymanga.utils.BeanConvertUtils;
+import com.monoder.mymanga.utils.ImageUtils;
+import com.monoder.mymanga.utils.MangaWrapperUtils;
+import com.monoder.mymanga.utils.PageInfoUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.monoder.mymanga.common.constant.MangaWrapperConstants.*;
+
 @Service
 public class MangaInfoImpl implements IMangaInfoService{
 
+    private final Logger logger = LoggerFactory.getLogger( IMangaInfoService.class );
+
     @Autowired
     private MangaInfoMapper mangaInfoMapper;
+
+    @Override
+    public Integer batchAddMangaInfo( List< MangaInfo > mangaInfoList ){
+        Integer rows = mangaInfoMapper.batchAddMangaInfo( mangaInfoList );
+        return rows;
+    }
 
     @Override
     public JsonResult listMangaInfo( JsonResult< Object > requestJsonResult ){
@@ -35,7 +57,7 @@ public class MangaInfoImpl implements IMangaInfoService{
         // 如果 DataTables 中的 pageNum 为空，则设置默认值 1
         dataTables.setPageNum( Optional.ofNullable( dataTables.getPageNum() ).orElse( 1 ) );
         // 如果 DataTables 中的 pageSize 为空，则设置默认值 25
-        dataTables.setPageSize( Optional.ofNullable( dataTables.getPageSize() ).orElse( 25 ) );
+        dataTables.setPageSize( Optional.ofNullable( dataTables.getPageSize() ).orElse( 2 ) );
 
         // 配置 PageHelper
         PageHelper.startPage( dataTables.getPageNum(), dataTables.getPageSize() );
@@ -46,16 +68,52 @@ public class MangaInfoImpl implements IMangaInfoService{
 
         // 将VO对象从 PageHelper 中取出并转换成DTO对象
         List< MangaInfoVO > mangaInfoVOList = mangaInfoVOPageInfo.getList();
-        List< MangaInfoDTO > mangaInfoDTOs = BeanConvertUtils.convertListWithNested( mangaInfoVOList, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
-        // 放回 PageHelper 中
-        PageInfo< MangaInfoDTO > mangaInfoDTOPageInfo = new PageInfo<>( mangaInfoDTOs );
+        List< MangaInfoDTO > mangaInfoDTOS = BeanConvertUtils.convertListWithNested( mangaInfoVOList, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
 
+        System.out.println( mangaInfoVOList.get( 0 ));
+        System.out.println( mangaInfoDTOS.get( 0 ));
+        // 生成新的 PageInfo 对象，保留原来的分页信息
+        PageInfo< MangaInfoDTO > mangaInfoDTOPageInfo = PageInfoUtil.copy( mangaInfoVOPageInfo, mangaInfoDTOS );
 
         // 初始化 JsonResult 用来存放分页后的数据
-        JsonResult< Object > jsonResult = new JsonResult<>( dataTables );
+        JsonResult< Object > jsonResult = new JsonResult<>();
         jsonResult.getDataTables().setDraw( dataTables.getDraw() );
         jsonResult.setData( mangaInfoDTOPageInfo );
 
         return jsonResult;
     }
+
+    @Override
+    public String getWrapperByGuid( String guid ){
+        // 查询数据库获取 MangaInfoWrapper 对象
+        MangaInfo mangaInfo = mangaInfoMapper.getWrapperByGuid( guid );
+        // 1. 判断 guid 是否存在
+        if( guid == null || mangaInfo == null ){
+            System.out.println( mangaInfo );
+            String errorMsg = "ERROR: 漫画Guid为空或找不到对应漫画，请刷新重试或联系管理员！";
+            logger.error( errorMsg );
+            throw new SelectException( errorMsg );
+        }
+        if( mangaInfo.getWrapper() == null ){
+            String errorMsg = "ERROR: 漫画封面未上传，请联系管理员！ 【GUID-" + guid + "】";
+            logger.error( errorMsg );
+            throw new SelectException( errorMsg );
+        }
+
+        // 获取包装器的字节数组
+        byte[] imageBytes = mangaInfo.getWrapper();
+        // 进行图片压缩
+        byte[] compressedImageBytes = new byte[ 0 ];
+        try{
+            compressedImageBytes = ImageUtils.compressImageBySize( imageBytes, ImageFormat.JPEG, MAX_SIZE );
+        } catch( IOException e ){
+            throw new RuntimeException( e );
+        }
+        // 将字节数组转换成 Base64 编码的字符串
+        String base64String = DEFAULT_WRAPPER_BASE64_PREFIX + Base64.getEncoder().encodeToString( compressedImageBytes );
+
+        return base64String;
+    }
+
+
 }
