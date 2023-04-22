@@ -2,10 +2,13 @@
 <html lang="ch">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/default.css">
+
     <link rel="stylesheet" href="../css/public-frame.css">
     <link rel="stylesheet" href="../css/MangaDetail.css">
+
     <script src="../js/frame/jquery-3.6.0.js"></script>
+    <script src="../js/public/public-frame.js"></script>
+    <script type="text/javascript" src="../js/public/public-navigation.js"></script>
     <style>
         @supports (display:grid) {
             .manga_gld {
@@ -64,14 +67,12 @@
 
 </head>
 <body>
-<!-- Navigation-->
-<script src="../js/NavigationBar.js"></script>
 
 <!-- Body -->
 <div class="page_content" style="max-width:1370px">
     <!-- BodyHeader -->
 
-    <h1 class="head_title">[Highware] Spoils of Victory (Pokemon)[DoreaMR233汉化]</h1>
+    <h1 class="head_title"></h1>
     <div id="head_wrapper">
         <div class="head_form_wrapper">
 
@@ -84,40 +85,22 @@
             <div id="head_mid">
                 <div id="head_mid_detail">
                     <div id="hm_detail_cate">
-                        <div class="wrapper_category cat_choose_04">Western</div>
+                        <div class="wrapper_category category" data-id="42390000">Doujinshi</div>
                     </div>
-                    <div id="hm_detail_artist"><a href="">Dorae_MR_233</a></div>
+                    <div id="hm_detail_artist"><a href=""></a></div>
                     <div id="hm_detail_info">
                         <table>
                             <tr>
                                 <td class="hm_detail_info_c1">Posted:</td>
-                                <td class="hm_detail_info_c2">2021-04-16 12:54</td>
-                            </tr>
-                            <tr>
-                                <td class="hm_detail_info_c1">Parent:</td>
-                                <td class="hm_detail_info_c2"><a href="">1889252</a></td>
-                            </tr>
-                            <tr>
-                                <td class="hm_detail_info_c1">Visible:</td>
-                                <td class="hm_detail_info_c2">Yes</td>
+                                <td class="hm_detail_info_c2"></td>
                             </tr>
                             <tr>
                                 <td class="hm_detail_info_c1">Language:</td>
-                                <td class="hm_detail_info_c2">Chinese &nbsp;<span class="halp"
-                                                                                  title="This gallery has been translated from the original language text.">TR</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="hm_detail_info_c1">File Size:</td>
-                                <td class="hm_detail_info_c2">189.6 MB</td>
+                                <td class="hm_detail_info_c2"></td>
                             </tr>
                             <tr>
                                 <td class="hm_detail_info_c1">Length:</td>
-                                <td class="hm_detail_info_c2">31 pages</td>
-                            </tr>
-                            <tr>
-                                <td class="hm_detail_info_c1">Favorited:</td>
-                                <td class="hm_detail_info_c2" id="favcount">964 times</td>
+                                <td class="hm_detail_info_c2"></td>
                             </tr>
                         </table>
                     </div>
@@ -436,82 +419,117 @@
 
 </body>
 <script>
-    let mainGuid = getUrlParam( "mainGuid" );
+    const mangaGuid = getUrlParam("mainGuid");
 
-    $( document ).ready( function () {
+    // 定义常用的 jQuery 对象
+    const sel_$headLeft_Img = "#head_left img";
+    const sel_$headLeft_Div = "#head_left div";
+    const sel_$category = ".category";
+    const sel_$hm_detail_info_c2 = ".hm_detail_info_c2";
+
+    let $headLeft_Img = $(sel_$headLeft_Img);
+    let $headLeft_Div = $(sel_$headLeft_Div);
+    let $category = $(sel_$category);
+    let $hm_detail_info_c2 = $(sel_$hm_detail_info_c2);
+
+    $(document).ready(function () {
+        $headLeft_Img = $(sel_$headLeft_Img);
+        $headLeft_Div = $(sel_$headLeft_Div);
         // 加载封面
-        $.ajax( {
+        $.ajax({
             type: "post",
-            datatype: "String",
-            data: { guid: mainGuid },
+            dataType: "text",
+            data: {mangaGuid: mangaGuid},
             url: "/MangaInfo/getWrapper",
-            success: function ( wrapperSource ) {
+            success: function (wrapperSource) {
                 // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
-                $( "#head_left img" ).attr( "src", wrapperSource );
-                $( "#head_left div" ).removeAttr( "style" )
+                $headLeft_Img.attr("src", wrapperSource);
+                $headLeft_Div.removeAttr("style")
             }
-        } );
+        });
 
-        $.ajax( {
+        // 加载信息
+        $category = $(sel_$category);
+        $hm_detail_info_c2 = $(sel_$hm_detail_info_c2);
+        $.ajax({
+            type: "POST",
+            url: "/MangaInfo/getMangaInfo",
+            dataType: "text",
+            data: {mangaGuid: mangaGuid},
+            success: (response) => {
+                // 解析结果
+                const mangaInfo = JSON.parse(response).data;
+                const {dicEnumCategoryDTO: mangaCategory} = mangaInfo;
+                // 修改页面数据
+                $category.attr("data-id", mangaCategory.dicEnumID)
+                    .text(mangaCategory.dicEnumName);
+                $hm_detail_info_c2.eq(0).text(mangaInfo.updateTime);
+                $hm_detail_info_c2.eq(2).text(mangaInfo.pageCount + " Pages");
+            },
+            error: () => {
+            }
+        });
+
+        // 获取漫画资源
+        $.ajax({
             type: "post",
-            datatype: "String",
-            data: { "mainGuid": mainGuid },
+            dataType: "text",
+            data: {"mainGuid": mangaGuid},
             url: "/MangaDetail/listMangaDetailByPage",
-            success: function ( result ) {
+            success: function (result) {
 
                 let listMangaDetail = result.list;
                 let pageSize = result.size;
 
-                $( "#body_wrapper .info" ).text( "Showing " + result.total + " results" );
+                $("#body_wrapper .info").text("Showing " + result.total + " results");
 
 
                 // 遍历添加 Dom 节点框架
-                for ( let i = 0; i < pageSize; i++ ) {
-                    let detailGuid = listMangaDetail[ i ].guid;
-                    let detailId = listMangaDetail[ i ].id;
-                    let detailMainGuid = listMangaDetail[ i ].mainGuid;
+                for (let i = 0; i < pageSize; i++) {
+                    let detailGuid = listMangaDetail[i].guid;
+                    let detailId = listMangaDetail[i].id;
+                    let detailMainGuid = listMangaDetail[i].mainGuid;
 
-                    $( ".manga_wrapper" ).append(
-                            "           <div class=\"gdt\" style=\"max-height:319px; max-width: 239px\">\n" +
-                            "               <div style=\"height:340px;width:240px;top:-2px; \">\n" +
-                            "                   <a href=\"\">\n" +
-                            "                       <img style=\"object-fit: contain;\" id=\"" + detailGuid + "\"  title=\"" + detailId + "\" src=\"\" alt=\"" + detailId + "\" />\n" +
-                            "                   </a>\n" +
-                            "               </div>\n" +
-                            "            </div>"
+                    $(".manga_wrapper").append(
+                        "           <div class=\"gdt\" style=\"max-height:319px; max-width: 239px\">\n" +
+                        "               <div style=\"height:340px;width:240px;top:-2px; \">\n" +
+                        "                   <a href=\"\">\n" +
+                        "                       <img style=\"object-fit: contain;\" id=\"" + detailGuid + "\"  title=\"" + detailId + "\" src=\"\" alt=\"" + detailId + "\" />\n" +
+                        "                   </a>\n" +
+                        "               </div>\n" +
+                        "            </div>"
                     );
                 }
 
                 // 遍历，在框架中根据封面 Guid 请求图片流，并进行添加
-                for ( let i = 0; i < pageSize; i++ ) {
-                    let detailGuid = $( ".manga_wrapper img" )[ i ].id;
-                    $.ajax( {
+                for (let i = 0; i < pageSize; i++) {
+                    let detailGuid = $(".manga_wrapper img")[i].id;
+                    $.ajax({
                         type: "post",
-                        datatype: "String",
-                        data: { guid: detailGuid },
+                        dataType: "text",
+                        data: {guid: detailGuid},
                         url: "/MangaDetail/getThumbnail",
-                        success: function ( thumbnail ) {
+                        success: function (thumbnail) {
                             // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
-                            let manga_img = $( ".manga_wrapper img" ).eq( i );
-                            manga_img.attr( "src", thumbnail );
-                            $( "div.gdtl div" ).removeAttr( "style" );
+                            let manga_img = $(".manga_wrapper img").eq(i);
+                            manga_img.attr("src", thumbnail);
+                            $("div.gdtl div").removeAttr("style");
                         }
-                    } );
+                    });
                 }
 
 
             }
-        } );
-    } );
+        });
+    });
 
 
-    function getUrlParam( name ) {
-        //构造一个含有目标参数的正则表达式对象
-        let reg = new RegExp( "(^|&)" + name + "=([^&]*)(&|$)" );
-        //匹配目标参数
-        let r = window.location.search.substr( 1 ).match( reg );
-        if ( r != null ) return unescape( r[ 2 ] );
-        //返回参数值
+    function getUrlParam(name) {
+        const searchParams = new URLSearchParams(window.location.search);
+        const key = searchParams.get(name);
+
+        if (key != null) return key;
+
         return null;
     }
 

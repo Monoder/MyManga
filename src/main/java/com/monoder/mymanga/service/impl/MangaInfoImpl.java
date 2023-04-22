@@ -2,7 +2,6 @@ package com.monoder.mymanga.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.monoder.mymanga.common.constant.MangaWrapperConstants;
 import com.monoder.mymanga.common.enums.ImageFormat;
 import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
@@ -12,11 +11,9 @@ import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import com.monoder.mymanga.mapper.MangaInfoMapper;
 import com.monoder.mymanga.service.IMangaInfoService;
-import com.monoder.mymanga.service.ITagDetailService;
 import com.monoder.mymanga.service.exception.SelectException;
 import com.monoder.mymanga.utils.BeanConvertUtils;
 import com.monoder.mymanga.utils.ImageUtils;
-import com.monoder.mymanga.utils.MangaWrapperUtils;
 import com.monoder.mymanga.utils.PageInfoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.monoder.mymanga.common.constant.MangaWrapperConstants.*;
+import static com.monoder.mymanga.common.constant.MangaWrapperConstant.DEFAULT_WRAPPER_BASE64_PREFIX;
+import static com.monoder.mymanga.common.constant.MangaWrapperConstant.MAX_SIZE;
 
 @Service
 public class MangaInfoImpl implements IMangaInfoService{
@@ -57,7 +55,7 @@ public class MangaInfoImpl implements IMangaInfoService{
         // 如果 DataTables 中的 pageNum 为空，则设置默认值 1
         dataTables.setPageNum( Optional.ofNullable( dataTables.getPageNum() ).orElse( 1 ) );
         // 如果 DataTables 中的 pageSize 为空，则设置默认值 25
-        dataTables.setPageSize( Optional.ofNullable( dataTables.getPageSize() ).orElse( 2 ) );
+        dataTables.setPageSize( Optional.ofNullable( dataTables.getPageSize() ).orElse( 25 ) );
 
         // 配置 PageHelper
         PageHelper.startPage( dataTables.getPageNum(), dataTables.getPageSize() );
@@ -70,8 +68,6 @@ public class MangaInfoImpl implements IMangaInfoService{
         List< MangaInfoVO > mangaInfoVOList = mangaInfoVOPageInfo.getList();
         List< MangaInfoDTO > mangaInfoDTOS = BeanConvertUtils.convertListWithNested( mangaInfoVOList, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
 
-        System.out.println( mangaInfoVOList.get( 0 ));
-        System.out.println( mangaInfoDTOS.get( 0 ));
         // 生成新的 PageInfo 对象，保留原来的分页信息
         PageInfo< MangaInfoDTO > mangaInfoDTOPageInfo = PageInfoUtil.copy( mangaInfoVOPageInfo, mangaInfoDTOS );
 
@@ -81,6 +77,13 @@ public class MangaInfoImpl implements IMangaInfoService{
         jsonResult.setData( mangaInfoDTOPageInfo );
 
         return jsonResult;
+    }
+
+    @Override
+    public JsonResult getMangaInfoByGuid( String mangaGuid ){
+        MangaInfoVO mangaInfoVO = mangaInfoMapper.getMangaInfoByGuid( mangaGuid );
+        MangaInfoDTO mangaInfoDTO = BeanConvertUtils.convertWithNested( mangaInfoVO, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
+        return new JsonResult( mangaInfoDTO );
     }
 
     @Override

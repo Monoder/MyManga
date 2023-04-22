@@ -1,8 +1,6 @@
 package com.monoder.mymanga.controller;
 
-import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.JsonResult;
-import com.monoder.mymanga.entity.vo.SearchData;
 import com.monoder.mymanga.service.IMangaInfoService;
 import com.monoder.mymanga.service.exception.SelectException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,13 @@ public class MangaInfoController{
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType( MediaType.APPLICATION_JSON );
         return new ResponseEntity<>( iMangaInfoService.listMangaInfo( requestJsonRequest ), headers, HttpStatus.OK );
+    }
+
+    @PostMapping( "getMangaInfo" )
+    public ResponseEntity getMangaInfo( String mangaGuid ){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType( MediaType.APPLICATION_JSON );
+        return new ResponseEntity<>( iMangaInfoService.getMangaInfoByGuid( mangaGuid ), headers, HttpStatus.OK );
     }
 
     @PostMapping( "getWrapper" )

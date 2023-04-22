@@ -1,6 +1,5 @@
 package com.monoder.mymanga.mapper;
 
-import com.monoder.mymanga.entity.po.DicEnumCategory;
 import com.monoder.mymanga.entity.po.MangaInfo;
 import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
@@ -17,7 +16,9 @@ public interface MangaInfoMapper{
 
     List< MangaInfoVO > listMangaInfo();
 
+    MangaInfoVO getMangaInfoByGuid( String mangaGuid );
+
     MangaInfo getWrapperByGuid( String guid );
 
-    List< DicEnumCategory > listDicEnumCategory();
+
 }

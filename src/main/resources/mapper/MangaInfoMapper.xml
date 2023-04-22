@@ -85,6 +85,32 @@
         ORDER BY t.update_time DESC
     </select>
 
+    <select id="getMangaInfoByGuid" resultMap="mangaInfoMap">
+        SELECT t.guid,
+               t.manga_name,
+               t.trans_name,
+               t.remark,
+               t.is_deleted,
+               t.is_liked,
+               t.page_count,
+               t.category_guid,
+               t.update_time,
+               t.create_time,
+               t.creator,
+               a.guid as dic_Guid,
+               a.category_code as dic_Code,
+               a.dicenum_id as dic_ID,
+               a.dicenum_name as dic_Name,
+               a.trans_name as dic_Trans_Name,
+               a.status as dic_status,
+               a.remark as dic_remark,
+               a.create_time as dic_create_time
+        FROM Manga.Manga_info t
+                 LEFT JOIN Manga.DicEnum_Category a
+                           ON a.Category_Code = 'MANGA' AND a.Guid = t.Category_Guid
+        WHERE t.is_deleted = '2' AND t.guid = #{guid, jdbcType=VARCHAR}
+    </select>
+
     <select id="getWrapperByGuid" resultType="com.monoder.mymanga.entity.po.MangaInfo">
         SELECT t.guid, t.manga_name, t.wrapper
         FROM manga.manga_info t

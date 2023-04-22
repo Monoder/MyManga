@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monoder.mymanga.mapper.MangaDetailMapper">
+    <resultMap id="mangaDetailMap" type="com.monoder.mymanga.entity.po.MangaDetail">
+        <id column="GUID" property="guid"/>
+        <result column="ID" property="id"/>
+        <result column="MANGA_PIC" property="mangaPic"/>
+        <result column="MAINGUID" property="mainGuid"/>
+    </resultMap>
+
+    <select id="listMangaDetailByGuid" resultMap="mangaDetailMap">
+        SELECT
+            t.guid,
+            t.id,
+            t.manga_pic,
+            t.mainguid
+        FROM manga.manga_detail t
+        WHERE t.guid = #{guid, jdbcType=VARCHAR}
+    </select>
+</mapper>

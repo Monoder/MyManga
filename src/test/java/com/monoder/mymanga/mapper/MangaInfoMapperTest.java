@@ -1,9 +1,12 @@
 package com.monoder.mymanga.mapper;
 
+import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
+import com.monoder.mymanga.entity.dto.MangaInfoDTO;
 import com.monoder.mymanga.entity.po.DicEnumCategory;
 import com.monoder.mymanga.entity.po.MangaInfo;
 import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
+import com.monoder.mymanga.utils.BeanConvertUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +34,12 @@ public class MangaInfoMapperTest{
     }
 
     @Test
-    public void listMangaInfo(){
-        DataTables dataTables = new DataTables();
-        dataTables.setPageSize( 5 );
-        dataTables.setPageNum( 1 );
+    public void getMangaInfoByGuid(){
+        String guid = "F9C15BD586DF10DEE0535858A8C0C20A";
+        MangaInfoVO mangaInfoVO = mangaInfoMapper.getMangaInfoByGuid( guid );
+        System.out.println( mangaInfoVO );
+        MangaInfoDTO mangaInfoDTO = BeanConvertUtils.convertWithNested( mangaInfoVO, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
+        System.out.println( mangaInfoDTO );
 
-        List< MangaInfoVO > mangaInfoList = mangaInfoMapper.listMangaInfo( dataTables );
-        for( MangaInfoVO mangaInfo: mangaInfoList ){
-            System.out.println( mangaInfo);
-        }
     }
 }

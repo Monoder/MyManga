@@ -28,16 +28,9 @@ public class MangaInfoServiceTest{
     }
 
     @Test
-    public void listMangaInfo(){
-
-        DataTables dataTables = new DataTables();
-        dataTables.setPageNum( 1 );
-        dataTables.setPageSize( 2 );
-
-        JsonResult jsonResult = new JsonResult<>( dataTables );
-
-        JsonResult result = iMangaInfoService.listMangaInfo( jsonResult );
-
+    public void getMangaInfoByGuid(){
+        String guid = "F9C15BD586DF10DEE0535858A8C0C20A";
+        System.out.println( iMangaInfoService.getMangaInfoByGuid( guid ) );
     }
 
     @Test
