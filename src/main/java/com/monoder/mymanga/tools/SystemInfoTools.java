@@ -10,7 +10,7 @@ public class SystemInfoTools{
     public static void main ( String[] args ) {
         String gitTime = getGitTime ( );
         System.out.println( "gitTime = " + gitTime );
-        String dataBaseTime = getDataBaseTime();
+        String dataBaseTime = getCurrentTime();
         System.out.println( "dataBaseTime = " + dataBaseTime );
         String user = getUser();
         System.out.println( "user = " + user );
@@ -29,10 +29,10 @@ public class SystemInfoTools{
     }
 
     /**
-     * 数据库时间戳
+     * 时间字符串
      * @return
      */
-    public static String getDataBaseTime( ) {
+    public static String getCurrentTime( ) {
         //设置日期格式
         SimpleDateFormat df = new SimpleDateFormat ( "yyyyMMddHHmmssSSS" );
         // new Date()为获取当前系统时间

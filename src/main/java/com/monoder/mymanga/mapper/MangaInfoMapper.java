@@ -10,6 +10,13 @@ import java.util.List;
 @Mapper
 public interface MangaInfoMapper{
 
+    /**
+     *
+     * @param mangaInfoVO
+     * @return 返回Guid
+     */
+    Integer addMangaInfo( MangaInfoVO mangaInfoVO );
+
     Integer batchAddMangaInfo( List< MangaInfo > mangaInfoList );
 
     List< MangaInfoVO > listMangaInfo( DataTables dataTables );
@@ -17,6 +24,8 @@ public interface MangaInfoMapper{
     List< MangaInfoVO > listMangaInfo();
 
     MangaInfoVO getMangaInfoByGuid( String mangaGuid );
+
+    String getGuidByName( String mangaName );
 
     MangaInfo getWrapperByGuid( String guid );
 

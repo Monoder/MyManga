@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin-MangaImport</title>
+    <link rel="stylesheet" href="../../css/public-frame.css">
+    <script src="../../js/frame/jquery-3.6.0.js"></script>
+    <script src="../../js/public/public-navigation.js"></script>
+    <script src="../../js/public/public-frame.js"></script>
+</head>
+<style>
+    input, select {font-size:12px;}
+    input[id^="manga-name-"] {width:720px;height:50px;padding:0 5px;border-radius:10px;font-size:15px;}
+    textarea {border-radius:10px;resize:none;}
+    div#upload-info {width:1320px;margin:2px auto;padding:3px;text-align:left;}
+    div#upload-info table {margin:0 auto 5px;border-collapse:collapse;text-align:justify;}
+    div#upload-info table td {vertical-align:top;}
+    td.left {width:450px;padding:5px 7px 5px 5px;border-bottom:1px solid #f1f1f1;border-right:1px dashed #f1f1f1;}
+    td.right {width:850px;padding:5px 10px;border-bottom:1px solid #f1f1f1;}
+    .left h1 {margin:3px 0;font-size:18px;font-weight:bold;}
+    .left p {margin:2px 0;font-size:15px;}
+    select#category, select#tag-language {width:400px;margin-top:7px;border-radius:5px;font-size:15px !important;}
+    table#tag-language-type {width:400px;margin:9px auto 0 0 !important;}
+    td#details {width:280px;padding:15px 7px 1px 5px;font-size:15px;text-align:center;border-right:1px dashed #f1f1f1;}
+    td#details table{margin-left:45%;line-height:20px;}
+    td#details tr{height:25px;font-size:18px;}
+    td#details td{max-width:180px;height:100%;padding:10px 0 0 10px;}
+    td#details .value{font-size:12px;color:rgba(230, 230, 230, 1);}
+    td#input-info {padding:10px 5px 0 0;text-align:right;}
+    div#upload-area {clear:both;width:800px;margin:9px auto 3px;padding:3px 3px 2px;text-align:center;}
+    div#upload-area h1 {margin:5px 0;padding:0 0 2px 0;font-size:21px;font-weight:bold;}
+    div#upload-area p {margin:5px auto;font-size:15px;}
+    div[id^="cell_"] {max-width:260px;max-height:430px;overflow:hidden;margin:4px;border-radius:10px;background:#5f636b;cursor:default;word-wrap:break-word;border:1px solid #34353b;}
+    div.content-head {position:relative;height:26px;}
+    div.pages {position:absolute;left:74px;}
+    div.pages span {font-weight:bold;}
+    input[id^="select_page_"], div.pages select {width:60px;margin:3px 1px 0;padding:1px 3px 3px;border-radius:3px;line-height:17px;font-weight:bold;border:1px solid #8d8d8d;}
+    input, select, option, optgroup, textarea {padding:0 5px;color:#f1f1f1;background-color:#34353b;}
+    input:disabled, select:disabled, textarea:disabled {border-color:rgba(118, 118, 118, 0.3);color:rgba(241, 241, 241, 0.8);background-color:rgba(112, 112, 112, 0.8);cursor:default;}
+    ::placeholder {color:rgba(241, 241, 241, 0.8);}
+    div.delete {position:absolute;top:4px;left:192px;width:15px;height:15px;margin:0;padding:0 2px 4px;font-size:14pt;font-weight:bold;color:red;cursor:pointer;}
+    div.delete span {position:relative;top:-5px;left:45px;}
+    div.content-foot {height:40px;margin:auto auto 0 auto;text-align:center;flex-direction:row;justify-content:center;}
+    img.th {max-width:100%;max-height:100%;margin:0 auto;padding:0;border-radius:5px;background:rgba(0, 0, 0, 0.3);border:1px solid #000000;}
+    .content-body {display:flex;max-width:240px;max-height:340px;margin:auto;align-items:center;}
+    div#body-foot {text-align:center;}
+    input#button-name2jp, input#button-name2en {width:90px;height:30px;border-radius:5px;}
+    input#upload-files {padding:5px;border-radius:5px;}
+    input#button-save {width:120px;height:30px;margin:0 0 0 20px;}
+    input#button-publish {width:120px;height:30px;margin:0 0 0 7px;font-weight:bold;}
+    input#button-process {width:120px;height:25px;margin:2px auto 0;}
+    input#button-submit {width:150px;height:30px;margin:5px auto;font-weight:bold;text-align:center;}
+</style>
+<body>
+<div id="base-container">
+    <header id="head-container">
+        <h1 id="base-title">MangaImport</h1>
+        <div id="upload-info">
+            <table>
+                <tr>
+                    <td class="left">
+                        <h1>Manga Title</h1>
+                        <p>漫画的主标题 (英文或罗马音)。</p>
+                    </td>
+                    <td class="right" colspan="2">
+                        <input type="text" id="manga-name-en" name="manga-name-en" value="" size="109" maxlength="255"
+                               class="t" placeholder="漫画的主标题 (英文或罗马音)，上传后自动获取"
+                               oninput="update_tosstate()" disabled/>
+                        <input id="button-name2jp" type="submit" value="↓ 转至原标题 ↓" onclick="trans_name(1)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <h1>Japanese Manga Title</h1>
+                        <p>原始的日文标题 (可选)。</p>
+                    </td>
+                    <td class="right" colspan="2">
+                        <input type="text" id="manga-name-jp" name="manga-name-jp" value="" size="109" maxlength="255"
+                               class="t"
+                               placeholder="原始的日文标题 (可选)" disabled/>
+                        <input id="button-name2en" type="submit" value="↑ 转至主标题 ↑" onclick="trans_name(2)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <h1>Manga Category</h1>
+                        <p>漫画的所属分类。</p>
+                    </td>
+                    <td class="right" colspan="2">
+                        <select id="category" name="category">
+                            <option value="42390000">Doujinshi</option>
+                            <option value="42391111">Manga</option>
+                            <option value="42392222">Artist CG</option>
+                            <option value="42393333">Game CG</option>
+                            <option value="42394444">Western</option>
+                            <option value="42395555">Non-H</option>
+                            <option value="42396666">Image Set</option>
+                            <option value="42397777">Cosplay</option>
+                            <option value="42398888">Misc</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <h1>Manga Language</h1>
+                        <p>
+                            漫画的主要语言。仅新建立且未发布的图库可更改此选项，已发布/已更新的漫画需要通过标签系统更改。</p>
+                    </td>
+                    <td class="right" colspan="2">
+                        <select id="tag-language" name="tag-language">
+                            <optgroup label="Common">
+                                <option value="0" selected="selected">Japanese / Other</option>
+                                <option value="3437">Chinese</option>
+                                <option value="1058">English</option>
+                                <option value="8401">French</option>
+                                <option value="7017">Korean</option>
+                                <option value="7769">Portuguese</option>
+                                <option value="9314">Russian</option>
+                                <option value="6438">Spanish</option>
+                            </optgroup>
+                            <optgroup label="Textless">
+                                <option value="321846">Speechless</option>
+                                <option value="321847">Text Cleaned</option>
+                            </optgroup>
+                            <optgroup label="Others">
+                                <option value="331300">Albanian</option>
+                                <option value="76810">Arabic</option>
+                                <option value="452282">Bulgarian</option>
+                                <option value="156343">Catalan</option>
+                                <option value="420982">Cebuano</option>
+                                <option value="293389">Croatian</option>
+                                <option value="47394">Czech</option>
+                                <option value="17351">Danish</option>
+                                <option value="15466">Dutch</option>
+                                <option value="344972">Esperanto</option>
+                                <option value="29699">Finnish</option>
+                                <option value="11872">German</option>
+                                <option value="51068">Greek</option>
+                                <option value="131030">Hindi</option>
+                                <option value="41679">Hungarian</option>
+                                <option value="10133">Indonesian</option>
+                                <option value="5032">Italian</option>
+                                <option value="468974">Javanese</option>
+                                <option value="363067">Latin</option>
+                                <option value="35957">Norwegian</option>
+                                <option value="394366">Persian</option>
+                                <option value="8300">Polish</option>
+                                <option value="81413">Romanian</option>
+                                <option value="385309">Serbian</option>
+                                <option value="346949">Slovak</option>
+                                <option value="32335">Swedish</option>
+                                <option value="14282">Tagalog</option>
+                                <option value="8519">Thai</option>
+                                <option value="30977">Turkish</option>
+                                <option value="289965">Ukrainian</option>
+                                <option value="12578">Vietnamese</option>
+                            </optgroup>
+                        </select>
+                        </span>
+                        <table id="tag-language-type">
+                            <tr>
+                                <td>
+                                    <label id="language-type_0" class="lr"
+                                           title="This was officially published in this language, or the gallery has no text.">
+                                        <input type="radio" name="language-type" value="0" checked="checked"/>
+                                        <span></span>
+                                        Official / Textless
+                                    </label>
+                                </td>
+                                <td>
+                                    <label id="language-type_1" class="lr"
+                                           title="This is a fan translation based on the original text.">
+                                        <input type="radio" name="language-type" value="1"/>
+                                        <span></span>
+                                        Translated
+                                    </label>
+                                </td>
+                                <td>
+                                    <label id="language-type_2" class="lr"
+                                           title="This is a fan rewrite with new made-up text.">
+                                        <input type="radio" name="language-type" value="2"/>
+                                        <span></span>
+                                        Rewrite
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left">
+                        <h1>Uploader Comment</h1>
+                        <p>关于此图库的任何评论或其他相关信息。</p>
+                    </td>
+                    <td class="right" colspan="2" rowspan="2">
+                            <textarea id="remark" name="remark" cols="100" rows="15"
+                                      placeholder="您可以在此处添加上传者评论。(可选)"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="details" rowspan="2" class="nosel">
+                        <table>
+                            <tr>
+                                <td class="key">添加时间:</td>
+                                <td class="value"></td>
+                            </tr>
+                            <tr>
+                                <td class="key">发布时间:</td>
+                                <td class="value"></td>
+                            </tr>
+                            <tr>
+                                <td class="key">上传文件数:</td>
+                                <td class="value"></td>
+                            </tr>
+                            <tr>
+                                <td class="key">总文件大小:</td>
+                                <td class="value"></td>
+                            </tr>
+                            <tr>
+                                <td class="key">父级图库:</td>
+                                <td class="value"></td>
+                            </tr>
+                        </table>
+                    </td>
+                <tr>
+                    <td id="input-info" style="width:280px">
+                        <input id="button-save" type="submit" value="Save Changes"
+                               onclick="submit_save(); return false"/>
+                        <input id="button-publish" type="submit" value="Publish Gallery"
+                               onclick="/*document.location=*/" ;/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="upload-area">
+            <h1>上传文件</h1>
+            <input type="file" id="upload-files" name="files[]" multiple="multiple" webkitdirectory directory>
+            <p>图像：JPG < 20 MB, PNG < 50 MB, GIF < 10 MB；归档：ZIP。最大分辨率：20000 x 20000。</p>
+            <p>每个图库最多包含 2000 张图像或 最大10 GB。一次上传的大小不应超过 500 MB。</p>
+            <p><input id="button-process" type="submit" onclick="submit_process()" value="开始处理"
+                      title="请先选择文件" disabled/></p>
+            <div id="progress_readout">
+                <p>选择漫画所在文件夹，然后点击“开始上传”，以预览图库。</p>
+            </div>
+        </div>
+    </header>
+    <main id="body-container" style="display: none">
+        <p class="info">您目前总共添加了 <strong></strong> 张图像。</p>
+        <div id="body-wrapper" class="body-grid">
+            <!-- 图片资源 -->
+        </div>
+        <div id="body-foot">
+            <input id="button-submit" type="submit" value="创建图库" onclick="submit()"/>
+        </div>
+    </main>
+</div>
+</body>
+<script>
+    const sel_$wrapperContent = ".wrapper-content";
+    const sel_$contentFoot = ".content-foot";
+
+    const $detailsKey = $("#details .key");
+    const $detailsValue = $("#details .value");
+    const $bodyContainer = $("#body-container");
+    const $category = $("#category");
+    const $remark = $("#remark");
+    const $bodyWrapper = $("#body-wrapper");
+    const $bodyInfo = $(".info strong");
+    const $mangaNameEn = $("#manga-name-en");
+    const $mangaNameJp = $("#manga-name-jp");
+    const $buttonProcess = $("#button-process");
+    const $uploadFiles = $("#upload-files");
+    let $selectPage = $("#select_page_");
+
+    let mangaInfoDTO = newMangaInfoDTO();
+    let mangaDetailDTOList = [];
+    let uploadFiles = [];
+    let objectUrls = [];
+    let size = undefined;
+    let folderName = undefined;
+    let currentTime = undefined;
+
+    function submit_process() {
+        // 清除原ObjectUrl对象内存，清除已有的数据
+        revokeObjectUrls();
+        uploadFiles.length = 0;
+        objectUrls.length = 0;
+        // 获取获取数组对象、ObjectUrl对象
+        uploadFiles = Array.from(document.getElementById("upload-files").files);
+        objectUrls = getObjectUrls(uploadFiles);
+
+        // 完善信息
+        size = uploadFiles.length;  // pageCount
+        folderName = uploadFiles[0].webkitRelativePath.split("/")[0]; // mangaName
+        currentTime = getCurrentTime(); // createTime
+        // 添加漫画标题
+        $mangaNameEn.val(folderName);
+        $mangaNameEn.attr("title", folderName)
+        $bodyInfo.text(size);
+        // 添加详细信息
+        $detailsValue.eq(0).text(formatDateString(currentTime));
+        $detailsValue.eq(2).text(size);
+        // 开始渲染预览图
+        $bodyWrapper.empty();
+        $bodyContainer.show();
+        // 处理每个文件
+        initWrapperContent(size);
+        initWrapperSource(uploadFiles);
+    }
+
+    function submit() {
+        // 清除已有数据
+        mangaDetailDTOList.length = 0;
+        mangaInfoDTO = newMangaInfoDTO();
+        // 添加数据
+        mangaInfoDTO.mangaName = folderName;
+        mangaInfoDTO.pageCount = size;
+        mangaInfoDTO.createTime = currentTime;
+        mangaInfoDTO.updateTime = currentTime;
+        mangaInfoDTO.dicEnumCategoryDTO.dicEnumID = $category.val();
+        mangaInfoDTO.remark = $remark.val();
+        // 遍历 uploadFiles 添加到 mangaDetailDTOList
+        uploadFiles.forEach(function (file) {
+            let mangaDetailDTO = newMangaDetailDTO();
+            mangaDetailDTO.mangaPic = folderName + "\\" + file.name;
+            mangaDetailDTOList.push(mangaDetailDTO);
+        })
+        mangaInfoDTO.mangaDetailDTOList = mangaDetailDTOList;
+
+        // 1. 异步上传封面图片
+        // 2. 上传完成返回图片的保存路径
+        // 3. 拿到路径后开始提交表单
+        handleFileUpload();
+
+        async function handleFileUpload() {
+            try {
+                const file = uploadFiles[0];
+                mangaInfoDTO.wrapper = await uploadFile(file);
+                await submitForm(mangaInfoDTO);
+            } catch (error) {
+                console.error('文件上传失败！' + error);
+            }
+        }
+
+        function uploadFile(file) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append("file", file);
+                $.ajax({
+                    url: '/upload/mangaUpload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        resolve(response); // 文件上传成功，将文件名作为参数 resolve Promise
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        reject(textStatus + ': ' + errorThrown); // 文件上传失败，将错误信息作为参数 reject Promise
+                    }
+                });
+            });
+        }
+
+        function submitForm(mangaInfoDTO) {
+            return $.ajax({
+                type: "POST",
+                url: "/MangaInfo/mangaImport",
+                dataType: "JSON",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(newJsonResult(null, null, mangaInfoDTO)),
+                success: (response) => {
+                    console.log(response);
+                },
+                error: (xhr, textStatus, errorThrown) => {
+                    console.error('表单提交失败！' + textStatus + ': ' + errorThrown);
+                }
+            });
+        }
+
+    }
+
+
+
+
+
+    function initWrapperContent(size) {
+        for (let index = 0; index < size; index++) {
+            $bodyWrapper.append(`
+            <div id="cell_${index}" class="wrapper-content">
+                <div class="content-head">
+                    <div class="pages" onmouseover="show_page(${index})">
+                                <span id="span_page_${index}">
+                                    Page <input id="select_page_${index}" name="select_page_${index}" type="text" value="${index + 1}" readonly="readonly">
+                                </span>
+                    </div>
+                    <div class="delete" onclick="delete_page(${index})">
+                        <span>x</span>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <img id="thumb_0" class="th" alt="" title="" src="" draggable="true">
+                </div>
+                <div class="content-foot"></div>
+            </div>
+                    `);
+        }
+    }
+
+    function initWrapperSource(uploadFiles) {
+        let $WrapperContent = $bodyWrapper.find(sel_$wrapperContent);
+        let size = uploadFiles.length;
+        for (let index = 0; index < size; index++) {
+            let $img = $WrapperContent.eq(index).find("img");
+            let fileName = uploadFiles[index].name;
+            let fileSrc = objectUrls[index];
+            $img.attr("src", fileSrc).attr("alt", fileName).attr("title", fileName);
+            $WrapperContent.eq(index).find(sel_$contentFoot).text(fileName);
+        }
+    }
+
+    function show_page(fileIndex) {
+        size = uploadFiles.length;
+        $selectPage = $(`#select_page_${fileIndex}`);
+        if ($selectPage.next("select").length > 0) {
+            return; // 已经存在select元素，不再创建
+        }
+        let selectElem = $("<select></select>");
+        for (let index = 1; index <= size; index++) {
+            let option = $("<option></option>").attr("value", index).text(index);
+            selectElem.append(option);
+        }
+        selectElem.val(fileIndex + 1);
+        $selectPage.hide().after(selectElem);
+    }
+
+    function hide_page(fileIndex) {
+        let $WrapperContent = $bodyWrapper.find(sel_$wrapperContent);
+        let $selectPage = $WrapperContent.find(`#select_page_${fileIndex}`);
+        let $inputPage = $('[id^="select_page_"]');
+        if (fileIndex !== null) {
+            $WrapperContent.find("select").not($selectPage).remove();
+            $inputPage.show();
+        }
+        $WrapperContent.find("select").remove();
+        $inputPage.show();
+    }
+
+    function delete_page(fileIndex) {
+        let $WrapperContent = $bodyWrapper.find(sel_$wrapperContent);
+        uploadFiles.splice(fileIndex, 1);
+        objectUrls.splice(fileIndex, 1);
+        $WrapperContent.eq(uploadFiles.length).remove();
+        initWrapperSource(uploadFiles);
+    }
+
+    function trans_name(num) {
+        let enName = $mangaNameEn.val();
+        let jpName = $mangaNameJp.val();
+
+        if ((num === 1 && enName === "") || (num === 2 && jpName === "")) {
+            const message = num === 1 ? "英文标题为空，是否仍旧转换？" : "原始日文标题为空，是否仍旧转换？";
+            if (!confirm(message)) {
+                return;
+            }
+        }
+        if (num === 1) {
+            $mangaNameEn.val("").removeAttr("title");
+            $mangaNameJp.val(enName).attr("title", enName);
+        } else if (num === 2) {
+            $mangaNameJp.val("").removeAttr("title");
+            $mangaNameEn.val(jpName).attr("title", jpName);
+        }
+    }
+
+    function getObjectUrls(uploadFiles) {
+        uploadFiles.forEach(function (file) {
+            objectUrls.push(URL.createObjectURL(file));
+        });
+        return objectUrls;
+    }
+
+    function revokeObjectUrls() {
+        objectUrls.forEach(function (objectUrl) {
+            URL.revokeObjectURL(objectUrl);
+        });
+    }
+
+    // 监听是否选择文件夹上传
+    $uploadFiles.on("change", function () {
+        uploadFiles.length = 0;
+        objectUrls.length = 0;
+        if ($(this).val() === "") {
+            $buttonProcess.prop("disabled", true); // 没有选择文件夹，添加 disabled 属性
+        } else {
+            $buttonProcess.prop("disabled", false); // 有选择文件夹，移除 disabled 属性
+            $buttonProcess.removeAttr("title");
+        }
+    });
+    // 监听下拉框选择，改变顺序
+    $bodyWrapper.on("change", "select", function () {
+        let targetIndex = $(this).val() - 1; // 获取当前选中的值
+        let originIndex = $(this).prev('input').val() - 1; // 获取原本的值
+        let originFile = uploadFiles[originIndex];
+        uploadFiles.splice(originIndex, 1);
+        uploadFiles.splice(targetIndex, 0, originFile);
+        let originObject = objectUrls[originIndex]
+        URL.revokeObjectURL(originObject);
+        objectUrls.splice(originIndex, 1);
+        objectUrls.splice(targetIndex, 0, originObject);
+        hide_page();
+        initWrapperSource(uploadFiles);
+    });
+
+</script>
+</html>

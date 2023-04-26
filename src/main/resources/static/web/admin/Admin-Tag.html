@@ -7,85 +7,73 @@
     <link rel="stylesheet" href="../../css/public-frame.css">
     <link rel="stylesheet" href="../../css/dataTables/datatables.css">
     <link rel="stylesheet" href="../../css/dataTables/jquery.dataTables.css">
-
     <script src="../../js/frame/jquery-3.6.0.js"></script>
     <script src="../../js/public/public-frame.js"></script>
+    <script src="../../js/public/public-navigation.js"></script>
     <script src="../../js/dataTables/jquery.dataTables.min.js"></script>
     <script src="../../js/dataTables/datatables.min.js"></script>
     <script src="../../js/dataTables/dataTables.editor.min.js"></script>
+    <style>
+        table.dataTable tbody tr {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
 
+        .dataTables_scrollBody {
+            height: 700px;
+        }
+
+        div.dataTables_wrapper {
+            padding: 5px 0 0 0;
+        }
+    </style>
 </head>
-<style>
-    table.dataTable tbody tr {
-        background-color: rgba(255, 255, 255, 0.5);
-    }
-
-    .dataTables_scrollBody {
-        height: 700px;
-    }
-
-    div.dataTables_wrapper {
-        padding: 5px 0 0 0;
-    }
-</style>
 <body>
-<!-- Navigation-->
-
-<!-- Body -->
-<div class="page_content" style="max-width:1370px">
-    <!-- BodyHeader -->
-    <h1 class="head_title">Monoder - Just For Fun</h1>
-    <div id="head_wrapper">
-        <div class="head_form_wrapper">
+<div id="base-container">
+    <header id="head-container">
+        <h1 id="base-title">Tag</h1>
+    </header>
+    <main id="body-container">
+        <div id="manga-wrapper">
+            <table id="jq-table" class="table table-striped table-over table-bordered" style="white-space: nowrap;width:100%;cursor:pointer" cellspacing="0">
+                <colgroup>
+                    <col style="width:3%;">
+                    <col style="width:8%;">
+                    <col style="width:16%;">
+                    <col style="width:17%;">
+                    <col style="width:10%;">
+                    <col style="width:6%;">
+                    <col style="width:10%;">
+                    <col style="width:15%;">
+                    <col style="width:15%;">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>
+                        <input id="select_All" data-flag="0" type="checkbox" name="select_all"
+                               class="checkbox-custom checkbox-default" width="5%">
+                    </th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Trans Name</th>
+                    <th>Remark</th>
+                    <th>Liked</th>
+                    <th>Category</th>
+                    <th>Update Time</th>
+                    <th>Create Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
-    </div>
-
-    <!-- BodyContent -->
-    <!-- 从后端获取数据 ajax 加入该类中 -->
-    <div id="manga-wrapper">
-        <table id="jq-table" class="table table-striped table-over table-bordered"
-               style="white-space: nowrap;width:100%;cursor:pointer" cellspacing="0">
-            <colgroup>
-                <col style="width:3%;">
-                <col style="width:8%;">
-                <col style="width:16%;">
-                <col style="width:17%;">
-                <col style="width:10%;">
-                <col style="width:6%;">
-                <col style="width:10%;">
-                <col style="width:15%;">
-                <col style="width:15%;">
-            </colgroup>
-            <thead>
-            <tr>
-                <th>
-                    <input id="select_All" data-flag="0" type="checkbox" name="select_all"
-                           class="checkbox-custom checkbox-default" width="5%">
-                </th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Trans Name</th>
-                <th>Remark</th>
-                <th>Liked</th>
-                <th>Category</th>
-                <th>Update Time</th>
-                <th>Create Time</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
-
+    </main>
 </div>
 </body>
-<script src="../../js/public/public-navigation.js"></script>
 <script>
     let dicEnumCategoryDTO = {dicEnumID: null, guid: null, dicEnumName: null, transName: null};
     let dataList = {guid: null, id: null, name: null, transName: null, remark: null, isLiked: null, isDeleted: null, dicEnumCategoryDTO: {dicEnumID: null, guid: null, dicEnumName: null, transName: null}, updateTime: null, createTime: null, creator: null};
     let datatables = {draw: null, start: null, length: null, pageNum: null, pageSize: null, order: null};
-    let tagDetail = {guid: null, name: null, transName: null, remark: null, isLiked: null, dicEnumCategoryDTO: {dicEnumID: null, guid: null, dicEnumName: null, transName: null}}
+    let tagDetail = {guid: null, name: null, transName: null, remark: null, isLiked: null, dicEnumCategoryDTO: dicEnumCategoryDTO }
 
     $(document).ready(function () {
         let dataTableEditor = new $.fn.dataTable.Editor({

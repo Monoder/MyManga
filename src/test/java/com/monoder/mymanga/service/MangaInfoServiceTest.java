@@ -1,8 +1,6 @@
 package com.monoder.mymanga.service;
 
 import com.monoder.mymanga.entity.po.MangaInfo;
-import com.monoder.mymanga.entity.vo.DataTables;
-import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.utils.MangaWrapperUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;

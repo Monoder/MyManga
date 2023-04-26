@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>ExHentai.org</title>
+    <link rel="stylesheet" type="text/css" href="https://exhentai.org/z/0348/x.css"/>
+    <style>
+        body {
+            font-size: 9pt
+        }
+
+        a {
+            text-decoration: none
+        }
+
+        h2 {
+            font-weight: bold;
+            font-size: 10pt;
+            margin: 1px auto;
+            padding: 0 0 2px
+        }
+
+        div#ui {
+            width: 1230px;
+            margin: 10px auto 10px auto;
+            clear: both
+        }
+
+        div#t {
+            text-align: center;
+            position: relative
+        }
+
+        div#t img {
+            cursor: pointer
+        }
+
+        div#u {
+            margin: 9px auto 6px;
+            padding: 3px 3px 2px;
+            width: 800px;
+            clear: both;
+            text-align: center
+        }
+
+        div#u h2 {
+            margin-top: 5px
+        }
+
+        div#r {
+            clear: both;
+            margin: 10px auto 3px
+        }
+
+        div#m {
+            width: 1110px;
+            margin: 5px auto;
+            text-align: left;
+            padding: 5px
+        }
+
+        div#m form {
+            padding: 0;
+            margin: 0
+        }
+
+        div#m table {
+            text-align: justify;
+            margin: 0 auto 5px;
+            border-collapse: collapse
+        }
+
+
+        div#m table td {
+            vertical-align: top
+        }
+
+        div#m textarea {
+            width: 780px;
+            height: 300px;
+            margin: 3px auto;
+            font-size: 9pt
+        }
+
+        td.l {
+            width: 280px;
+            border-bottom: 1px solid #f1f1f1;
+            border-right: 1px dashed #f1f1f1;
+            padding: 5px 7px 5px 5px
+        }
+
+        td.l p {
+            font-size: 9pt;
+            font-weight: bold;
+            margin-bottom: 6px
+        }
+
+        td.r {
+            border-bottom: 1px solid #f1f1f1;
+            padding: 5px 10px
+        }
+
+        td#d {
+            width: 280px;
+            font-size: 9pt;
+            text-align: center;
+            border-right: 1px dashed #f1f1f1;
+            padding: 7px 7px 1px 5px
+        }
+
+        td#d h2 {
+            padding-bottom: 4px
+        }
+
+        td#s {
+            padding: 5px;
+            text-align: center
+        }
+
+        td#s a {
+            text-decoration: underline
+        }
+
+        td#s div {
+            width: 310px;
+            margin: 6px auto 0;
+            font-weight: bold
+        }
+
+        td#i {
+            text-align: right;
+            padding: 10px 5px 0 0
+        }
+
+        td.k {
+            text-align: right;
+            padding: 6px 4px 2px
+        }
+
+        td.v {
+            text-align: left;
+            padding: 6px 4px 2px;
+            font-weight: bold
+        }
+
+        td.content-foot {
+            text-align: center;
+            padding: 14px 4px 3px
+        }
+
+        td.content-foot a {
+            font-weight: bold
+        }
+
+        td.content-foot span {
+            cursor: pointer
+        }
+
+        td.d {
+            color: #aaaaaa
+        }
+
+        input#publishbutton {
+            height: 30px;
+            width: 120px;
+            margin: 0 0 0 7px;
+            font-weight: bold
+        }
+
+        input#publishbottom {
+            height: 30px;
+            width: 150px;
+            margin: 5px auto;
+            font-weight: bold
+        }
+
+        input#savebutton {
+            height: 30px;
+            width: 120px;
+            margin: 0 0 0 20px
+        }
+
+        input#uploadbutton {
+            height: 25px;
+            width: 120px;
+            margin: 2px auto 0
+        }
+
+        input#uploadfiles {
+            padding: 5px;
+            border-radius: 5px
+        }
+
+        input#unlockbutton {
+            height: 25px
+        }
+
+        input.t {
+            margin-top: 10px;
+            width: 780px
+        }
+
+        div[id^="cell_"] {
+            position: absolute;
+            width: 215px;
+            height: 355px;
+            margin: 4px;
+            word-wrap: break-word;
+            overflow: hidden;
+            cursor: default;
+            border-radius: 9px;
+            background: #5f636b;
+            border: 1px solid #34353b
+        }
+
+        div.content-head {
+            position: relative;
+            height: 26px
+        }
+
+        div.p {
+            position: absolute;
+            left: 64px
+        }
+
+        div.p span {
+            font-weight: bold
+        }
+
+        div.p select {
+            width: 60px;
+            font-weight: bold
+        }
+
+        div.content-foot {
+            width: 210px;
+            height: 14px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding: 4px 3px 3px
+        }
+
+        div.x {
+            position: absolute;
+            left: 192px;
+            top: 4px;
+            width: 15px;
+            height: 15px;
+            margin: 0;
+            padding: 0 2px 4px;
+            font-weight: bold;
+            font-size: 14pt;
+            color: red;
+            cursor: pointer
+        }
+
+        div.x span {
+            position: relative;
+            top: -4px
+        }
+
+        div#progress_readout {
+            padding: 0;
+            margin: 0 auto
+        }
+
+        div#e {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px
+        }
+
+        p.e {
+            color: red;
+            font-weight: bold
+        }
+
+        input[id^="pagesel_"] {
+            width: 51px;
+            height: 16px;
+            padding: 2px 0 3px 7px;
+            font-weight: bold
+        }
+
+        input {
+            font-size: 9pt !important
+        }
+
+        select {
+            font-size: 10pt !important
+        }
+
+        select#category, select#langtag {
+            font-size: 11pt !important;
+            width: 320px;
+            margin-top: 7px
+        }
+
+        table#tlangtype {
+            width: 320px;
+            margin: 9px auto 0 0 !important
+        }
+
+        div#autosort {
+            width: 900px;
+            margin: auto
+        }
+
+        div#autosort select {
+            font-size: 11pt !important
+        }
+
+        div#autosort div {
+            padding: 5px 0 10px
+        }
+
+        hr {
+            background: #34353b;
+            height: 1px;
+            border: none
+        }
+
+        div#imageview_outer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer
+        }
+
+        div#imageview_inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            min-width: 500px;
+            min-height: 500px;
+            background: rgba(0, 0, 0, 0.6);
+            cursor: pointer
+        }
+
+        div#imageview_inner > img {
+            margin: auto;
+            padding: 10px;
+            max-width: 1280px;
+            max-height: 95vh
+        }
+
+        #imagewait {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%)
+        }
+
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    function popUp(URL, w, h) {
+        window.open(URL, "_pu" + (Math.random() + "").replace(/0\./, ""), "toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=" + w + ",height=" + h + ",left=" + ((screen.width - w) / 2) + ",top=" + ((screen.height - h) / 2));
+        return false;
+    }
+</script>
+
+<div id="ui">
+    <form id="uploadform" action="https://exhentai.org/upld/managegallery?ulgid=629380" method="post"
+          enctype="multipart/form-data">
+        <input type="hidden" name="MAX_FILE_SIZE" value="1258291200"/>
+        <input type="hidden" name="PHP_SESSION_UPLOAD_PROGRESS" id="progresskey" value="arwbbrzdwv"/>
+        <input type="hidden" name="do_save" value="1"/>
+        <h2>test</h2>
+        <div id="m" class="stuffbox">
+            <table>
+                <tr>
+                    <td class="l">
+                        <p>Manga Title</p>
+                        漫画的主标题 (英文或罗马音)。
+                    </td>
+                    <td class="r" colspan="2">
+                        <input type="text" id="gname_en" name="gname_en" value="test" size="109" maxlength="255"
+                               class="t" placeholder="漫画的主标题 (英文或罗马音)" oninput="update_tosstate()"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="l">
+                        <p>Japanese Manga Title</p>
+                        原始的日文标题 (可选)。
+                    </td>
+                    <td class="r" colspan="2">
+                        <input type="text" id="gname_jp" name="gname_jp" value="" size="109" maxlength="255" class="t"
+                               placeholder="原始的日文标题 (可选)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="l">
+                        <p>Manga Category</p>
+                        漫画的所属分类。
+                    </td>
+                    <td class="r" colspan="2">
+                        <select id="category" name="category">
+                            <option value="2" selected="selected">Doujinshi</option>
+                            <option value="3">Manga</option>
+                            <option value="4">Artist CG</option>
+                            <option value="5">Game CG</option>
+                            <option value="10">Western</option>
+                            <option value="9">Non-H</option>
+                            <option value="6">Image Set</option>
+                            <option value="7">Cosplay</option>
+                            <option value="1">Misc</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="l">
+                        <p>Manga Language</p>
+                        漫画的主要语言。仅新建立且未发布的图库可更改此选项，已发布/已更新的漫画需要通过标签系统更改。
+                    </td>
+                    <td class="r" colspan="2">
+                        <select id="langtag" name="langtag">
+                            <optgroup label="Common">
+                                <option value="0" selected="selected">Japanese / Other</option>
+                                <option value="3437">Chinese</option>
+                                <option value="1058">English</option>
+                                <option value="8401">French</option>
+                                <option value="7017">Korean</option>
+                                <option value="7769">Portuguese</option>
+                                <option value="9314">Russian</option>
+                                <option value="6438">Spanish</option>
+                            </optgroup>
+                            <optgroup label="Textless">
+                                <option value="321846">Speechless</option>
+                                <option value="321847">Text Cleaned</option>
+                            </optgroup>
+                            <optgroup label="Others">
+                                <option value="331300">Albanian</option>
+                                <option value="76810">Arabic</option>
+                                <option value="452282">Bulgarian</option>
+                                <option value="156343">Catalan</option>
+                                <option value="420982">Cebuano</option>
+                                <option value="293389">Croatian</option>
+                                <option value="47394">Czech</option>
+                                <option value="17351">Danish</option>
+                                <option value="15466">Dutch</option>
+                                <option value="344972">Esperanto</option>
+                                <option value="29699">Finnish</option>
+                                <option value="11872">German</option>
+                                <option value="51068">Greek</option>
+                                <option value="131030">Hindi</option>
+                                <option value="41679">Hungarian</option>
+                                <option value="10133">Indonesian</option>
+                                <option value="5032">Italian</option>
+                                <option value="468974">Javanese</option>
+                                <option value="363067">Latin</option>
+                                <option value="35957">Norwegian</option>
+                                <option value="394366">Persian</option>
+                                <option value="8300">Polish</option>
+                                <option value="81413">Romanian</option>
+                                <option value="385309">Serbian</option>
+                                <option value="346949">Slovak</option>
+                                <option value="32335">Swedish</option>
+                                <option value="14282">Tagalog</option>
+                                <option value="8519">Thai</option>
+                                <option value="30977">Turkish</option>
+                                <option value="289965">Ukrainian</option>
+                                <option value="12578">Vietnamese</option>
+                            </optgroup>
+                        </select>
+                        </span>
+                        <table id="tlangtype">
+                            <tr>
+                                <td>
+                                    <label id="langtype_0" class="lr"
+                                           title="This was officially published in this language, or the gallery has no text.">
+                                        <input type="radio" name="langtype" value="0" checked="checked"/>
+                                        <span></span>
+                                        Official / Textless
+                                    </label>
+                                </td>
+                                <td>
+                                    <label id="langtype_1" class="lr"
+                                           title="This is a fan translation based on the original text.">
+                                        <input type="radio" name="langtype" value="1"/>
+                                        <span></span>
+                                        Translated
+                                    </label>
+                                </td>
+                                <td>
+                                    <label id="langtype_2" class="lr"
+                                           title="This is a fan rewrite with new made-up text.">
+                                        <input type="radio" name="langtype" value="2"/>
+                                        <span></span>
+                                        Rewrite
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="l">
+                        <p>Uploader Comment</p>
+                        关于此图库的任何评论或其他相关信息。
+                    </td>
+                    <td class="r" colspan="2" rowspan="2">
+                        <textarea id="ulcomment" name="ulcomment" cols="109" rows="18"
+                                  placeholder="You can write an optional uploader comment here."></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="d" rowspan="2" class="nosel">
+                        <table>
+                            <tr>
+                                <td class="k">添加时间:</td>
+                                <td class="v"></td>
+                            </tr>
+                            <tr>
+                                <td class="k">发布时间:</td>
+                                <td class="v"></td>
+                            </tr>
+                            <tr>
+                                <td class="k">上传文件数:</td>
+                                <td class="v"></td>
+                            </tr>
+                            <tr>
+                                <td class="k">总文件大小:</td>
+                                <td class="v"></td>
+                            </tr>
+                            <tr>
+                                <td class="k">父级图库:</td>
+                                <td class="v"></td>
+                            </tr>
+                        </table>
+                    </td>
+                <tr>
+
+                    <td id="i" style="width:280px">
+                        <input id="savebutton" type="submit" value="Save Changes"
+                               onclick="submit_save(); return false"/>
+                        <input id="publishbutton" type="submit" value="Publish Gallery"
+                               onclick="document.location='https://exhentai.org/upld/managegallery?ulgid=629380&amp;act=publish&amp;from=gallery'; return false"/>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div id="u">
+            <h1>Upload Files</h1>
+            <p>
+                <input type="file" id="uploadfiles" name="files[]" multiple="multiple"/>
+            </p>
+            <p>图像：JPG < 20 MB, PNG < 50 MB, GIF < 10 MB；归档：ZIP。最大分辨率：20000 x 20000。</p>
+            <p>每个图库最多包含 2000 张图像或 10 GB。一次上传的大小不应超过 500 MB，如果连接速度较慢，可以尝试以更小归档上传。</p>
+
+                <input id="uploadbutton" type="submit" onclick="submit_upload(); return false" value="开始上传"/>
+
+            <div id="progress_readout">
+                <p>选择一个或多个图像或归档文件，然后点击“开始上传”，以添加文件到此图库。</p>
+                <p>您目前总共添加了 <strong>18</strong> 张图像。</p>
+            </div>
+        </div>
+    </form>
+
+    <form id="reorderform" action="https://exhentai.org/upld/managegallery?ulgid=629380#reorder" method="post">
+        <input type="hidden" id="do_reorder" name="do_reorder" value=""/>
+        <div>
+            <div class="stuffbox" style="width:1110px; margin:6px auto; text-align:center; padding:5px">
+                <div id="t" style="height:360px">
+                    <div id="cell_1" class="nosel" style="left:0px; top:0px; height:200px">
+                        <div onmousedown="show_dropbox(1)" onfocus="show_dropbox(1)">
+                            <div class="content-head">
+                                <div class="p" onmouseover="show_dropbox(1)">
+                                <span id="inspan_1">
+                                    Page <input id="pagesel_1" name="pagesel_1" type="text" value="1"
+                                                readonly="readonly"/>
+                                </span>
+                                </div>
+                                <div class="x"
+                                     onclick="if(!submitted) { current_dropbox.onchange=''; delete_current=true; hide_dropbox(); } return false">
+                                    <span>x</span>
+                                </div>
+                            </div>
+                            <div class="content-foot">000.jpg</div>
+                            <img id="thumb_1" class="th" alt="000.jpg" title="000.jpg"
+                                 src="https://exhentai.org/t/29/49/2949b8385bd87562ed1fc7d9786c660dc6e995d4-465599-5650-4093-jpg_l.jpg"
+                                 onclick="view_image_init(629380,1,123278611)" draggable="true" ondrop="drop(event)"
+                                 ondragover="dragOver(event)" ondragenter="dragEnter(event)"
+                                 ondragleave="dragLeave(event)"/>
+                        </div>
+                    </div>
+                    <div id="cell_2" class="nosel" style="left:222px; top:0px; height:200px">
+                        <div onmousedown="show_dropbox(2)" onfocus="show_dropbox(2)">
+                            <div class="content-head">
+                                <div class="p" onmouseover="show_dropbox(2)">
+                                <span id="inspan_2">
+                                    Page <input id="pagesel_2" name="pagesel_2" type="text" value="2"
+                                                readonly="readonly"/>
+                                </span>
+                                </div>
+                                <div class="x"
+                                     onclick="if(!submitted) { current_dropbox.onchange=''; delete_current=true; hide_dropbox(); } return false">
+                                    <span>x</span>
+                                </div>
+                            </div>
+                            <div class="content-foot">001.jpg</div>
+                            <img id="thumb_2" class="th" alt="001.jpg" title="001.jpg"
+                                 src="https://exhentai.org/t/5b/56/5b569d48c3146feeb5d197ef9e95dc6d70a56d46-6245785-5650-4093-jpg_l.jpg"
+                                 onclick="view_image_init(629380,2,56029200)" draggable="true" ondrop="drop(event)"
+                                 ondragover="dragOver(event)" ondragenter="dragEnter(event)"
+                                 ondragleave="dragLeave(event)"/>
+                        </div>
+                    </div>
+                    <div id="cell_3" class="nosel" style="left:444px; top:0px; height:329px">
+                        <div onmousedown="show_dropbox(3)" onfocus="show_dropbox(3)">
+                            <div class="content-head">
+                                <div class="p" onmouseover="show_dropbox(3)">
+                                <span id="inspan_3">
+                                    Page <input id="pagesel_3" name="pagesel_3" type="text" value="3"
+                                                readonly="readonly"/>
+                                </span>
+                                </div>
+                                <div class="x"
+                                     onclick="if(!submitted) { current_dropbox.onchange=''; delete_current=true; hide_dropbox(); } return false">
+                                    <span>x</span>
+                                </div>
+                            </div>
+                            <div class="content-foot">002.jpg</div>
+                            <img id="thumb_3" class="th" alt="002.jpg" title="002.jpg"
+                                 src="https://exhentai.org/t/e5/e8/e5e87a9373273d397550c5e627f4cbb4f640e0aa-2124196-2645-3615-jpg_l.jpg"
+                                 onclick="view_image_init(629380,3,123278612)" draggable="true" ondrop="drop(event)"
+                                 ondragover="dragOver(event)" ondragenter="dragEnter(event)"
+                                 ondragleave="dragLeave(event)"/>
+                        </div>
+                    </div>
+                    <div id="cell_4" class="nosel" style="left:666px; top:0px; height:329px">
+                        <div onmousedown="show_dropbox(4)" onfocus="show_dropbox(4)">
+                            <div class="content-head">
+                                <div class="p" onmouseover="show_dropbox(4)">
+                                <span id="inspan_4">
+                                    Page <input id="pagesel_4" name="pagesel_4" type="text" value="4"
+                                                readonly="readonly"/>
+                                </span>
+                                </div>
+                                <div class="x"
+                                     onclick="if(!submitted) { current_dropbox.onchange=''; delete_current=true; hide_dropbox(); } return false">
+                                    <span>x</span>
+                                </div>
+                            </div>
+                            <div class="content-foot">003.jpg</div>
+                            <img id="thumb_4" class="th" alt="003.jpg" title="003.jpg"
+                                 src="https://exhentai.org/t/a9/01/a901371e7538b8c23deede807b2034bb357bdf6a-1897883-2645-3615-jpg_l.jpg"
+                                 onclick="view_image_init(629380,4,123278613)" draggable="true" ondrop="drop(event)"
+                                 ondragover="dragOver(event)" ondragenter="dragEnter(event)"
+                                 ondragleave="dragLeave(event)"/>
+                        </div>
+                    </div>
+                    <div id="cell_5" class="nosel" style="left:888px; top:0px; height:329px">
+                        <div onmousedown="show_dropbox(5)" onfocus="show_dropbox(5)">
+                            <div class="content-head">
+                                <div class="p" onmouseover="show_dropbox(5)">
+                                <span id="inspan_5">
+                                    Page <input id="pagesel_5" name="pagesel_5" type="text" value="5"
+                                                readonly="readonly"/>
+                                </span>
+                                </div>
+                                <div class="x"
+                                     onclick="if(!submitted) { current_dropbox.onchange=''; delete_current=true; hide_dropbox(); } return false">
+                                    <span>x</span>
+                                </div>
+                            </div>
+                            <div class="content-foot">004.jpg</div>
+                            <img id="thumb_5" class="th" alt="004.jpg" title="004.jpg"
+                                 src="https://exhentai.org/t/5b/bc/5bbc3d853ede64df2ae2b18bebcef5462c262dba-2537505-2645-3615-jpg_l.jpg"
+                                 onclick="view_image_init(629380,5,123278614)" draggable="true" ondrop="drop(event)"
+                                 ondragover="dragOver(event)" ondragenter="dragEnter(event)"
+                                 ondragleave="dragLeave(event)"/>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+                <div id="r">
+                    <input type="submit" id="reorder_revert" value="Revert Changes"
+                           onclick="submit_reorder(''); return false"/>
+                    <input type="submit" id="reorder_manual" value="Apply Changes"
+                           onclick="submit_reorder('manual'); return false"/>
+                </div>
+                <p>
+                    <input id="publishbottom" type="submit" value="创建图库"
+                           onclick="document.location='https://exhentai.org/upld/managegallery?ulgid=629380&amp;act=publish&amp;from=gallery'; return false"/>
+                </p>
+                <hr/>
+                <div id="autosort">
+                    <h2>Automatic Resorting</h2>
+                    <div>
+                        <select name="autosort" id="reorder_select">
+                            <option value="" selected="selected">Select a sorting method...</option>
+                            <option value="dedupe">Remove Exact Duplicates</option>
+                            <option value="natural">Natural Sort</option>
+                            <option value="lexical">Lexical Sort</option>
+                        </select>
+                        <input type="submit" id="reorder_auto" value="Perform Auto-Sort"
+                               onclick="submit_reorder('auto'); return false"/>
+                    </div>
+                    <p>自然排序将按数字递增顺序 (8, 9, 10, 11, 12) 排序此图库中的图像。这是推荐的自动排序方式。</p>
+                    <p>字典排序将按字典顺序 (1, 10, 11, 12, 2) 排序此图库中的图像。若数字不包含前导 0，使用此方式会导致错误。</p>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div id="imageview_outer" style="display:none" onclick="view_image_close()">
+        <div id="imageview_inner"></div>
+    </div>
+    <script type="text/javascript">
+        var base_url = "https://exhentai.org/upld/";
+        var img_url = "https://exhentai.org/img/x";
+        var apiuid = 6167611;
+        var apikey = "d046f2bdf102c07a5ba2";
+        var pages = 18;
+        var can_publish = true;
+
+        window.addEventListener("DOMContentLoaded", function () {
+            recompute_divpos_all();
+            update_tosstate();
+        }, true);
+    </script>
+    <script type="text/javascript" src="https://exhentai.org/upld/js/managegallery.0351.js"></script>
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.monoder.mymanga.controller;
 
+import com.monoder.mymanga.entity.dto.MangaInfoDTO;
 import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.service.IMangaInfoService;
 import com.monoder.mymanga.service.exception.SelectException;
@@ -18,6 +19,12 @@ public class MangaInfoController{
 
     @Autowired
     private IMangaInfoService iMangaInfoService;
+
+    @PostMapping( "mangaImport" )
+    public ResponseEntity addMangaInfo( @RequestBody JsonResult< MangaInfoDTO > mangaInfoDTOJsonResult ){
+        iMangaInfoService.addMangaInfo( mangaInfoDTOJsonResult );
+        return null;
+    }
 
     @PostMapping( "listMangaInfo" )
     public ResponseEntity listMangaInfo( @RequestBody JsonResult< Object > requestJsonRequest ){
@@ -54,5 +61,7 @@ public class MangaInfoController{
         headers.setContentType( MediaType.APPLICATION_JSON );
         return null;
     }
+
+
 
 }

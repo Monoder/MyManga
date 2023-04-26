@@ -1,7 +1,6 @@
 package com.monoder.mymanga.service.impl;
 
 import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
-import com.monoder.mymanga.entity.po.DicEnumCategory;
 import com.monoder.mymanga.mapper.DicEnumCategoryMapper;
 import com.monoder.mymanga.service.IDicEnumCategoryService;
 import org.slf4j.Logger;

@@ -32,7 +32,7 @@ public class JsonResult< E > implements Serializable{
     /**
      * 响应中的数据
      */
-    private Object data;
+    private E data;
 
     public JsonResult(){
         this.dataTables = new DataTables();
@@ -44,7 +44,7 @@ public class JsonResult< E > implements Serializable{
         this.rows = rows;
     }
 
-    public JsonResult( Object data ){
+    public JsonResult( E data ){
         this.data = data;
     }
 

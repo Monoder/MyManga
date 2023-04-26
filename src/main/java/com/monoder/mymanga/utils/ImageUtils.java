@@ -9,9 +9,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 
 public class ImageUtils{
@@ -91,39 +89,39 @@ public class ImageUtils{
         return compressedData;
     }
 
-    public static byte[] compressImageBySize(byte[] imageData, ImageFormat format, long maxSize) throws IOException {
+    public static byte[] compressImageBySize( byte[] imageData, ImageFormat format, long maxSize ) throws IOException{
         // 读取原始图片
-        ByteArrayInputStream input = new ByteArrayInputStream(imageData);
-        BufferedImage originalImage = ImageIO.read(input);
+        ByteArrayInputStream input = new ByteArrayInputStream( imageData );
+        BufferedImage originalImage = ImageIO.read( input );
 
         // 计算原始图片大小
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        ImageIO.write(originalImage, format.getFormatName(), output);
+        ImageIO.write( originalImage, format.getFormatName(), output );
         long originalSize = output.toByteArray().length;
 
         // 如果原始图片大小小于目标大小，则不进行压缩
-        if (originalSize <= maxSize) {
+        if( originalSize <= maxSize ){
             return imageData;
         }
 
         // 计算压缩比例
-        double ratio = Math.sqrt((double) maxSize / originalSize);
+        double ratio = Math.sqrt( ( double ) maxSize / originalSize );
 
         // 计算压缩后的尺寸
-        int compressedWidth = (int) Math.round(originalImage.getWidth() * ratio);
-        int compressedHeight = (int) Math.round(originalImage.getHeight() * ratio);
+        int compressedWidth = ( int ) Math.round( originalImage.getWidth() * ratio );
+        int compressedHeight = ( int ) Math.round( originalImage.getHeight() * ratio );
 
         // 创建缩放后的图片
-        BufferedImage compressedImage = new BufferedImage(compressedWidth, compressedHeight, BufferedImage.TYPE_INT_RGB);
+        BufferedImage compressedImage = new BufferedImage( compressedWidth, compressedHeight, BufferedImage.TYPE_INT_RGB );
         Graphics2D graphics = compressedImage.createGraphics();
-        graphics.drawImage(originalImage, 0, 0, compressedWidth, compressedHeight, null);
+        graphics.drawImage( originalImage, 0, 0, compressedWidth, compressedHeight, null );
         graphics.dispose();
 
         // 输出流
         ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
 
         // 写入压缩后的图片
-        ImageIO.write(compressedImage, format.getFormatName(), compressedOutput);
+        ImageIO.write( compressedImage, format.getFormatName(), compressedOutput );
 
         // 将输出流转为byte数组
         byte[] compressedData = compressedOutput.toByteArray();
@@ -137,4 +135,18 @@ public class ImageUtils{
     }
 
 
+    public static byte[] imageToByte( String imagePath ){
+        try( InputStream in = new FileInputStream( imagePath );
+             ByteArrayOutputStream out = new ByteArrayOutputStream() ){
+            byte[] buffer = new byte[ 1024 ];
+            int length;
+            while( ( length = in.read( buffer ) ) != -1 ){
+                out.write( buffer, 0, length );
+            }
+            return out.toByteArray();
+        } catch( IOException e ){
+            throw new RuntimeException( e );
+        }
+    }
 }
+

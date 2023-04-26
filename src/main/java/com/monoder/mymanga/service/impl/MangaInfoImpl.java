@@ -7,6 +7,7 @@ import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
 import com.monoder.mymanga.entity.po.MangaInfo;
 import com.monoder.mymanga.entity.vo.DataTables;
+import com.monoder.mymanga.entity.vo.DicEnumCategoryVO;
 import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import com.monoder.mymanga.mapper.MangaInfoMapper;
@@ -18,6 +19,7 @@ import com.monoder.mymanga.utils.PageInfoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -34,8 +36,43 @@ public class MangaInfoImpl implements IMangaInfoService{
 
     private final Logger logger = LoggerFactory.getLogger( IMangaInfoService.class );
 
+    @Value( "${file.uploadFolder}" )
+    private String uploadFolder;
+
     @Autowired
     private MangaInfoMapper mangaInfoMapper;
+
+    @Override
+    public MangaInfoDTO addMangaInfo( JsonResult< MangaInfoDTO > requestJsonRequest ){
+        String wrapperName = requestJsonRequest.getData().getWrapper();
+        // 1. 取出 MangaInfoVO 对象
+        MangaInfoVO mangaInfoVO = BeanConvertUtils.convertWithNested( requestJsonRequest.getData(), MangaInfoVO.class, "dicEnumCategoryDTO", DicEnumCategoryVO.class );
+        mangaInfoVO.setWrapper( ImageUtils.imageToByte( uploadFolder + wrapperName ) );
+        System.out.println( mangaInfoVO.getWrapper().length );
+        // 2. 根据 mangaName 判断是否存在
+        String existGuid = mangaInfoMapper.getGuidByName( mangaInfoVO.getMangaName() );
+        if( existGuid != null ) {
+                String errorMsg = "ERROR: 该漫画已存在！【MangaName-" + mangaInfoVO.getMangaName() + "】";
+                logger.error( errorMsg );
+                throw new SelectException( errorMsg );
+        }
+        // 3. 补全其他信息
+        mangaInfoVO.setIsDeleted( "2" );
+        // 4. 开始插入，并返回插入行数
+        Integer rows = mangaInfoMapper.addMangaInfo( mangaInfoVO );
+        // 5. 根据 rows 判断是否插入成功
+        if( rows != 1 ) {
+            String errorMsg = "ERROR: 数据库插入失败，请联系管理员！";
+            logger.error( errorMsg );
+            throw new SelectException( errorMsg );
+        }
+        // 6. 获取插入的数据
+        MangaInfoVO resultMangaInfoVO = mangaInfoMapper.getMangaInfoByGuid( mangaInfoVO.getGuid() );
+        // 7. 转 DTO 返回
+        MangaInfoDTO resultMangaInfoDTO = BeanConvertUtils.convertWithNested( resultMangaInfoVO, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
+
+        return resultMangaInfoDTO;
+    }
 
     @Override
     public Integer batchAddMangaInfo( List< MangaInfo > mangaInfoList ){
@@ -92,7 +129,6 @@ public class MangaInfoImpl implements IMangaInfoService{
         MangaInfo mangaInfo = mangaInfoMapper.getWrapperByGuid( guid );
         // 1. 判断 guid 是否存在
         if( guid == null || mangaInfo == null ){
-            System.out.println( mangaInfo );
             String errorMsg = "ERROR: 漫画Guid为空或找不到对应漫画，请刷新重试或联系管理员！";
             logger.error( errorMsg );
             throw new SelectException( errorMsg );

@@ -25,6 +25,8 @@ public class MangaInfoMapperTest{
     @Autowired
     private MangaInfoMapper mangaInfoMapper;
 
+
+
     @Test
     public void testListMangaInfo(){
         List< MangaInfoVO > mangaInfoList = mangaInfoMapper.listMangaInfo();
@@ -40,6 +42,20 @@ public class MangaInfoMapperTest{
         System.out.println( mangaInfoVO );
         MangaInfoDTO mangaInfoDTO = BeanConvertUtils.convertWithNested( mangaInfoVO, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
         System.out.println( mangaInfoDTO );
-
     }
+
+    @Test
+    public void addMangaInfo(){
+        MangaInfoVO mangaInfoVO = new MangaInfoVO();
+        mangaInfoVO.setMangaName( "UploadTest" );
+        mangaInfoVO.setIsDeleted( "2" );
+        mangaInfoVO.getDicEnumCategoryVO().setDicEnumID( 42392222 );
+
+        Integer rows = mangaInfoMapper.addMangaInfo(mangaInfoVO);
+
+        System.out.println( rows );
+        System.out.println( mangaInfoVO.getGuid() );
+    }
+
+
 }

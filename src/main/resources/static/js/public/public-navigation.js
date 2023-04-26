@@ -1,12 +1,17 @@
 const LOGO_PATH = "/img/Logo.png";
 
 const parentList = [{"id": "1-1", "href": "", "target": "_parent", "parentId": "0", "name": "Admin"}, {"id": "1-2", "href": "", "target": "_parent", "parentId": "0", "name": "Upload"}, {"id": "1-3", "href": "", "target": "_parent", "parentId": "0", "name": "PicRead"}, {"id": "1-4", "href": "", "target": "_parent", "parentId": "0", "name": "Test"}, {"id": "1-5", "href": "", "target": "_parent", "parentId": "0", "name": "getArtist"}];
-const childList = [{"id": "1-1-1", "href": "/web/admin/Admin-Tag.html", "target": "_parent", "parentId": "1-1", "name": "Tag"}, {"id": "1-1-2", "href": "/web/admin/Admin-Manga.html", "target": "_parent", "parentId": "1-1", "name": "Manga"}, {"id": "1-1-3", "href": "", "target": "_parent", "parentId": "1-1", "name": "1-1-3"}, {"id": "1-1-4", "href": "", "target": "_parent", "parentId": "1-1", "name": "1-1-4"}, {"id": "1-1-5", "href": "", "target": "_parent", "parentId": "1-1", "name": "1-1-5"}, {"id": "1-1-6", "href": "", "target": "_parent", "parentId": "1-1", "name": "1-1-6"}, {"id": "1-4-1", "href": "/web/test.html", "target": "_parent", "parentId": "1-4", "name": "test"}];
+const childList = [{"id": "1-1-1", "href": "/web/admin/Admin-Tag.html", "target": "_parent", "parentId": "1-1", "name": "Tag"}, {"id": "1-1-2", "href": "/web/admin/Admin-Manga.html", "target": "_parent", "parentId": "1-1", "name": "Manga"}, {"id": "1-1-3", "href": "/web/admin/Admin-MangaImport.html", "target": "_parent", "parentId": "1-1", "name": "Import"}, {"id": "1-1-4", "href": "", "target": "_parent", "parentId": "1-1", "name": "1-1-4"}, {"id": "1-1-5", "href": "", "target": "_parent", "parentId": "1-1", "name": "1-1-5"}, {"id": "1-1-6", "href": "", "target": "_parent", "parentId": "1-1", "name": "1-1-6"}, {"id": "1-4-1", "href": "/web/test.html", "target": "_parent", "parentId": "1-4", "name": "test"}];
 
 // 缓存常用元素
-let $ulParent = $("#ul-parent");
-let $ulChild = $("#ul-child");
-let $NavigationBar = $("#navigation-bar");
+const sel_$NavigationBar = "#navigation-bar";
+const sel_$ulParent = "#ul-parent";
+const sel_$ulChild = "#ul-child";
+
+let $NavigationBar = $(sel_$NavigationBar);
+let $ulParent = $(sel_$ulParent);
+let $ulChild = $(sel_$ulChild);
+
 
 // 父菜单的 HTML 模板
 const parentMenuTemplate = (parent) => `
@@ -23,15 +28,15 @@ const childMenuTemplate = (child) => `
 
 $(document).ready(function () {
     // addNavigation
-    $("body").prepend('<div id="navigation-bar"></div>');
+    $("body").prepend('<nav id="navigation-bar"></nav>');
 
-    $NavigationBar = $("#navigation-bar");
+    $NavigationBar = $(sel_$NavigationBar);
 
     // addMenu
     $NavigationBar.append(`<ul id="ul-parent"></ul><ul id="ul-child"></ul>`);
 
-    $ulParent = $("#ul-parent");
-    $ulChild = $("#ul-child");
+    $ulParent = $(sel_$ulParent);
+    $ulChild = $(sel_$ulChild);
     $ulChild.hide();
 
     // initParentMenu();
@@ -70,7 +75,7 @@ function bindEvents() {
         $this.addClass('hover');
 
         // 动画显示子菜单
-        $ulChild.slideDown(500);
+        $ulChild.slideDown(300);
 
         // 调整子菜单显示位置
         const offTop = $this.offset().top + 48;

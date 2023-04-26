@@ -41,7 +41,7 @@ public class MangaWrapperUtils{
         Arrays.sort( mangaDirs, Comparator.comparing( File :: getName ) );
 
         for( File mangaDir: mangaDirs ){
-            String time = SystemInfoTools.getDataBaseTime();
+            String time = SystemInfoTools.getCurrentTime();
 
             MangaInfo mangaInfo = new MangaInfo();
 
