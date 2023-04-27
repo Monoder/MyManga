@@ -2,7 +2,7 @@ package com.monoder.mymanga.common.constant;
 
 public class MangaDetailConstant{
 
-    public static final String MANGA_PATH = "J:\\♥EX-Hentai♥\\♥Source♥";
+    public static final String MANGA_PATH = "J:\\♥EX-Hentai♥\\♥MyManga♥\\";
     public static final String MIN_Doujinshi_ID = "500000000001";
     public static final String MAX_Doujinshi_ID = "500999999999";
     public static final String MIN_Manga_ID = "510000000001";

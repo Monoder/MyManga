@@ -6,6 +6,7 @@ import lombok.Data;
 public class MangaDetail{
     private String guid;
     private Integer id;
-    private String mangaPic;
+    private String picName;
+    private String picPath;
     private String mainGuid;
 }

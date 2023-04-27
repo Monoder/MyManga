@@ -1,6 +1,6 @@
 package com.monoder.mymanga.common.enums;
 
-public enum ImageFormat{
+public enum ImageFormatEnum{
     JPEG( "jpg", "image/jpeg" ),
     PNG( "png", "image/png" ),
     GIF( "gif", "image/gif" ),
@@ -10,7 +10,7 @@ public enum ImageFormat{
     private final String extension; // 图片格式的扩展名
     private final String mimeType; // 图片格式的MIME类型
 
-    ImageFormat( String extension, String mimeType ){
+    ImageFormatEnum( String extension, String mimeType ){
         this.extension = extension;
         this.mimeType = mimeType;
     }
@@ -34,8 +34,8 @@ public enum ImageFormat{
      * @param extension 扩展名
      * @return 对应的图片格式，如果不存在则返回null
      */
-    public static ImageFormat fromExtension( String extension ){
-        for( ImageFormat format: ImageFormat.values() ){
+    public static ImageFormatEnum fromExtension( String extension ){
+        for( ImageFormatEnum format: ImageFormatEnum.values() ){
             if( format.getExtension().equalsIgnoreCase( extension ) ){
                 return format;
             }
@@ -49,8 +49,8 @@ public enum ImageFormat{
      * @param mimeType MIME类型
      * @return 对应的图片格式，如果不存在则返回null
      */
-    public static ImageFormat fromMimeType( String mimeType ){
-        for( ImageFormat format: ImageFormat.values() ){
+    public static ImageFormatEnum fromMimeType( String mimeType ){
+        for( ImageFormatEnum format: ImageFormatEnum.values() ){
             if( format.getMimeType().equalsIgnoreCase( mimeType ) ){
                 return format;
             }

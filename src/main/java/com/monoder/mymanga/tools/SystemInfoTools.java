@@ -10,8 +10,10 @@ public class SystemInfoTools{
     public static void main ( String[] args ) {
         String gitTime = getGitTime ( );
         System.out.println( "gitTime = " + gitTime );
-        String dataBaseTime = getCurrentTime();
+        String dataBaseTime = getDataBaseTime();
         System.out.println( "dataBaseTime = " + dataBaseTime );
+        String fileTime = getFileTime();
+        System.out.println( "fileTime = " + fileTime );
         String user = getUser();
         System.out.println( "user = " + user );
     }
@@ -29,12 +31,24 @@ public class SystemInfoTools{
     }
 
     /**
-     * 时间字符串
+     * 数据库时间字符串
      * @return
      */
-    public static String getCurrentTime( ) {
+    public static String getDataBaseTime( ){
         //设置日期格式
         SimpleDateFormat df = new SimpleDateFormat ( "yyyyMMddHHmmssSSS" );
+        // new Date()为获取当前系统时间
+        String getNow = df.format ( new Date ( ) );
+        return getNow;
+    }
+
+    /**
+     * 上传文件时间字符串
+     * @return
+     */
+    public static String getFileTime( ) {
+        //设置日期格式
+        SimpleDateFormat df = new SimpleDateFormat ( "yyyyMMddHHmmss-" );
         // new Date()为获取当前系统时间
         String getNow = df.format ( new Date ( ) );
         return getNow;

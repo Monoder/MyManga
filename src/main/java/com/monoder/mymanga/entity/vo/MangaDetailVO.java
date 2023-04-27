@@ -1,9 +1,9 @@
-package com.monoder.mymanga.entity.dto;
+package com.monoder.mymanga.entity.vo;
 
 import lombok.Data;
 
 @Data
-public class MangaDetailDTO{
+public class MangaDetailVO{
     private String guid;
     private Integer id;
     private String picName;

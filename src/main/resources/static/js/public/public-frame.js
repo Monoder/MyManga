@@ -177,7 +177,8 @@ function newMangaDetailDTO() {
     let mangaDetailDTO = {
         guid: null,
         id: null,
-        mangaPic: null,
+        picName: null,
+        picPath: null,
         mainGuid: null,
     }
     return mangaDetailDTO;

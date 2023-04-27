@@ -2,8 +2,11 @@ package com.monoder.mymanga.controller;
 
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
 import com.monoder.mymanga.entity.vo.JsonResult;
+import com.monoder.mymanga.service.IMangaDetailService;
 import com.monoder.mymanga.service.IMangaInfoService;
+import com.monoder.mymanga.service.exception.InsertException;
 import com.monoder.mymanga.service.exception.SelectException;
+import com.monoder.mymanga.utils.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,10 +23,30 @@ public class MangaInfoController{
     @Autowired
     private IMangaInfoService iMangaInfoService;
 
+    @Autowired
+    private IMangaDetailService iMangaDetailService;
+
     @PostMapping( "mangaImport" )
     public ResponseEntity addMangaInfo( @RequestBody JsonResult< MangaInfoDTO > mangaInfoDTOJsonResult ){
-        iMangaInfoService.addMangaInfo( mangaInfoDTOJsonResult );
-        return null;
+        String folderName = mangaInfoDTOJsonResult.getData().getMangaName();
+        try{
+            MangaInfoDTO mangaInfoDTO = iMangaInfoService.addMangaInfo( mangaInfoDTOJsonResult );
+            mangaInfoDTO.setMangaDetailDTOList( mangaInfoDTOJsonResult.getData().getMangaDetailDTOList() );
+            try{
+                Integer rows = iMangaDetailService.batchAddMangaDetail( mangaInfoDTO );
+                FileUploadUtils.deleteDirectory( folderName, 1 );
+                return ResponseEntity.ok().body( rows );
+            } catch( InsertException e ){
+                // 【batchAddMangaDetail】插入失败，将上传到本地的文件夹及文件全部删除，将已经插入的漫画主体删除
+                FileUploadUtils.deleteDirectory( folderName, 1 );
+                Integer rows = iMangaInfoService.deleteMangaInfo( mangaInfoDTO.getGuid() );
+                return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR ).body( e.getMessage() );
+            }
+        } catch( InsertException e ){
+            // 【addMangaInfo】插入失败，将上传到本地的文件夹及文件全部删除
+            FileUploadUtils.deleteDirectory( folderName, 1 );
+            return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR ).body( e.getMessage() );
+        }
     }
 
     @PostMapping( "listMangaInfo" )
@@ -61,7 +84,6 @@ public class MangaInfoController{
         headers.setContentType( MediaType.APPLICATION_JSON );
         return null;
     }
-
 
 
 }

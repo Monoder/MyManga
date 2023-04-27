@@ -62,8 +62,8 @@ public class TagDetailImpl implements ITagDetailService{
 
         // 5. 补全其他信息
         tagDetail.setIsDeleted(2);
-        tagDetail.setCreateTime(SystemInfoTools.getCurrentTime());
-        tagDetail.setUpdateTime(SystemInfoTools.getCurrentTime());
+        tagDetail.setCreateTime(SystemInfoTools.getDataBaseTime());
+        tagDetail.setUpdateTime(SystemInfoTools.getDataBaseTime());
         tagDetail.setCreator(SystemInfoTools.getUser());
 
         // 6. 插入并返回结果
@@ -87,7 +87,7 @@ public class TagDetailImpl implements ITagDetailService{
     public TagDTO updateTagDetail( TagDTO tagDTO ){
         // 1. 补全分类 Guid、更新时间
         tagDTO.setCategoryGuid( dicEnumCategoryMapper.getGuidByID( tagDTO.getDicEnumCategoryDTO().getDicEnumID() ) );
-        tagDTO.setUpdateTime( SystemInfoTools.getCurrentTime() );
+        tagDTO.setUpdateTime( SystemInfoTools.getDataBaseTime() );
         // 2. 复制 到 po 层
         TagDetail tagDetail = new TagDetail();
         BeanUtils.copyProperties( tagDTO, tagDetail );

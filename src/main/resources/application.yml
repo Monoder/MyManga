@@ -5,11 +5,11 @@ mybatis:
   mapperLocations: classpath:mapper/*.xml
   # java实体类所在包
   typeAliasesPackage: com.monoder.mymanga.entity
-    # 自定义TypeHandler所在包
-    #  type-handlers-package: com.monoder.mymanga.handler
-  #  取消注释下面两行，用来输出 mybatis sql日志
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  typeHandlersPackage: com.monoder.mymanga.handler
+# 输出日志
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 spring:
 

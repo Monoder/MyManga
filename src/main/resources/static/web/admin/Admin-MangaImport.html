@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="../../css/public-frame.css">
     <script src="../../js/frame/jquery-3.6.0.js"></script>
     <script src="../../js/public/public-navigation.js"></script>
-    <script src="../../js/public/public-frame.js"></script>
 </head>
 <style>
     input, select {font-size:12px;}
@@ -255,6 +254,7 @@
     </main>
 </div>
 </body>
+<script src="../../js/public/public-frame.js"></script>
 <script>
     const sel_$wrapperContent = ".wrapper-content";
     const sel_$contentFoot = ".content-foot";
@@ -319,13 +319,6 @@
         mangaInfoDTO.updateTime = currentTime;
         mangaInfoDTO.dicEnumCategoryDTO.dicEnumID = $category.val();
         mangaInfoDTO.remark = $remark.val();
-        // 遍历 uploadFiles 添加到 mangaDetailDTOList
-        uploadFiles.forEach(function (file) {
-            let mangaDetailDTO = newMangaDetailDTO();
-            mangaDetailDTO.mangaPic = folderName + "\\" + file.name;
-            mangaDetailDTOList.push(mangaDetailDTO);
-        })
-        mangaInfoDTO.mangaDetailDTOList = mangaDetailDTOList;
 
         // 1. 异步上传封面图片
         // 2. 上传完成返回图片的保存路径
@@ -334,15 +327,22 @@
 
         async function handleFileUpload() {
             try {
-                const file = uploadFiles[0];
-                mangaInfoDTO.wrapper = await uploadFile(file);
+                // 遍历 uploadFiles 获取上传后的文件路径添加到mangaDetailDTOList
+                for (const file of uploadFiles) {
+                    let mangaDetailDTO = newMangaDetailDTO();
+                    mangaDetailDTO.picName = file.name;
+                    mangaDetailDTO.picPath = await uploadMangaFile(file);
+                    mangaDetailDTOList.push(mangaDetailDTO);
+                }
+                mangaInfoDTO.wrapper = mangaDetailDTOList[0].picPath;
+                mangaInfoDTO.mangaDetailDTOList = mangaDetailDTOList;
                 await submitForm(mangaInfoDTO);
             } catch (error) {
                 console.error('文件上传失败！' + error);
             }
         }
 
-        function uploadFile(file) {
+        function uploadMangaFile(file) {
             return new Promise((resolve, reject) => {
                 const formData = new FormData();
                 formData.append("file", file);
@@ -362,6 +362,7 @@
             });
         }
 
+
         function submitForm(mangaInfoDTO) {
             return $.ajax({
                 type: "POST",
@@ -379,10 +380,6 @@
         }
 
     }
-
-
-
-
 
     function initWrapperContent(size) {
         for (let index = 0; index < size; index++) {
@@ -505,7 +502,6 @@
         uploadFiles.splice(originIndex, 1);
         uploadFiles.splice(targetIndex, 0, originFile);
         let originObject = objectUrls[originIndex]
-        URL.revokeObjectURL(originObject);
         objectUrls.splice(originIndex, 1);
         objectUrls.splice(targetIndex, 0, originObject);
         hide_page();

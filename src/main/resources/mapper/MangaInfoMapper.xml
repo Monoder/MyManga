@@ -34,7 +34,6 @@
 
     <!--  增  -->
     <insert id="addMangaInfo" parameterType="com.monoder.mymanga.entity.vo.MangaInfoVO" useGeneratedKeys="true" keyProperty="guid">
-
         <selectKey keyProperty="guid" resultType="String" order="BEFORE">
             SELECT sys_guid() AS guid FROM dual
         </selectKey>
@@ -44,7 +43,7 @@
             #{guid},
             #{mangaName, jdbcType=VARCHAR},
             #{transName, jdbcType=VARCHAR},
-            #{wrapper, jdbcType=BLOB},
+            #{wrapper},
             #{remark, jdbcType=VARCHAR},
             #{isDeleted, jdbcType=VARCHAR},
             #{isLiked, jdbcType=VARCHAR},
@@ -56,7 +55,6 @@
         FROM Manga.Dicenum_Category a
         WHERE a.dicenum_id = #{dicEnumCategoryVO.dicEnumID, jdbcType=VARCHAR}
     </insert>
-
 
     <insert id="batchAddMangaInfo" parameterType="java.util.List" >
         INSERT ALL
@@ -81,6 +79,13 @@
         </foreach>
         SELECT 1 FROM DUAL
     </insert>
+
+    <!--  删  -->
+    <delete id="deleteMangaInfo" parameterType="String">
+        DELETE FROM manga.manga_info t
+        WHERE t.guid = #{guid}
+    </delete>
+
 
     <!-- 查 -->
     <select id="listMangaInfo" resultMap="mangaInfoMap">
@@ -135,6 +140,7 @@
                            ON a.Category_Code = 'MANGA' AND a.Guid = t.Category_Guid
         WHERE t.is_deleted = '2' AND t.guid = #{guid, jdbcType=VARCHAR}
     </select>
+
 
     <select id="getGuidByName" resultType="String">
         SELECT guid FROM manga.Manga_Info t

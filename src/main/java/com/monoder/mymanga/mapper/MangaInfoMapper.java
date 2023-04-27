@@ -4,6 +4,7 @@ import com.monoder.mymanga.entity.po.MangaInfo;
 import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public interface MangaInfoMapper{
     Integer addMangaInfo( MangaInfoVO mangaInfoVO );
 
     Integer batchAddMangaInfo( List< MangaInfo > mangaInfoList );
+
+    Integer deleteMangaInfo( @Param( "guid" ) String guid );
 
     List< MangaInfoVO > listMangaInfo( DataTables dataTables );
 

@@ -1,6 +1,6 @@
 package com.monoder.mymanga.utils;
 
-import com.monoder.mymanga.common.enums.ImageFormat;
+import com.monoder.mymanga.common.enums.ImageFormatEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,7 @@ public class ImageUtilsTest{
 
         // 指定压缩后的最大宽度为500
         int maxWidth = 500;
-        byte[] compressedBytes = ImageUtils.compressImage( imageBytes, ImageFormat.JPEG, maxWidth, 1200, 0.8f );
+        byte[] compressedBytes = ImageUtils.compressImage( imageBytes, ImageFormatEnum.JPEG, maxWidth, 1200, 0.8f );
 
         // 保存压缩后的图片到指定路径
         String compressedFilePath = "D:\\A_Monodery\\Desktop\\Image\\image_01_compressed.jpg";

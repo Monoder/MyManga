@@ -2,7 +2,7 @@ package com.monoder.mymanga.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.monoder.mymanga.common.enums.ImageFormat;
+import com.monoder.mymanga.common.enums.ImageFormatEnum;
 import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
 import com.monoder.mymanga.entity.po.MangaInfo;
@@ -12,6 +12,7 @@ import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import com.monoder.mymanga.mapper.MangaInfoMapper;
 import com.monoder.mymanga.service.IMangaInfoService;
+import com.monoder.mymanga.service.exception.InsertException;
 import com.monoder.mymanga.service.exception.SelectException;
 import com.monoder.mymanga.utils.BeanConvertUtils;
 import com.monoder.mymanga.utils.ImageUtils;
@@ -44,33 +45,32 @@ public class MangaInfoImpl implements IMangaInfoService{
 
     @Override
     public MangaInfoDTO addMangaInfo( JsonResult< MangaInfoDTO > requestJsonRequest ){
-        String wrapperName = requestJsonRequest.getData().getWrapper();
+        // 传入的 DTO 中的 wrapper 是 String 类型，用来存放上传到 uploadFolder 的封面文件名
+        String wrapperPath = uploadFolder + requestJsonRequest.getData().getMangaName() + "/" + requestJsonRequest.getData().getWrapper();
         // 1. 取出 MangaInfoVO 对象
         MangaInfoVO mangaInfoVO = BeanConvertUtils.convertWithNested( requestJsonRequest.getData(), MangaInfoVO.class, "dicEnumCategoryDTO", DicEnumCategoryVO.class );
-        mangaInfoVO.setWrapper( ImageUtils.imageToByte( uploadFolder + wrapperName ) );
-        System.out.println( mangaInfoVO.getWrapper().length );
+        mangaInfoVO.setWrapper( ImageUtils.imageToByte( wrapperPath ) );
         // 2. 根据 mangaName 判断是否存在
         String existGuid = mangaInfoMapper.getGuidByName( mangaInfoVO.getMangaName() );
-        if( existGuid != null ) {
-                String errorMsg = "ERROR: 该漫画已存在！【MangaName-" + mangaInfoVO.getMangaName() + "】";
-                logger.error( errorMsg );
-                throw new SelectException( errorMsg );
+        if( existGuid != null ){
+            String errorMsg = "ERROR: 该漫画已存在！【MangaName-" + mangaInfoVO.getMangaName() + "】";
+            logger.error( errorMsg );
+            throw new InsertException( errorMsg );
         }
         // 3. 补全其他信息
         mangaInfoVO.setIsDeleted( "2" );
         // 4. 开始插入，并返回插入行数
         Integer rows = mangaInfoMapper.addMangaInfo( mangaInfoVO );
         // 5. 根据 rows 判断是否插入成功
-        if( rows != 1 ) {
-            String errorMsg = "ERROR: 数据库插入失败，请联系管理员！";
+        if( rows != 1 ){
+            String errorMsg = "ERROR: 【addMangaInfo】插入失败，请联系管理员！";
             logger.error( errorMsg );
-            throw new SelectException( errorMsg );
+            throw new InsertException( errorMsg );
         }
         // 6. 获取插入的数据
         MangaInfoVO resultMangaInfoVO = mangaInfoMapper.getMangaInfoByGuid( mangaInfoVO.getGuid() );
         // 7. 转 DTO 返回
         MangaInfoDTO resultMangaInfoDTO = BeanConvertUtils.convertWithNested( resultMangaInfoVO, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
-
         return resultMangaInfoDTO;
     }
 
@@ -78,6 +78,11 @@ public class MangaInfoImpl implements IMangaInfoService{
     public Integer batchAddMangaInfo( List< MangaInfo > mangaInfoList ){
         Integer rows = mangaInfoMapper.batchAddMangaInfo( mangaInfoList );
         return rows;
+    }
+
+    @Override
+    public Integer deleteMangaInfo( String guid ){
+        return mangaInfoMapper.deleteMangaInfo( guid );
     }
 
     @Override
@@ -144,7 +149,7 @@ public class MangaInfoImpl implements IMangaInfoService{
         // 进行图片压缩
         byte[] compressedImageBytes = new byte[ 0 ];
         try{
-            compressedImageBytes = ImageUtils.compressImageBySize( imageBytes, ImageFormat.JPEG, MAX_SIZE );
+            compressedImageBytes = ImageUtils.compressImageBySize( imageBytes, ImageFormatEnum.JPEG, MAX_SIZE );
         } catch( IOException e ){
             throw new RuntimeException( e );
         }

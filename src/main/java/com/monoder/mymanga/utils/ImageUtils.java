@@ -1,6 +1,6 @@
 package com.monoder.mymanga.utils;
 
-import com.monoder.mymanga.common.enums.ImageFormat;
+import com.monoder.mymanga.common.enums.ImageFormatEnum;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -25,7 +25,7 @@ public class ImageUtils{
      * @return 压缩后的图片数据
      * @throws IOException IO异常
      */
-    public static byte[] compressImage( byte[] imageData, ImageFormat format, int maxWidth, int maxHeight, float quality ) throws IOException{
+    public static byte[] compressImage( byte[] imageData, ImageFormatEnum format, int maxWidth, int maxHeight, float quality ) throws IOException{
         // 读取原始图片
         ByteArrayInputStream input = new ByteArrayInputStream( imageData );
         BufferedImage originalImage = ImageIO.read( input );
@@ -89,7 +89,7 @@ public class ImageUtils{
         return compressedData;
     }
 
-    public static byte[] compressImageBySize( byte[] imageData, ImageFormat format, long maxSize ) throws IOException{
+    public static byte[] compressImageBySize( byte[] imageData, ImageFormatEnum format, long maxSize ) throws IOException{
         // 读取原始图片
         ByteArrayInputStream input = new ByteArrayInputStream( imageData );
         BufferedImage originalImage = ImageIO.read( input );

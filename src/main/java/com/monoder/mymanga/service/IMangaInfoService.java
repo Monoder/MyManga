@@ -11,11 +11,13 @@ public interface IMangaInfoService{
     MangaInfoDTO addMangaInfo( JsonResult< MangaInfoDTO > requestJsonRequest );
 
     Integer batchAddMangaInfo ( List< MangaInfo > mangaInfoList );
+
+    Integer deleteMangaInfo( String guid );
+
     JsonResult listMangaInfo( JsonResult< Object> requestJsonResult );
 
     JsonResult getMangaInfoByGuid( String mangaGuid );
 
     String getWrapperByGuid( String Guid );
-
 
 }

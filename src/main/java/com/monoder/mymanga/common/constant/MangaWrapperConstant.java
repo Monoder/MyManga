@@ -1,6 +1,6 @@
 package com.monoder.mymanga.common.constant;
 
-import com.monoder.mymanga.common.enums.ImageFormat;
+import com.monoder.mymanga.common.enums.ImageFormatEnum;
 
 public class MangaWrapperConstant{
     private MangaWrapperConstant(){
@@ -17,7 +17,7 @@ public class MangaWrapperConstant{
     public static final float MIN_WRAPPER_QUALITY = 0.4f;
 
 
-    public static final ImageFormat DEFAULT_WRAPPER_FORMAT = ImageFormat.JPEG;
+    public static final ImageFormatEnum DEFAULT_WRAPPER_FORMAT = ImageFormatEnum.JPEG;
     public static final String DEFAULT_WRAPPER_MIME = DEFAULT_WRAPPER_FORMAT.getMimeType();
     public static final String DEFAULT_WRAPPER_BASE64_PREFIX = "data:" + DEFAULT_WRAPPER_MIME + ";base64,";
 
