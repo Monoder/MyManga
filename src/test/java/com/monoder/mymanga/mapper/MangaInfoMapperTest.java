@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -25,15 +26,6 @@ public class MangaInfoMapperTest{
     @Autowired
     private MangaInfoMapper mangaInfoMapper;
 
-
-
-    @Test
-    public void testListMangaInfo(){
-        List< MangaInfoVO > mangaInfoList = mangaInfoMapper.listMangaInfo();
-        for( MangaInfoVO mangaInfo: mangaInfoList ){
-            System.out.println( mangaInfo);
-        }
-    }
 
     @Test
     public void getMangaInfoByGuid(){
@@ -48,14 +40,19 @@ public class MangaInfoMapperTest{
     public void addMangaInfo(){
         MangaInfoVO mangaInfoVO = new MangaInfoVO();
         mangaInfoVO.setMangaName( "UploadTest" );
-        mangaInfoVO.setIsDeleted( "2" );
+        mangaInfoVO.setIsDeleted( 2 );
         mangaInfoVO.getDicEnumCategoryVO().setDicEnumID( 42392222 );
-
         Integer rows = mangaInfoMapper.addMangaInfo(mangaInfoVO);
-
         System.out.println( rows );
         System.out.println( mangaInfoVO.getGuid() );
     }
 
-
+    @Test
+    public void getRowsByGuids(){
+        List<String> guidList = new ArrayList<>();
+        guidList.add( "FA670805A69392A2E0535858A8C0A5F0" );
+        guidList.add( "FA66B1664A3B9134E0535858A8C0D1F3" );
+        Integer rows = mangaInfoMapper.getRowsByGuids( guidList );
+        System.out.println( "rows = " + rows );
+    }
 }

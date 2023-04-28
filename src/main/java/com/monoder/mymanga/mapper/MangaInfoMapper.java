@@ -22,9 +22,11 @@ public interface MangaInfoMapper{
 
     Integer deleteMangaInfo( @Param( "guid" ) String guid );
 
+    Integer batchDeleteMangaInfo( @Param( "guidList" ) List<String> guidList );
+
     List< MangaInfoVO > listMangaInfo( DataTables dataTables );
 
-    List< MangaInfoVO > listMangaInfo();
+    Integer getRowsByGuids( @Param( "guidList" ) List<String> guidList );
 
     MangaInfoVO getMangaInfoByGuid( String mangaGuid );
 

@@ -88,11 +88,12 @@
                 },
                 remove: {
                     type: "POST",
-                    url: "", // /TagDetail/deleteMangaInfo
+                    url: "/MangaInfo/deleteMangaInfo",
                     datatype: "JSON",
                     contentType: "application/json;charset=utf-8",
                     data: function (value) {
-                        return JSON.stringify(Object.keys(value.data));
+                        let deleteGuidList = Object.keys(value.data);
+                        return JSON.stringify(newJsonResult(deleteGuidList));
                     },
                     success: function (result) {
                         alert("删除成功，本次删除数据: " + result["rows"] + "行！")
@@ -133,10 +134,10 @@
                     def: "2",
                     options: [{label: "喜欢", value: 1}, {label: "不喜欢", value: 2}]
                 },
-                {label: "Category", name: "dicEnumCategory.categoryCode", type: "select"}
+                {label: "Category", name: "dicEnumCategoryDTO.categoryCode", type: "select"}
             ],
         });
-        dataTableEditor.field("dicEnumCategory.categoryCode").update(getCategoryList("MANGA"));
+        dataTableEditor.field("dicEnumCategoryDTO.categoryCode").update(getCategoryList("MANGA"));
         dataTableEditor.on("preSubmit", function (element, data, action) {
             if (action !== "remove") {
                 let name = this.field("mangaName");
@@ -169,7 +170,6 @@
                 return false;
             }
             // https://editor.datatables.net/reference/event/preUpload
-
         });
 
         let dataTable = $("#jq-table").DataTable({
@@ -205,7 +205,7 @@
                         wrapper: null,
                         remark: data.remark,
                         isLiked: data.isLiked,
-                        dicEnumCategory: data.dicEnumCategoryDTO,
+                        dicEnumCategoryDTO: data.dicEnumCategoryDTO,
                         pageCount: data.pageCount,
                         updateTime: data.updateTime,
                         CreateTime: data.CreateTime,
@@ -233,7 +233,7 @@
                 {data: "mangaName", defaultContent: ""},
                 {data: "remark", defaultContent: ""},
                 {data: "isLiked", defaultContent: ""},
-                {data: "dicEnumCategory.dicEnumID", defaultContent: ""},
+                {data: "dicEnumCategoryDTO.dicEnumID", defaultContent: ""},
                 {data: "pageCount", defaultContent: ""},
                 {data: "updateTime", defaultContent: ""},
             ],
@@ -249,13 +249,13 @@
                 },
                 {
                     targets: 5, data: "dicEnumCategory.dicEnumID", render: function (data, type, row, meta) {
-                        return row.dicEnumCategory.dicEnumName;
+                        return row.dicEnumCategoryDTO.dicEnumName;
                     }
                 },
                 {targets: 6, data: "pageCount"},
                 {
-                    targets: 6, data: "updateTime", type: "date", render: function (data, type, row, meta) {
-                        return dateFormat(row.updateTime);
+                    targets: 7, data: "updateTime", type: "date", render: function (data, type, row, meta) {
+                        return formatDateString(row.updateTime);
                     }
                 },
             ],
@@ -270,15 +270,19 @@
                     // 加载封面
                     initWrapperSource($(row.cells[1]).find("img"), data.guid);
                     // 加载分类
-                    if (data.dicEnumCategory.dicEnumID != null) {
-                        let dicID = data.dicEnumCategory.dicEnumID.toString();
-                        $(row.cells[5]).html(`<div class="category" data-id="${dicID}">${data.dicEnumCategory.dicEnumName}</div>`);
+                    if (data.dicEnumCategoryDTO.dicEnumID != null) {
+                        let dicID = data.dicEnumCategoryDTO.dicEnumID.toString();
+                        $(row.cells[5]).html(`<div class="category" data-id="${dicID}">${data.dicEnumCategoryDTO.dicEnumName}</div>`);
                     }
                 }
             },
             select: {style: "multi", selector: "td:first-child"},
             buttons: [
-                {extend: "create", text: "新增", action: function (){ window.location.href = "./Admin-MangaImport.html"}},
+                {
+                    extend: "create", text: "新增", action: function () {
+                        window.location.href = "./Admin-MangaImport.html"
+                    }
+                },
                 {extend: "edit", text: "修改", editor: dataTableEditor},
                 {extend: "remove", text: "删除", editor: dataTableEditor}
             ],

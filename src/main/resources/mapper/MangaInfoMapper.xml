@@ -33,33 +33,36 @@
     </resultMap>
 
     <!--  增  -->
-    <insert id="addMangaInfo" parameterType="com.monoder.mymanga.entity.vo.MangaInfoVO" useGeneratedKeys="true" keyProperty="guid">
+    <insert id="addMangaInfo" parameterType="com.monoder.mymanga.entity.vo.MangaInfoVO" useGeneratedKeys="true"
+            keyProperty="guid">
         <selectKey keyProperty="guid" resultType="String" order="BEFORE">
             SELECT sys_guid() AS guid FROM dual
         </selectKey>
         INSERT INTO
-            Manga.MANGA_INFO ( GUID, MANGA_NAME, TRANS_NAME, WRAPPER, REMARK, IS_DELETED, IS_LIKED, PAGE_COUNT, CATEGORY_GUID, UPDATE_TIME, CREATE_TIME, CREATOR )
+        Manga.MANGA_INFO ( GUID, MANGA_NAME, TRANS_NAME, WRAPPER, REMARK, IS_DELETED, IS_LIKED, PAGE_COUNT,
+        CATEGORY_GUID, UPDATE_TIME, CREATE_TIME, CREATOR )
         SELECT
-            #{guid},
-            #{mangaName, jdbcType=VARCHAR},
-            #{transName, jdbcType=VARCHAR},
-            #{wrapper},
-            #{remark, jdbcType=VARCHAR},
-            #{isDeleted, jdbcType=VARCHAR},
-            #{isLiked, jdbcType=VARCHAR},
-            #{pageCount, jdbcType=VARCHAR},
-            a.guid,
-            #{updateTime, jdbcType=VARCHAR},
-            #{createTime, jdbcType=VARCHAR},
-            #{creator, jdbcType=VARCHAR}
+        #{guid},
+        #{mangaName, jdbcType=VARCHAR},
+        #{transName, jdbcType=VARCHAR},
+        #{wrapper},
+        #{remark, jdbcType=VARCHAR},
+        #{isDeleted, jdbcType=VARCHAR},
+        #{isLiked, jdbcType=VARCHAR},
+        #{pageCount, jdbcType=VARCHAR},
+        a.guid,
+        #{updateTime, jdbcType=VARCHAR},
+        #{createTime, jdbcType=VARCHAR},
+        #{creator, jdbcType=VARCHAR}
         FROM Manga.Dicenum_Category a
         WHERE a.dicenum_id = #{dicEnumCategoryVO.dicEnumID, jdbcType=VARCHAR}
     </insert>
 
-    <insert id="batchAddMangaInfo" parameterType="java.util.List" >
+    <insert id="batchAddMangaInfo" parameterType="java.util.List">
         INSERT ALL
         <foreach collection="mangaInfoList" item="mangaInfo" separator=" ">
-            INTO Manga.MANGA_INFO ( GUID, MANGA_NAME, TRANS_NAME, WRAPPER, REMARK, IS_DELETED, IS_LIKED, PAGE_COUNT, CATEGORY_GUID, UPDATE_TIME,
+            INTO Manga.MANGA_INFO ( GUID, MANGA_NAME, TRANS_NAME, WRAPPER, REMARK, IS_DELETED, IS_LIKED, PAGE_COUNT,
+            CATEGORY_GUID, UPDATE_TIME,
             CREATE_TIME, CREATOR )
             VALUES
             (
@@ -68,9 +71,9 @@
             #{mangaInfo.transName, jdbcType=VARCHAR},
             #{mangaInfo.wrapper, jdbcType=BLOB},
             #{mangaInfo.remark, jdbcType=VARCHAR},
-            #{mangaInfo.isDeleted, jdbcType=VARCHAR},
-            #{mangaInfo.isLiked, jdbcType=VARCHAR},
-            #{mangaInfo.pageCount, jdbcType=VARCHAR},
+            #{mangaInfo.isDeleted, jdbcType=NUMBER},
+            #{mangaInfo.isLiked, jdbcType=NUMBER},
+            #{mangaInfo.pageCount, jdbcType=NUMBER},
             #{mangaInfo.categoryGuid, jdbcType=VARCHAR},
             #{mangaInfo.updateTime, jdbcType=VARCHAR},
             #{mangaInfo.createTime, jdbcType=VARCHAR},
@@ -81,11 +84,12 @@
     </insert>
 
     <!--  删  -->
-    <delete id="deleteMangaInfo" parameterType="String">
-        DELETE FROM manga.manga_info t
-        WHERE t.guid = #{guid}
+    <delete id="batchDeleteMangaInfo" parameterType="java.util.List">
+        DELETE FROM Manga.Manga_Info WHERE guid IN
+        <foreach collection="guidList" item="guid" separator="," open="(" close=")">
+            #{guid}
+        </foreach>
     </delete>
-
 
     <!-- 查 -->
     <select id="listMangaInfo" resultMap="mangaInfoMap">
@@ -100,17 +104,17 @@
                t.update_time,
                t.create_time,
                t.creator,
-               a.guid as dic_Guid,
+               a.guid          as dic_Guid,
                a.category_code as dic_Code,
-               a.dicenum_id as dic_ID,
-               a.dicenum_name as dic_Name,
-               a.trans_name as dic_Trans_Name,
-               a.status as dic_status,
-               a.remark as dic_remark,
-               a.create_time as dic_create_time
+               a.dicenum_id    as dic_ID,
+               a.dicenum_name  as dic_Name,
+               a.trans_name    as dic_Trans_Name,
+               a.status        as dic_status,
+               a.remark        as dic_remark,
+               a.create_time   as dic_create_time
         FROM Manga.Manga_info t
-        LEFT JOIN Manga.DicEnum_Category a
-            ON a.Category_Code = 'MANGA' AND a.Guid = t.Category_Guid
+                 LEFT JOIN Manga.DicEnum_Category a
+                           ON a.Category_Code = 'MANGA' AND a.Guid = t.Category_Guid
         WHERE t.is_deleted = '2'
         ORDER BY t.update_time DESC
     </select>
@@ -127,30 +131,39 @@
                t.update_time,
                t.create_time,
                t.creator,
-               a.guid as dic_Guid,
+               a.guid          as dic_Guid,
                a.category_code as dic_Code,
-               a.dicenum_id as dic_ID,
-               a.dicenum_name as dic_Name,
-               a.trans_name as dic_Trans_Name,
-               a.status as dic_status,
-               a.remark as dic_remark,
-               a.create_time as dic_create_time
+               a.dicenum_id    as dic_ID,
+               a.dicenum_name  as dic_Name,
+               a.trans_name    as dic_Trans_Name,
+               a.status        as dic_status,
+               a.remark        as dic_remark,
+               a.create_time   as dic_create_time
         FROM Manga.Manga_info t
                  LEFT JOIN Manga.DicEnum_Category a
                            ON a.Category_Code = 'MANGA' AND a.Guid = t.Category_Guid
-        WHERE t.is_deleted = '2' AND t.guid = #{guid, jdbcType=VARCHAR}
+        WHERE t.is_deleted = '2'
+          AND t.guid = #{guid, jdbcType=VARCHAR}
     </select>
 
+    <select id="getRowsByGuids" parameterType="java.util.List" resultType="java.lang.Integer">
+        SELECT count(1) FROM Manga.Manga_Info WHERE guid IN
+        <foreach collection="guidList" item="guid" separator="," open="(" close=")">
+            #{guid}
+        </foreach>
+    </select>
 
     <select id="getGuidByName" resultType="String">
-        SELECT guid FROM manga.Manga_Info t
+        SELECT guid
+        FROM manga.Manga_Info t
         WHERE t.Manga_Name = #{mangaName, jdbcType=VARCHAR}
     </select>
 
     <select id="getWrapperByGuid" resultType="com.monoder.mymanga.entity.po.MangaInfo">
         SELECT t.guid, t.manga_name, t.wrapper
         FROM manga.manga_info t
-        WHERE t.is_deleted = '2' AND guid = #{guid, jdbcType=VARCHAR}
+        WHERE t.is_deleted = '2'
+          AND guid = #{guid, jdbcType=VARCHAR}
     </select>
 
 

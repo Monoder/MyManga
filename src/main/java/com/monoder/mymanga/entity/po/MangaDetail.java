@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class MangaDetail{
     private String guid;
-    private Integer id;
+    private String id;
     private String picName;
     private String picPath;
     private String mainGuid;

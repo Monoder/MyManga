@@ -28,6 +28,8 @@ public class MangaInfoController{
 
     @PostMapping( "mangaImport" )
     public ResponseEntity addMangaInfo( @RequestBody JsonResult< MangaInfoDTO > mangaInfoDTOJsonResult ){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType( MediaType.APPLICATION_JSON );
         String folderName = mangaInfoDTOJsonResult.getData().getMangaName();
         try{
             MangaInfoDTO mangaInfoDTO = iMangaInfoService.addMangaInfo( mangaInfoDTOJsonResult );
@@ -35,7 +37,9 @@ public class MangaInfoController{
             try{
                 Integer rows = iMangaDetailService.batchAddMangaDetail( mangaInfoDTO );
                 FileUploadUtils.deleteDirectory( folderName, 1 );
-                return ResponseEntity.ok().body( rows );
+                JsonResult< String > jsonResult = new JsonResult<>( mangaInfoDTO.getGuid() );
+                jsonResult.setRows( rows );
+                return new ResponseEntity<>( jsonResult, headers, HttpStatus.OK );
             } catch( InsertException e ){
                 // 【batchAddMangaDetail】插入失败，将上传到本地的文件夹及文件全部删除，将已经插入的漫画主体删除
                 FileUploadUtils.deleteDirectory( folderName, 1 );
@@ -47,6 +51,15 @@ public class MangaInfoController{
             FileUploadUtils.deleteDirectory( folderName, 1 );
             return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR ).body( e.getMessage() );
         }
+    }
+
+    @PostMapping( "deleteMangaInfo" )
+    public ResponseEntity deleteMangaInfo( @RequestBody JsonResult< List< String > > requestJsonRequest ){
+        List< String > deleteGuidList = requestJsonRequest.getData();
+        boolean flag = iMangaInfoService.batchDeleteMangaInfo(deleteGuidList);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType( MediaType.APPLICATION_JSON );
+        return new ResponseEntity<>(flag, headers, HttpStatus.OK );
     }
 
     @PostMapping( "listMangaInfo" )

@@ -46,7 +46,7 @@ public class MangaWrapperUtils{
             MangaInfo mangaInfo = new MangaInfo();
 
             mangaInfo.setMangaName( mangaDir.getName() );
-            mangaInfo.setIsDeleted( "2" );
+            mangaInfo.setIsDeleted( 2 );
             mangaInfo.setCreateTime( time );
             mangaInfo.setUpdateTime( time );
             mangaInfo.setCreator( SystemInfoTools.getUser() );
@@ -54,7 +54,7 @@ public class MangaWrapperUtils{
 
             File[] mangaFiles = mangaDir.listFiles( file -> file.isFile() && isImageFile( file.getName() ) );
             if( mangaFiles != null ){
-                mangaInfo.setPageCount( String.valueOf( mangaFiles.length ) );
+                mangaInfo.setPageCount( mangaFiles.length );
                 Arrays.sort( mangaFiles, Comparator.comparing( File :: getName ) );
                 if( mangaFiles.length > 0 ){
                     try( FileInputStream fis = new FileInputStream( mangaFiles[ 0 ] ) ){

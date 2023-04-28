@@ -45,6 +45,8 @@ public class JsonResult< E > implements Serializable{
     }
 
     public JsonResult( E data ){
+        this.dataTables = new DataTables();
+        this.searchData = new SearchData();
         this.data = data;
     }
 

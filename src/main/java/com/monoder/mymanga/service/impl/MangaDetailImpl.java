@@ -1,25 +1,36 @@
 package com.monoder.mymanga.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.monoder.mymanga.common.constant.MangaDetailConstant;
+import com.monoder.mymanga.common.enums.ImageFormatEnum;
 import com.monoder.mymanga.common.enums.MangaCategoryEnum;
 import com.monoder.mymanga.entity.dto.MangaDetailDTO;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
+import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.entity.vo.MangaDetailVO;
 import com.monoder.mymanga.mapper.MangaDetailMapper;
 import com.monoder.mymanga.service.IMangaDetailService;
 import com.monoder.mymanga.service.IMangaInfoService;
 import com.monoder.mymanga.service.exception.InsertException;
-import com.monoder.mymanga.utils.BeanConvertUtils;
-import com.monoder.mymanga.utils.FileUploadUtils;
-import com.monoder.mymanga.utils.StringUtils;
+import com.monoder.mymanga.service.exception.SelectException;
+import com.monoder.mymanga.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import static com.monoder.mymanga.common.constant.MangaSourceConstant.DEFAULT_WRAPPER_BASE64_PREFIX;
+import static com.monoder.mymanga.common.constant.MangaSourceConstant.MAX_SIZE;
 
 @Service
 public class MangaDetailImpl implements IMangaDetailService{
@@ -84,8 +95,51 @@ public class MangaDetailImpl implements IMangaDetailService{
     }
 
     @Override
-    public JsonResult listMangaDetailByGuid( String MangaGuid ){
-//        List< MangaDetail > mangaDetailList = mangaDetailMapper
-        return null;
+    public JsonResult< PageInfo< MangaDetailDTO > > listMangaDetailByGuid( JsonResult< String > requestJsonResult ){
+        DataTables dataTables = Optional.ofNullable( requestJsonResult.getDataTables() ).orElse( new DataTables() );
+        if( dataTables.getOrder().isEmpty() ){
+            dataTables.setOrder( Collections.singletonList( new DataTables.Order() ) );
+        }
+        dataTables.setPageNum( Optional.ofNullable( dataTables.getPageNum() ).orElse( 1 ) );
+        dataTables.setPageSize( Optional.ofNullable( dataTables.getPageSize() ).orElse( 25 ) );
+        // 配置 PageHelper
+        PageHelper.startPage( dataTables.getPageNum(), dataTables.getPageSize() );
+        List< MangaDetailVO > mangaDetailVOS = mangaDetailMapper.listMangaDetailByGuid( requestJsonResult.getData() );
+        // 取出分页后的数据
+        PageInfo< MangaDetailVO > mangaDetailVOPageInfo = new PageInfo<>( mangaDetailVOS );
+        // 将VO对象从 PageHelper 中取出并转换成DTO对象
+        List< MangaDetailVO > mangaDetailVOList = mangaDetailVOPageInfo.getList();
+        List< MangaDetailDTO > mangaDetailDTOList = BeanConvertUtils.convertListWithNested( mangaDetailVOList, MangaDetailDTO.class );
+        // 生成新的 PageInfo 对象，保留原来的分页信息
+        PageInfo< MangaDetailDTO > mangaDetailDTOPageInfo = PageInfoUtil.copy( mangaDetailVOPageInfo, mangaDetailDTOList );
+        // 初始化 JsonResult 用来存放分页后的数据
+        JsonResult< PageInfo< MangaDetailDTO > > jsonResult = new JsonResult<>( mangaDetailDTOPageInfo );
+        jsonResult.setDataTables( dataTables );
+        return jsonResult;
+    }
+
+    @Override
+    public String getPicSource( String picId ){
+        // 1. 取出图片 ID
+        MangaDetailVO mangaDetailVO = mangaDetailMapper.getPicPathById( picId );
+        if( mangaDetailVO.getGuid() == null ){
+            String errorMsg = "ERROR: 【getPicPathById】找不到对应图片！【ID-" + picId + "】";
+            throw new SelectException( errorMsg );
+        }
+        String filePath = MANGA_PATH + mangaDetailVO.getPicPath();
+        // 2. 处理本地图片
+        File file = new File( filePath );
+        if( !file.exists() ){
+            throw new SelectException( "ERROR: 文件不存在：" + filePath );
+        }
+        try{
+            byte[] imageBytes = Files.readAllBytes( file.toPath() );
+            byte[] compressedImageBytes = ImageUtils.compressImageBySize( imageBytes, ImageFormatEnum.JPEG, MAX_SIZE );
+
+            String base64String = DEFAULT_WRAPPER_BASE64_PREFIX + Base64.getEncoder().encodeToString( compressedImageBytes );
+            return base64String;
+        } catch( IOException e ){
+            throw new SelectException( "ERROR: 读取图片文件失败：" + filePath, e );
+        }
     }
 }

@@ -14,9 +14,9 @@ public class MangaInfoDTO{
     private String transName;
     private String wrapper;
     private String remark;
-    private String isDeleted;
-    private String isLiked;
-    private String pageCount;
+    private Integer isDeleted;
+    private Integer isLiked;
+    private Integer pageCount;
     private String categoryGuid;
     private DicEnumCategoryDTO dicEnumCategoryDTO;
     private String  updateTime;

@@ -127,13 +127,25 @@ function newJsonResult(dataTables, searchData, data) {
     return jsonResult;
 }
 
-function newDataTables() {
+function newJsonResult(data) {
+    let jsonResult = {
+        status: null,
+        message: null,
+        rows: null,
+        dataTables: newDataTables(),
+        searchData: newSearchData(),
+        data: data === null ? null : data,
+    }
+    return jsonResult;
+}
+
+function newDataTables(pageNum, pageSize) {
     let dataTables = {
         draw: null,
         start: null,
         length: null,
-        pageNum: null,
-        pageSize: null,
+        pageNum: pageNum === null ? null : pageNum,
+        pageSize: pageSize === null ? null : pageSize,
         order: [newOrder()],
     }
     return dataTables;

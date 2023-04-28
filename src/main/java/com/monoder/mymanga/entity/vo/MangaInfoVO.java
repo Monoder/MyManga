@@ -11,9 +11,9 @@ public class MangaInfoVO{
     private String transName;
     private byte[] wrapper;
     private String remark;
-    private String isDeleted;
-    private String isLiked;
-    private String pageCount;
+    private Integer isDeleted;
+    private Integer isLiked;
+    private Integer pageCount;
     private String categoryGuid;
     private DicEnumCategoryVO dicEnumCategoryVO;
     private String updateTime;

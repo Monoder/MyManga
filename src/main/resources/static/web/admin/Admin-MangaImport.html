@@ -8,47 +8,270 @@
     <script src="../../js/public/public-navigation.js"></script>
 </head>
 <style>
-    input, select {font-size:12px;}
-    input[id^="manga-name-"] {width:720px;height:50px;padding:0 5px;border-radius:10px;font-size:15px;}
-    textarea {border-radius:10px;resize:none;}
-    div#upload-info {width:1320px;margin:2px auto;padding:3px;text-align:left;}
-    div#upload-info table {margin:0 auto 5px;border-collapse:collapse;text-align:justify;}
-    div#upload-info table td {vertical-align:top;}
-    td.left {width:450px;padding:5px 7px 5px 5px;border-bottom:1px solid #f1f1f1;border-right:1px dashed #f1f1f1;}
-    td.right {width:850px;padding:5px 10px;border-bottom:1px solid #f1f1f1;}
-    .left h1 {margin:3px 0;font-size:18px;font-weight:bold;}
-    .left p {margin:2px 0;font-size:15px;}
-    select#category, select#tag-language {width:400px;margin-top:7px;border-radius:5px;font-size:15px !important;}
-    table#tag-language-type {width:400px;margin:9px auto 0 0 !important;}
-    td#details {width:280px;padding:15px 7px 1px 5px;font-size:15px;text-align:center;border-right:1px dashed #f1f1f1;}
-    td#details table{margin-left:45%;line-height:20px;}
-    td#details tr{height:25px;font-size:18px;}
-    td#details td{max-width:180px;height:100%;padding:10px 0 0 10px;}
-    td#details .value{font-size:12px;color:rgba(230, 230, 230, 1);}
-    td#input-info {padding:10px 5px 0 0;text-align:right;}
-    div#upload-area {clear:both;width:800px;margin:9px auto 3px;padding:3px 3px 2px;text-align:center;}
-    div#upload-area h1 {margin:5px 0;padding:0 0 2px 0;font-size:21px;font-weight:bold;}
-    div#upload-area p {margin:5px auto;font-size:15px;}
-    div[id^="cell_"] {max-width:260px;max-height:430px;overflow:hidden;margin:4px;border-radius:10px;background:#5f636b;cursor:default;word-wrap:break-word;border:1px solid #34353b;}
-    div.content-head {position:relative;height:26px;}
-    div.pages {position:absolute;left:74px;}
-    div.pages span {font-weight:bold;}
-    input[id^="select_page_"], div.pages select {width:60px;margin:3px 1px 0;padding:1px 3px 3px;border-radius:3px;line-height:17px;font-weight:bold;border:1px solid #8d8d8d;}
-    input, select, option, optgroup, textarea {padding:0 5px;color:#f1f1f1;background-color:#34353b;}
-    input:disabled, select:disabled, textarea:disabled {border-color:rgba(118, 118, 118, 0.3);color:rgba(241, 241, 241, 0.8);background-color:rgba(112, 112, 112, 0.8);cursor:default;}
-    ::placeholder {color:rgba(241, 241, 241, 0.8);}
-    div.delete {position:absolute;top:4px;left:192px;width:15px;height:15px;margin:0;padding:0 2px 4px;font-size:14pt;font-weight:bold;color:red;cursor:pointer;}
-    div.delete span {position:relative;top:-5px;left:45px;}
-    div.content-foot {height:40px;margin:auto auto 0 auto;text-align:center;flex-direction:row;justify-content:center;}
-    img.th {max-width:100%;max-height:100%;margin:0 auto;padding:0;border-radius:5px;background:rgba(0, 0, 0, 0.3);border:1px solid #000000;}
-    .content-body {display:flex;max-width:240px;max-height:340px;margin:auto;align-items:center;}
-    div#body-foot {text-align:center;}
-    input#button-name2jp, input#button-name2en {width:90px;height:30px;border-radius:5px;}
-    input#upload-files {padding:5px;border-radius:5px;}
-    input#button-save {width:120px;height:30px;margin:0 0 0 20px;}
-    input#button-publish {width:120px;height:30px;margin:0 0 0 7px;font-weight:bold;}
-    input#button-process {width:120px;height:25px;margin:2px auto 0;}
-    input#button-submit {width:150px;height:30px;margin:5px auto;font-weight:bold;text-align:center;}
+    input, select {
+        font-size: 12px;
+    }
+
+    input[id^="manga-name-"] {
+        width: 720px;
+        height: 50px;
+        padding: 0 5px;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+
+    textarea {
+        border-radius: 10px;
+        resize: none;
+    }
+
+    div#upload-info {
+        width: 1320px;
+        margin: 2px auto;
+        padding: 3px;
+        text-align: left;
+    }
+
+    div#upload-info table {
+        margin: 0 auto 5px;
+        border-collapse: collapse;
+        text-align: justify;
+    }
+
+    div#upload-info table td {
+        vertical-align: top;
+    }
+
+    td.left {
+        width: 450px;
+        padding: 5px 7px 5px 5px;
+        border-bottom: 1px solid #f1f1f1;
+        border-right: 1px dashed #f1f1f1;
+    }
+
+    td.right {
+        width: 850px;
+        padding: 5px 10px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .left h1 {
+        margin: 3px 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .left p {
+        margin: 2px 0;
+        font-size: 15px;
+    }
+
+    select#category, select#tag-language {
+        width: 400px;
+        margin-top: 7px;
+        border-radius: 5px;
+        font-size: 15px !important;
+    }
+
+    table#tag-language-type {
+        width: 400px;
+        margin: 9px auto 0 0 !important;
+    }
+
+    td#details {
+        width: 280px;
+        padding: 15px 7px 1px 5px;
+        font-size: 15px;
+        text-align: center;
+        border-right: 1px dashed #f1f1f1;
+    }
+
+    td#details table {
+        margin-left: 45%;
+        line-height: 20px;
+    }
+
+    td#details tr {
+        height: 25px;
+        font-size: 18px;
+    }
+
+    td#details td {
+        max-width: 180px;
+        height: 100%;
+        padding: 10px 0 0 10px;
+    }
+
+    td#details .value {
+        font-size: 12px;
+        color: rgba(230, 230, 230, 1);
+    }
+
+    td#input-info {
+        padding: 10px 5px 0 0;
+        text-align: right;
+    }
+
+    div#upload-area {
+        clear: both;
+        width: 800px;
+        margin: 9px auto 3px;
+        padding: 3px 3px 2px;
+        text-align: center;
+    }
+
+    div#upload-area h1 {
+        margin: 5px 0;
+        padding: 0 0 2px 0;
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    div#upload-area p {
+        margin: 5px auto;
+        font-size: 15px;
+    }
+
+    div[id^="cell_"] {
+        max-width: 260px;
+        max-height: 430px;
+        overflow: hidden;
+        margin: 4px;
+        border-radius: 10px;
+        background: #5f636b;
+        cursor: default;
+        word-wrap: break-word;
+        border: 1px solid #34353b;
+    }
+
+    div.content-head {
+        position: relative;
+        height: 26px;
+    }
+
+    div.pages {
+        position: absolute;
+        left: 74px;
+    }
+
+    div.pages span {
+        font-weight: bold;
+    }
+
+    input[id^="select_page_"], div.pages select {
+        width: 60px;
+        margin: 3px 1px 0;
+        padding: 1px 3px 3px;
+        border-radius: 3px;
+        line-height: 17px;
+        font-weight: bold;
+        border: 1px solid #8d8d8d;
+    }
+
+    input, select, option, optgroup, textarea {
+        padding: 0 5px;
+        color: #f1f1f1;
+        background-color: #34353b;
+    }
+
+    input:disabled, select:disabled, textarea:disabled {
+        border-color: rgba(118, 118, 118, 0.3);
+        color: rgba(241, 241, 241, 0.8);
+        background-color: rgba(112, 112, 112, 0.8);
+        cursor: default;
+    }
+
+    ::placeholder {
+        color: rgba(241, 241, 241, 0.8);
+    }
+
+    div.delete {
+        position: absolute;
+        top: 4px;
+        left: 192px;
+        width: 15px;
+        height: 15px;
+        margin: 0;
+        padding: 0 2px 4px;
+        font-size: 14pt;
+        font-weight: bold;
+        color: red;
+        cursor: pointer;
+    }
+
+    div.delete span {
+        position: relative;
+        top: -5px;
+        left: 45px;
+    }
+
+    div.content-foot {
+        height: 40px;
+        margin: auto auto 0 auto;
+        text-align: center;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    img.th {
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0 auto;
+        padding: 0;
+        border-radius: 5px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid #000000;
+    }
+
+    .content-body {
+        display: flex;
+        max-width: 240px;
+        max-height: 340px;
+        margin: auto;
+        align-items: center;
+    }
+
+    div#body-foot {
+        text-align: center;
+    }
+
+    input#button-name2jp, input#button-name2en {
+        width: 90px;
+        height: 30px;
+        border-radius: 5px;
+    }
+
+    input#upload-files {
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    input#button-save {
+        width: 120px;
+        height: 30px;
+        margin: 0 0 0 20px;
+    }
+
+    input#button-publish {
+        width: 120px;
+        height: 30px;
+        margin: 0 0 0 7px;
+        font-weight: bold;
+    }
+
+    input#button-process {
+        width: 120px;
+        height: 25px;
+        margin: 2px auto 0;
+    }
+
+    input#button-submit {
+        width: 150px;
+        height: 30px;
+        margin: 5px auto;
+        font-weight: bold;
+        text-align: center;
+    }
 </style>
 <body>
 <div id="base-container">
@@ -338,7 +561,7 @@
                 mangaInfoDTO.mangaDetailDTOList = mangaDetailDTOList;
                 await submitForm(mangaInfoDTO);
             } catch (error) {
-                console.error('文件上传失败！' + error);
+                console.error("文件上传失败！" + error.responseText);
             }
         }
 
@@ -353,10 +576,10 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        resolve(response); // 文件上传成功，将文件名作为参数 resolve Promise
+                        resolve(response);
                     },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        reject(textStatus + ': ' + errorThrown); // 文件上传失败，将错误信息作为参数 reject Promise
+                    error: function (xhr, textStatus, errorThrown) {
+                        reject(xhr.responseText);  // 文件上传失败，将错误信息作为参数 reject Promise
                     }
                 });
             });
@@ -369,12 +592,18 @@
                 url: "/MangaInfo/mangaImport",
                 dataType: "JSON",
                 contentType: "application/json;charset=utf-8",
-                data: JSON.stringify(newJsonResult(null, null, mangaInfoDTO)),
+                data: JSON.stringify(newJsonResult(mangaInfoDTO)),
                 success: (response) => {
-                    console.log(response);
+                    let successMessage = "上传成功！本次图库共：" + response.rows + " 个文件！";
+                    console.log(successMessage);
+                    if (!confirm(successMessage + "\n是否继续添加？")) {
+                        window.location.href = `/web/MangaDetail.html?mainGuid=${response.data}`;
+                    }
                 },
                 error: (xhr, textStatus, errorThrown) => {
-                    console.error('表单提交失败！' + textStatus + ': ' + errorThrown);
+                    let errorMessage = xhr.responseText;
+                    console.error("表单提交失败！" + errorMessage);
+                    alert(errorMessage);
                 }
             });
         }

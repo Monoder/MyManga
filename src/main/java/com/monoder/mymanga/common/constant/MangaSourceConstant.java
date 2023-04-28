@@ -2,8 +2,8 @@ package com.monoder.mymanga.common.constant;
 
 import com.monoder.mymanga.common.enums.ImageFormatEnum;
 
-public class MangaWrapperConstant{
-    private MangaWrapperConstant(){
+public class MangaSourceConstant{
+    private MangaSourceConstant(){
     }
 
     public static final long MAX_SIZE = 100 * 1024;

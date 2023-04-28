@@ -10,10 +10,12 @@ import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.DicEnumCategoryVO;
 import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
+import com.monoder.mymanga.mapper.MangaDetailMapper;
 import com.monoder.mymanga.mapper.MangaInfoMapper;
 import com.monoder.mymanga.service.IMangaInfoService;
 import com.monoder.mymanga.service.exception.InsertException;
 import com.monoder.mymanga.service.exception.SelectException;
+import com.monoder.mymanga.tools.SystemInfoTools;
 import com.monoder.mymanga.utils.BeanConvertUtils;
 import com.monoder.mymanga.utils.ImageUtils;
 import com.monoder.mymanga.utils.PageInfoUtil;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -29,8 +32,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.monoder.mymanga.common.constant.MangaWrapperConstant.DEFAULT_WRAPPER_BASE64_PREFIX;
-import static com.monoder.mymanga.common.constant.MangaWrapperConstant.MAX_SIZE;
+import static com.monoder.mymanga.common.constant.MangaSourceConstant.DEFAULT_WRAPPER_BASE64_PREFIX;
+import static com.monoder.mymanga.common.constant.MangaSourceConstant.MAX_SIZE;
 
 @Service
 public class MangaInfoImpl implements IMangaInfoService{
@@ -42,6 +45,9 @@ public class MangaInfoImpl implements IMangaInfoService{
 
     @Autowired
     private MangaInfoMapper mangaInfoMapper;
+
+    @Autowired
+    private MangaDetailMapper mangaDetailMapper;
 
     @Override
     public MangaInfoDTO addMangaInfo( JsonResult< MangaInfoDTO > requestJsonRequest ){
@@ -58,7 +64,8 @@ public class MangaInfoImpl implements IMangaInfoService{
             throw new InsertException( errorMsg );
         }
         // 3. 补全其他信息
-        mangaInfoVO.setIsDeleted( "2" );
+        mangaInfoVO.setIsDeleted( 2 );
+        mangaInfoVO.setCreator( SystemInfoTools.getUser() );
         // 4. 开始插入，并返回插入行数
         Integer rows = mangaInfoMapper.addMangaInfo( mangaInfoVO );
         // 5. 根据 rows 判断是否插入成功
@@ -86,6 +93,20 @@ public class MangaInfoImpl implements IMangaInfoService{
     }
 
     @Override
+    @Transactional
+    public boolean batchDeleteMangaInfo( List< String > guidList ){
+        Integer originMangaInfoRows = mangaInfoMapper.getRowsByGuids( guidList );
+        Integer deleteMangaInfoRows = mangaInfoMapper.batchDeleteMangaInfo( guidList );
+        Integer originMangaDetailRows = mangaDetailMapper.getRowsByGuids( guidList );
+        Integer deleteMangaDetailRows = mangaDetailMapper.batchDeleteMangaDetail( guidList );
+
+        if (deleteMangaInfoRows != originMangaInfoRows || deleteMangaDetailRows != originMangaDetailRows ) {
+            throw new RuntimeException("删除操作失败，整个事务被回滚");
+        }
+        return true;
+    }
+
+    @Override
     public JsonResult listMangaInfo( JsonResult< Object > requestJsonResult ){
         // 从 requestJsonResult 中获取 DataTables 格式的请求参数
         DataTables dataTables = Optional.ofNullable( requestJsonResult.getDataTables() ).orElse( new DataTables() );
@@ -108,14 +129,14 @@ public class MangaInfoImpl implements IMangaInfoService{
 
         // 将VO对象从 PageHelper 中取出并转换成DTO对象
         List< MangaInfoVO > mangaInfoVOList = mangaInfoVOPageInfo.getList();
-        List< MangaInfoDTO > mangaInfoDTOS = BeanConvertUtils.convertListWithNested( mangaInfoVOList, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
+        List< MangaInfoDTO > mangaInfoDTOList = BeanConvertUtils.convertListWithNested( mangaInfoVOList, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
 
         // 生成新的 PageInfo 对象，保留原来的分页信息
-        PageInfo< MangaInfoDTO > mangaInfoDTOPageInfo = PageInfoUtil.copy( mangaInfoVOPageInfo, mangaInfoDTOS );
+        PageInfo< MangaInfoDTO > mangaInfoDTOPageInfo = PageInfoUtil.copy( mangaInfoVOPageInfo, mangaInfoDTOList );
 
         // 初始化 JsonResult 用来存放分页后的数据
         JsonResult< Object > jsonResult = new JsonResult<>();
-        jsonResult.getDataTables().setDraw( dataTables.getDraw() );
+        jsonResult.setDataTables( dataTables );
         jsonResult.setData( mangaInfoDTOPageInfo );
 
         return jsonResult;

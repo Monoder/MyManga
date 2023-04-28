@@ -16,15 +16,30 @@
         INSERT  INTO Manga.Manga_Detail ( GUID, ID, PIC_NAME, PIC_PATH, MAIN_GUID )
         SELECT t.GUID, MANGA.SEQ_MANGADETAIL_ID.NEXTVAL, t.PIC_NAME, PIC_PATH, MAIN_GUID
         FROM (
+            SELECT * FROM(
         <foreach collection="mangaDetailVOList" item="mangaDetail" separator="UNION ALL">
             SELECT sys_guid() AS GUID,
-            #{mangaDetail.picName,jdbcType=CLOB} AS PIC_NAME,
+            #{mangaDetail.picName,jdbcType=VARCHAR} AS PIC_NAME,
             #{mangaDetail.picPath,jdbcType=CLOB} AS PIC_PATH,
             #{mangaDetail.mainGuid,jdbcType=VARCHAR} AS MAIN_GUID
             FROM dual
         </foreach>
-            ) t
+            ) a  ORDER BY a.PIC_NAME ASC ) t
     </insert>
+
+    <delete id="batchDeleteMangaDetail" parameterType="java.util.List">
+        DELETE FROM Manga.Manga_Detail WHERE main_guid IN
+        <foreach collection="mainGuidList" item="mainGuid" separator="," open="(" close=")">
+            #{mainGuid}
+        </foreach>
+    </delete>
+    
+    <select id="getRowsByGuids" parameterType="java.util.List" resultType="java.lang.Integer">
+        SELECT count(1) FROM Manga.Manga_Detail WHERE main_guid IN
+        <foreach collection="mainGuidList" item="mainGuid" separator="," open="(" close=")">
+            #{mainGuid}
+        </foreach>
+    </select>
 
     <select id="listMangaDetailByGuid" resultMap="mangaDetailMap">
         SELECT
@@ -34,6 +49,19 @@
             t.PIC_PATH,
             t.MAIN_GUID
         FROM Manga.Manga_Detail t
-        WHERE t.guid = #{guid, jdbcType=VARCHAR}
+        WHERE t.main_guid = #{mainGuid}
     </select>
+
+    <select id="getPicPathById" resultMap="mangaDetailMap">
+        SELECT
+            t.GUID,
+            t.ID,
+            t.PIC_NAME,
+            t.PIC_PATH,
+            t.MAIN_GUID
+        FROM Manga.Manga_Detail t
+        WHERE t.ID = #{id}
+    </select>
+
+
 </mapper>

@@ -4,22 +4,33 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/public-frame.css">
     <script src="../js/frame/jquery-3.6.0.js"></script>
-    <script src="../js/public/public-frame.js"></script>
     <script type="text/javascript" src="../js/public/public-navigation.js"></script>
     <style>
-        #head-wrapper {display:flex;height:100%;border-radius:10px;background:#5f636b;}
-        #img-wrapper {display:flex;float:left;z-index:1;max-width:220px;max-height:350px;overflow:hidden;margin:20px;justify-content:center;}
-        #img-wrapper img  {max-width:100%;max-height:100%;border-radius:10px;background:rgba(0, 0, 0, 0.3);align-self:center;object-fit:contain;border:1px solid #000000;}
-        #info-wrapper {display:flex;width:1050px;height:100%;padding-top:15px;flex-direction:row;}
-        #info-left {display:flex;width:200px;height:100%;margin:10px 15px;flex-direction:column;}
-        #info-cate, #info-artist{text-align:center;}
-        #info-cate, #info-artist, #info-detail {display:block;margin-bottom:15px;}
-        #info-right {width:850px;margin:0 0 0 5px;}
-        #info-detail td.info-detail-key{height:30px;border-spacing:3px 0;font-weight:bold;white-space:nowrap;}
-        #info-detail td.info-detail-value{height:30px;padding-left:3px;white-space:nowrap;}
-        #info-tag td.tag-list-key{padding-top:3px;font-family:verdana;text-align:right;vertical-align:top;}
-        #info-tag div.tag-list-value {float:left;position:relative;height:26px;margin:2px 2px 0 2px;padding:2px 5px;border-radius:5px;background:#4F535B;border:1px solid #989898;}
-        .tag-list-value a, #info-artist a{color:cornsilk;}
+        #head-wrapper {display: flex;height: 100%;border-radius: 10px;background: #5f636b;}
+        #head-img-wrapper {display: flex;float: left;z-index: 1;max-width: 220px;max-height: 350px;overflow: hidden;margin: 20px;justify-content: center;}
+        #head-img-wrapper img {max-width: 100%;max-height: 100%;border-radius: 10px;background: rgba(0, 0, 0, 0.3);align-self: center;object-fit: contain;border: 1px solid #000000;}
+        #info-wrapper {display: flex;width: 1050px;height: 100%;padding-top: 15px;flex-direction: row;}
+        #info-left {display: flex;width: 200px;height: 100%;margin: 10px 15px;flex-direction: column;}
+        #info-cate, #info-artist {text-align: center;}
+        #info-cate, #info-artist, #info-detail {display: block;margin-bottom: 15px;}
+        #info-right {width: 850px;margin: 0 0 0 5px;}
+        #info-detail td.info-detail-key {height: 30px;border-spacing: 3px 0;font-weight: bold;white-space: nowrap;}
+        #info-detail td.info-detail-value {height: 30px;padding-left: 3px;white-space: nowrap;}
+        #info-tag td.tag-list-key {padding-top: 3px;font-family: verdana;text-align: right;vertical-align: top;}
+        #info-tag div.tag-list-value {float: left;position: relative;height: 26px;margin: 2px 2px 0 2px;padding: 2px 5px;border-radius: 5px;background: #4F535B;border: 1px solid #989898;}
+        .tag-list-value a, #info-artist a {color: cornsilk;}
+        .img-wrapper{display: flex;max-width: 220px;max-height: 350px;overflow: hidden;margin: 5px;}
+        .img-wrapper img {max-width: 100%;max-height: 100%;border-radius: 10px;background: rgba(0, 0, 0, 0.3);align-self: center;object-fit: contain;border: 1px solid #000000;}
+        table.page-bar{clear:both;padding:0px;border-collapse:collapse;font-size:10pt;}
+        table.page-bar tr{background:rgba(0,139,139,0.8);}
+        table.page-bar td{width:31px;height:20px;font-size:14px;text-align:center;cursor:pointer;border:1px solid rgba(72,61,139,0.8);}
+        table.page-bar td:hover{font-size:18px;font-weight:bold;color:rgba(255,255,255,1);background:rgba(0,0,0,0.2);}
+        td.page_num{font-weight:bold;color:aqua;}
+        td.page_num[data-isCurrent=true]{font-size:14px;color:rgba(255,255,255,1);background:rgba(0,0,0,0.4);}
+        td.page_num:hover[data-isCurrent=true]{font-size:14px;color:rgba(255,255,255,1);background:rgba(0,0,0,0.4);}
+        td.page_change{color:aqua;}
+        td.page_change[data-isShow=false]{display:none;}
+        td.page_change:hover{color:rgba(255,255,255,1);}
     </style>
 </head>
 <body>
@@ -28,13 +39,15 @@
     <header id="head-container">
         <h1 id="base-title">Monoder - Just For Fun</h1>
         <div id="head-wrapper">
-            <div id="img-wrapper"
+            <div id="head-img-wrapper"
                  style="width: 220px;height: 350px; background: rgba(0, 0, 0, 0.3);border: 1px solid #000000;border-radius: 10px;">
                 <img src="" alt="">
             </div>
             <div id="info-wrapper">
                 <div id="info-left">
-                    <div id="info-cate"><div class="category wrapper_category" data-id="42390000">Doujinshi</div></div>
+                    <div id="info-cate">
+                        <div class="category wrapper_category" data-id="42390000">Doujinshi</div>
+                    </div>
                     <div id="info-artist"><a href="">Test</a></div>
                     <div id="info-detail">
                         <table>
@@ -55,406 +68,560 @@
                 </div>
                 <div id="info-right">
                     <div id="info-tag">
-                            <table>
-                                <tr>
-                                    <td class="tag-list-key">language:</td>
-                                    <td>
-                                        <div id="td_language:chinese" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_language:chinese" href="" class=""
-                                               onclick="return toggle_tagmenu('language:chinese',this)">chinese</a>
-                                        </div>
-                                        <div id="td_language:translated" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_language:translated" href="" class=""
-                                               onclick="return toggle_tagmenu('language:translated',this)">translated</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tag-list-key">parody:</td>
-                                    <td>
-                                        <div id="td_parody:pokemon" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_parody:pokemon" href="" class=""
-                                               onclick="return toggle_tagmenu('parody:pokemon',this)">pokemon | pocket
-                                                monsters</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tag-list-key">artist:</td>
-                                    <td>
-                                        <div id="td_artist:highware" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_artist:highware" href="" class=""
-                                               onclick="return toggle_tagmenu('artist:highware',this)">highware</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tag-list-key">male:</td>
-                                    <td>
-                                        <div id="td_male:blackmail" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_male:blackmail" href="" class=""
-                                               onclick="return toggle_tagmenu('male:blackmail',this)">blackmail</a>
-                                        </div>
-                                        <div id="td_male:shotacon" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_male:shotacon" href="" class=""
-                                               onclick="return toggle_tagmenu('male:shotacon',this)">shotacon</a>
-                                        </div>
-                                        <div id="td_male:sole_male" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_male:sole_male" href="" class=""
-                                               onclick="return toggle_tagmenu('male:sole male',this)">sole male</a>
-                                        </div>
-                                        <div id="td_male:toddlercon" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_male:toddlercon" href="" class=""
-                                               onclick="return toggle_tagmenu('male:toddlercon',this)">toddlercon</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tag-list-key">female:</td>
-                                    <td>
-                                        <div id="td_female:ahegao" class="tag-list-value" style="opacity:1.0"><a
-                                                id="ta_female:ahegao" href="" class=""
-                                                onclick="return toggle_tagmenu('female:ahegao',this)">ahegao</a>
-                                        </div>
-                                        <div id="td_female:anal" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:anal" href="" class=""
-                                               onclick="return toggle_tagmenu('female:anal',this)">anal</a>
-                                        </div>
-                                        <div id="td_female:ball_sucking" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:ball_sucking" href="" class=""
-                                               onclick="return toggle_tagmenu('female:ball sucking',this)">ball sucking</a>
-                                        </div>
-                                        <div id="td_female:bisexual" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:bisexual" href="" class=""
-                                               onclick="return toggle_tagmenu('female:bisexual',this)">bisexual</a>
-                                        </div>
-                                        <div id="td_female:blackmail" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:blackmail" href="" class=""
-                                               onclick="return toggle_tagmenu('female:blackmail',this)">blackmail</a>
-                                        </div>
-                                        <div id="td_female:bukkake" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:bukkake" href="" class=""
-                                               onclick="return toggle_tagmenu('female:bukkake',this)">bukkake</a>
-                                        </div>
-                                        <div id="td_female:gokkun" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:gokkun" href="" class=""
-                                               onclick="return toggle_tagmenu('female:gokkun',this)">gokkun</a>
-                                        </div>
-                                        <div id="td_female:humiliation" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:humiliation" href="" class=""
-                                               onclick="return toggle_tagmenu('female:humiliation',this)">humiliation</a>
-                                        </div>
-                                        <div id="td_female:layer_cake" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:layer_cake" href="" class=""
-                                               onclick="return toggle_tagmenu('female:layer cake',this)">layer cake</a>
-                                        </div>
-                                        <div id="td_female:lolicon" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:lolicon" href="" class=""
-                                               onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
-                                        <div class="tag-list-value" style="opacity:1.0">
-                                            <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
-                                        </div>
+                        <table>
+                            <tr>
+                                <td class="tag-list-key">language:</td>
+                                <td>
+                                    <div id="td_language:chinese" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_language:chinese" href="" class=""
+                                           onclick="return toggle_tagmenu('language:chinese',this)">chinese</a>
+                                    </div>
+                                    <div id="td_language:translated" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_language:translated" href="" class=""
+                                           onclick="return toggle_tagmenu('language:translated',this)">translated</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tag-list-key">parody:</td>
+                                <td>
+                                    <div id="td_parody:pokemon" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_parody:pokemon" href="" class=""
+                                           onclick="return toggle_tagmenu('parody:pokemon',this)">pokemon | pocket
+                                            monsters</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tag-list-key">artist:</td>
+                                <td>
+                                    <div id="td_artist:highware" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_artist:highware" href="" class=""
+                                           onclick="return toggle_tagmenu('artist:highware',this)">highware</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tag-list-key">male:</td>
+                                <td>
+                                    <div id="td_male:blackmail" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_male:blackmail" href="" class=""
+                                           onclick="return toggle_tagmenu('male:blackmail',this)">blackmail</a>
+                                    </div>
+                                    <div id="td_male:shotacon" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_male:shotacon" href="" class=""
+                                           onclick="return toggle_tagmenu('male:shotacon',this)">shotacon</a>
+                                    </div>
+                                    <div id="td_male:sole_male" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_male:sole_male" href="" class=""
+                                           onclick="return toggle_tagmenu('male:sole male',this)">sole male</a>
+                                    </div>
+                                    <div id="td_male:toddlercon" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_male:toddlercon" href="" class=""
+                                           onclick="return toggle_tagmenu('male:toddlercon',this)">toddlercon</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tag-list-key">female:</td>
+                                <td>
+                                    <div id="td_female:ahegao" class="tag-list-value" style="opacity:1.0"><a
+                                            id="ta_female:ahegao" href="" class=""
+                                            onclick="return toggle_tagmenu('female:ahegao',this)">ahegao</a>
+                                    </div>
+                                    <div id="td_female:anal" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:anal" href="" class=""
+                                           onclick="return toggle_tagmenu('female:anal',this)">anal</a>
+                                    </div>
+                                    <div id="td_female:ball_sucking" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:ball_sucking" href="" class=""
+                                           onclick="return toggle_tagmenu('female:ball sucking',this)">ball sucking</a>
+                                    </div>
+                                    <div id="td_female:bisexual" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:bisexual" href="" class=""
+                                           onclick="return toggle_tagmenu('female:bisexual',this)">bisexual</a>
+                                    </div>
+                                    <div id="td_female:blackmail" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:blackmail" href="" class=""
+                                           onclick="return toggle_tagmenu('female:blackmail',this)">blackmail</a>
+                                    </div>
+                                    <div id="td_female:bukkake" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:bukkake" href="" class=""
+                                           onclick="return toggle_tagmenu('female:bukkake',this)">bukkake</a>
+                                    </div>
+                                    <div id="td_female:gokkun" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:gokkun" href="" class=""
+                                           onclick="return toggle_tagmenu('female:gokkun',this)">gokkun</a>
+                                    </div>
+                                    <div id="td_female:humiliation" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:humiliation" href="" class=""
+                                           onclick="return toggle_tagmenu('female:humiliation',this)">humiliation</a>
+                                    </div>
+                                    <div id="td_female:layer_cake" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:layer_cake" href="" class=""
+                                           onclick="return toggle_tagmenu('female:layer cake',this)">layer cake</a>
+                                    </div>
+                                    <div id="td_female:lolicon" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:lolicon" href="" class=""
+                                           onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
+                                    <div class="tag-list-value" style="opacity:1.0">
+                                        <a href="" class="" onclick="return toggle_tagmenu('female:lolicon',this)">lolicon</a>
+                                    </div>
 
-                                        <div id="td_female:multimouth_blowjob" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:multimouth_blowjob" href="" class=""
-                                               onclick="return toggle_tagmenu('female:multimouth blowjob',this)">multimouth
-                                                blowjob</a>
-                                        </div>
-                                        <div id="td_female:shimaidon" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:shimaidon" href="" class=""
-                                               onclick="return toggle_tagmenu('female:shimaidon',this)">shimaidon</a>
-                                        </div>
-                                        <div id="td_female:sister" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:sister" href="" class=""
-                                               onclick="return toggle_tagmenu('female:sister',this)">sister</a>
-                                        </div>
-                                        <div id="td_female:toddlercon" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:toddlercon" href="" class=""
-                                               onclick="return toggle_tagmenu('female:toddlercon',this)">toddlercon</a>
-                                        </div>
-                                        <div id="td_female:twins" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:twins" href="" class=""
-                                               onclick="return toggle_tagmenu('female:twins',this)">twins</a>
-                                        </div>
-                                        <div id="td_female:x-ray" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_female:x-ray" href="" class=""
-                                               onclick="return toggle_tagmenu('female:x-ray',this)">x-ray</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tag-list-key">mixed:</td>
-                                    <td>
-                                        <div id="td_mixed:ffm_threesome" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_mixed:ffm_threesome" href="" class=""
-                                               onclick="return toggle_tagmenu('mixed:ffm threesome',this)">ffm threesome</a>
-                                        </div>
-                                        <div id="td_mixed:group" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_mixed:group" href="" class=""
-                                               onclick="return toggle_tagmenu('mixed:group',this)">group</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="tag-list-key">other:</td>
-                                    <td>
-                                        <div id="td_other:comic" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_other:comic" href="" class=""
-                                               onclick="return toggle_tagmenu('other:comic',this)">comic</a>
-                                        </div>
-                                        <div id="td_other:full_color" class="tag-list-value" style="opacity:1.0">
-                                            <a id="ta_other:full_color" href="" class=""
-                                               onclick="return toggle_tagmenu('other:full color',this)">full color</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+                                    <div id="td_female:multimouth_blowjob" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:multimouth_blowjob" href="" class=""
+                                           onclick="return toggle_tagmenu('female:multimouth blowjob',this)">multimouth
+                                            blowjob</a>
+                                    </div>
+                                    <div id="td_female:shimaidon" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:shimaidon" href="" class=""
+                                           onclick="return toggle_tagmenu('female:shimaidon',this)">shimaidon</a>
+                                    </div>
+                                    <div id="td_female:sister" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:sister" href="" class=""
+                                           onclick="return toggle_tagmenu('female:sister',this)">sister</a>
+                                    </div>
+                                    <div id="td_female:toddlercon" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:toddlercon" href="" class=""
+                                           onclick="return toggle_tagmenu('female:toddlercon',this)">toddlercon</a>
+                                    </div>
+                                    <div id="td_female:twins" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:twins" href="" class=""
+                                           onclick="return toggle_tagmenu('female:twins',this)">twins</a>
+                                    </div>
+                                    <div id="td_female:x-ray" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_female:x-ray" href="" class=""
+                                           onclick="return toggle_tagmenu('female:x-ray',this)">x-ray</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tag-list-key">mixed:</td>
+                                <td>
+                                    <div id="td_mixed:ffm_threesome" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_mixed:ffm_threesome" href="" class=""
+                                           onclick="return toggle_tagmenu('mixed:ffm threesome',this)">ffm threesome</a>
+                                    </div>
+                                    <div id="td_mixed:group" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_mixed:group" href="" class=""
+                                           onclick="return toggle_tagmenu('mixed:group',this)">group</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tag-list-key">other:</td>
+                                <td>
+                                    <div id="td_other:comic" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_other:comic" href="" class=""
+                                           onclick="return toggle_tagmenu('other:comic',this)">comic</a>
+                                    </div>
+                                    <div id="td_other:full_color" class="tag-list-value" style="opacity:1.0">
+                                        <a id="ta_other:full_color" href="" class=""
+                                           onclick="return toggle_tagmenu('other:full color',this)">full color</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </header>
-
     <main id="body-container">
         <p class="info">Showing <strong></strong> results</p>
         <table class="page-bar" style="margin:2px auto 0">
             <tr></tr>
         </table>
         <div id="body-wrapper" class="body-grid">
+
         </div>
+
         <table class="page-bar" style="margin:2px auto 0">
             <tr></tr>
         </table>
     </main>
 </div>
 </body>
+<script src="../js/public/public-frame.js"></script>
 <script>
-    const mangaGuid = getUrlParam("mainGuid");
-
     // 定义常用的 jQuery 对象
     const sel_$baseTitle = "#base-title";
-    const sel_$imgWrapper = "#img-wrapper";
-    const sel_$imgWrapper_Img = "#img-wrapper img";
+    const sel_$HeadImgWrapper = "#head-img-wrapper";
+    const sel_$HeadImgWrapper_Img = "#head-img-wrapper img";
     const sel_$category = ".category";
     const sel_$infoDetailValue = ".info-detail-value";
 
+    const sel_$bodyInfo = ".info strong";
+    const sel_$bodyWrapper = "#body-wrapper";
+    const sel_$bodyWrapper_Img = "#body-wrapper img";
+    const sel_$pageBar_Tr = ".page-bar tr";
+
     let $baseTitle = $(sel_$baseTitle);
-    let $imgWrapper = $(sel_$imgWrapper);
-    let $imgWrapper_Img = $(sel_$imgWrapper_Img);
+    let $HeadImgWrapper = $(sel_$HeadImgWrapper);
+    let $HeadImgWrapper_Img = $(sel_$HeadImgWrapper_Img);
     let $category = $(sel_$category);
     let $infoDetailValue = $(sel_$infoDetailValue);
 
+    let $bodyWrapper = $(sel_$bodyWrapper);
+    let $bodyWrapper_Img = $(sel_$bodyWrapper_Img);
+    let $pageBar_Tr = $(sel_$pageBar_Tr);
+    let $bodyInfo = $(sel_$bodyInfo);
+
+    // 获取 URL 参数
+    const mangaGuid = getUrlParam("mainGuid");
+
+    let mangaInfoDTO = null;
+    let mangaDetailDTOList = [];
+
+    // 设置页数
+    let pages = 2;
+    let pageNum = 1;
+
     $(document).ready(function () {
-        $imgWrapper_Img = $(sel_$imgWrapper_Img);
-
-        // 加载封面
-        $.ajax({
-            type: "post",
-            dataType: "text",
-            data: {mangaGuid: mangaGuid},
-            url: "/MangaInfo/getWrapper",
-            success: function (wrapperSource) {
-                // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
-                $imgWrapper_Img.attr("src", wrapperSource);
-                $imgWrapper.removeAttr("style");
-            }
-        });
-
-        // 加载信息
-        $category = $(sel_$category);
-        $infoDetailValue = $(sel_$infoDetailValue);
-        $.ajax({
-            type: "POST",
-            url: "/MangaInfo/getMangaInfo",
-            dataType: "text",
-            data: {mangaGuid: mangaGuid},
-            success: (response) => {
-                // 解析结果
-                const mangaInfo = JSON.parse(response).data;
-                const {dicEnumCategoryDTO: mangaCategory} = mangaInfo;
-                // 修改页面数据
-                $baseTitle.text( mangaInfo.mangaName );
-                $(document).prop("title", mangaInfo.mangaName);
-                $category.attr("data-id", mangaCategory.dicEnumID)
-                    .text(mangaCategory.dicEnumName);
-                $infoDetailValue.eq(0).text(formatDateString(mangaInfo.updateTime, "date"));
-                $infoDetailValue.eq(2).text(mangaInfo.pageCount + " Pages");
-            },
-            error: () => {
-            }
-        });
+        // 加载头部信息
+        initHeader();
 
         // 获取漫画资源
-        $.ajax({
+        let dataTablesData = newDataTables(pageNum, null);
+        let postData = newJsonResult( dataTablesData, null, mangaGuid );
+        let listMangaDetail = $.ajax({
             type: "post",
-            dataType: "text",
-            data: {"mainGuid": mangaGuid},
-            url: "/MangaDetail/listMangaDetailByPage",
-            success: function (result) {
-
-                let listMangaDetail = result.list;
-                let pageSize = result.size;
-
-                $("#body_wrapper .info").text("Showing " + result.total + " results");
-
-
-                // 遍历添加 Dom 节点框架
-                for (let i = 0; i < pageSize; i++) {
-                    let detailGuid = listMangaDetail[i].guid;
-                    let detailId = listMangaDetail[i].id;
-                    let detailMainGuid = listMangaDetail[i].mainGuid;
-
-                    $(".manga_wrapper").append(
-                        "           <div class=\"gdt\" style=\"max-height:319px; max-width: 239px\">\n" +
-                        "               <div style=\"height:340px;width:240px;top:-2px; \">\n" +
-                        "                   <a href=\"\">\n" +
-                        "                       <img style=\"object-fit: contain;\" id=\"" + detailGuid + "\"  title=\"" + detailId + "\" src=\"\" alt=\"" + detailId + "\" />\n" +
-                        "                   </a>\n" +
-                        "               </div>\n" +
-                        "            </div>"
-                    );
-                }
-
-                // 遍历，在框架中根据封面 Guid 请求图片流，并进行添加
-                for (let i = 0; i < pageSize; i++) {
-                    let detailGuid = $(".manga_wrapper img")[i].id;
-                    $.ajax({
-                        type: "post",
-                        dataType: "text",
-                        data: {guid: detailGuid},
-                        url: "/MangaDetail/getThumbnail",
-                        success: function (thumbnail) {
-                            // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
-                            let manga_img = $(".manga_wrapper img").eq(i);
-                            manga_img.attr("src", thumbnail);
-                            $("div.gdtl div").removeAttr("style");
-                        }
-                    });
-                }
-
-
+            url: "/MangaDetail/listMangaDetail",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(postData),
+            success: (response) => {
+                pageReload(response);
             }
         });
     });
 
+    function initHeader() {
+        const guid = mangaGuid;
+        // 加载详情
+        $category = $(sel_$category);
+        $infoDetailValue = $(sel_$infoDetailValue);
+        server_InitInfo($category, $infoDetailValue, guid);
+        // 加载封面
+        $HeadImgWrapper_Img = $(sel_$HeadImgWrapper_Img);
+        server_InitWrapper($HeadImgWrapper, $HeadImgWrapper_Img, guid);
+
+        /**
+         * 加载 Header 详情
+         * @param $category 分类容器
+         * @param $infoDetailValue 详情容器
+         * @param mangaGuid 从 URL 获取的 mangaGuid
+         */
+        function server_InitInfo($category, $infoDetailValue, mangaGuid) {
+            $.ajax({
+                type: "post",
+                url: "/MangaInfo/getMangaInfo",
+                dataType: "text",
+                data: {mangaGuid: mangaGuid},
+                success: (response) => {
+                    // 解析结果
+                    mangaInfoDTO = JSON.parse(response).data;
+                    const {dicEnumCategoryDTO: mangaCategory} = mangaInfoDTO;
+                    // 修改页面数据
+                    $(document).prop("title", mangaInfoDTO.mangaName);  // 网页标题
+                    $baseTitle.text(mangaInfoDTO.mangaName);    // 漫画标题
+                    $category.attr("data-id", mangaInfoDTO.dicEnumID)   // 分类
+                        .text(mangaCategory.dicEnumName);
+                    // 其他详情
+                    $infoDetailValue.eq(0).text(formatDateString(mangaInfoDTO.updateTime, "date"));
+                    $infoDetailValue.eq(2).text(mangaInfoDTO.pageCount + " Pages");
+                },
+                error: () => {
+                }
+            });
+        }
+
+        /**
+         * 加载左上角的封面图
+         * @param $HeadImgWrapper 封面图片容器
+         * @param $HeadImgWrapper_Img 封面图片标签
+         * @param guid 从 URL 获取的 mangaGuid
+         */
+        function server_InitWrapper($HeadImgWrapper, $HeadImgWrapper_Img, mangaGuid) {
+            $.ajax({
+                type: "post",
+                dataType: "text",
+                data: {mangaGuid: mangaGuid},
+                url: "/MangaInfo/getWrapper",
+                success: (wrapperSource) => {
+                    // manga_img 需要在 success 中进行取值，不然会一直为遍历最后一个值
+                    $HeadImgWrapper.removeAttr("style");
+                    $HeadImgWrapper_Img.attr("src", wrapperSource);
+                }
+            });
+        }
+
+    }
+
+    function pageReload(responseData) {
+        mangaDetailDTOList = responseData.data.list;
+        pages = responseData.data.pages;
+
+        // 渲染页面提示信息
+        $bodyInfo.text(responseData.data.total);
+
+        // 渲染图片框架
+        $bodyWrapper = $(sel_$bodyWrapper);
+        $bodyWrapper.empty();
+        initWrapperContainer($bodyWrapper, mangaDetailDTOList);
+
+        // 图片资源渲染
+        $bodyWrapper_Img = $(sel_$bodyWrapper_Img);
+        $bodyWrapper_Img.empty();
+        server_InitWrapperSource($bodyWrapper_Img);
+
+        // 分页实现
+        $pageBar_Tr = $(sel_$pageBar_Tr);
+        $pageBar_Tr.empty();
+        initPageBar($pageBar_Tr, responseData.data);
+    }
+    /**
+     *  渲染页面漫画封面的容器框架部分
+     *  const sel_$bodyWrapper = "#body-wrapper";
+     *  let $bodyWrapper = $(sel_$bodyWrapper);
+     * @param $bodyWrapper  ( #body-wrapper ) 漫画封面容器的 jQuery 对象
+     * @param mangaDetailDTOList  DTO集合
+     */
+    function initWrapperContainer($bodyWrapper, mangaDetailDTOList) {
+        mangaDetailDTOList.forEach(( mangaDetailDTO ) => {
+            $bodyWrapper.append(`
+            <div id="" class="img-wrapper" style="width: 220px;height: 350px; background: rgba(0, 0, 0, 0.3);border: 1px solid #000000;border-radius: 10px;">
+                    <img id="${mangaDetailDTO.id}" title="${mangaDetailDTO.picName}" src="" alt="${mangaDetailDTO.picName}"/>
+            </div>
+                    `)
+        });
+    }
+
+    /**
+     * 传入主体，发送请求，获取图片资源
+     * @param $bodyWrapper_Img 主体的漫画容器
+     */
+    function server_InitWrapperSource($bodyWrapper_Img) {
+        // 在框架中根据封面 Guid 循环请求封面图片
+        $bodyWrapper_Img.each((index, element) => {
+            let picId = $(element).attr("id");
+            $.ajax({
+                type: "post",
+                url: "/MangaDetail/getPic",
+                dataType: "text",
+                data: {picId: picId},
+                success: (picSource) => {
+                    $(element).attr("src", picSource);
+                    $(element).closest(".img-wrapper").removeAttr("style");
+                },
+                error: (xhr, textStatus, errorThrown) => {
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+    }
+
+    /**
+     * 渲染分页栏
+     * let $pageBar_Tr = $(".page_bar tr");
+     * @param $pageBar_Tr   ( .page_bar tr ) 分页栏渲染的 jQuery 对象
+     * @param pageInfo - PageHelper 分页后的结果集合
+     */
+    function initPageBar($pageBar_Tr, pageInfo) {
+        // 获取当前页和总页数
+        let {pageNum, pages} = pageInfo;
+
+        // 定义跳转页数的函数
+        let changePage = newPageNum => {
+            pageNum = newPageNum;
+            server_PageChangeLoad(pageNum);
+        };
+
+        // 计算页码的起始和结束位置
+        let pageStart = 1;
+        let pageEnd = pages;
+        if (pages > 5) {
+            if (pageNum <= 3) {
+                pageEnd = 5;
+            } else if (pageNum >= pages - 2) {
+                pageStart = pages - 4;
+            } else {
+                pageStart = pageNum - 2;
+                pageEnd = pageNum + 2;
+            }
+        }
+
+        // 渲染页码元素
+        $pageBar_Tr.empty().append(`
+    <td class="page_change" onclick="getPreviousPage()" data-isShow="${pageInfo.hasPreviousPage}">&lt;</td>
+    ${pageStart > 1 ? `<td class="page_num" onclick="pageChange(1)">1</td>
+                        <td class="page_num" onclick="pageChange(${pageStart - 1})">...</td>` : ""}
+    ${Array.from({length: pageEnd - pageStart + 1}, (_, i) => pageStart + i)
+            .map(page => `<td class="page_num" onclick="pageChange(${page})" data-isCurrent="${page === pageNum}">${page}</td>`)
+            .join("")}
+    ${pageEnd < pages ? `<td class="page_num" onclick="pageChange(${pageEnd + 1})">...</td>
+                        <td class="page_num" onclick="pageChange(${pages})">${pages}</td>` : ""}
+    <td class="page_change" onclick="getNextPage()" data-isShow="${pageInfo.hasNextPage}">&gt;</td>
+  `);
+    }
+
+    function pageChange(targetPageNum) {
+        pageNum = targetPageNum;
+        server_PageChangeLoad(pageNum);
+    }
+
+    function getPreviousPage() {
+        if (pageNum > 1) {
+            pageNum--;
+            server_PageChangeLoad(pageNum);
+        }
+    }
+
+    function getNextPage() {
+        if (pageNum < pages) {
+            pageNum++;
+            server_PageChangeLoad(pageNum);
+        }
+    }
+
+    /**
+     * 根据页码请求后台新的分页数据
+     * @param pageNum
+     */
+    function server_PageChangeLoad(pageNum) {
+        let dataTablesData = newDataTables(pageNum, null);
+        let postData = newJsonResult( dataTablesData, null, mangaGuid );
+        postData.dataTables.pageNum = pageNum;
+        $.ajax({
+            type: "post",
+            url: "/MangaDetail/listMangaDetail",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(postData),
+            success: function (response) {
+                pageReload(response);
+            }
+        });
+    }
 
     function getUrlParam(name) {
         const searchParams = new URLSearchParams(window.location.search);
         const key = searchParams.get(name);
-
-        if (key != null) return key;
-
+        if (key != null) {
+            return key;
+        }
         return null;
     }
 
 </script>
+
 </html>

@@ -124,6 +124,7 @@
     const sel_$bodyContainer_Info = "#body-container .info";
     const sel_$contentBody_Img = ".content-body img";
     const sel_$pageBar_Tr = ".page-bar tr";
+
     let $category = $(sel_$category);
     let $bodyWrapper = $(sel_$bodyWrapper);
     let $bodyContainer_Info = $(sel_$bodyContainer_Info);
@@ -133,8 +134,8 @@
     // 加载框架
     $(document).ready(function () {
         // 封装 DataTables 类型数据用于发送请求
-        let dataTablesData = {pageNum: pageNum};
-        let postData = getDataTablesPostData(dataTablesData);
+        let dataTablesData = newDataTables(pageNum, null);
+        let postData = newJsonResult( dataTablesData );
         let listMangeInfo = $.ajax({
             type: "post",
             url: "/MangaInfo/listMangaInfo",
@@ -189,8 +190,9 @@
 
     /**
      *  渲染页面漫画封面的容器框架部分
-     *  let $bodyWrapper = $("#manga-wrapper");
-     * @param $bodyWrapper  ( #manga-wrapper ) 漫画封面的 jQuery 对象
+     *  const sel_$bodyWrapper = "#body-wrapper";
+     *  let $bodyWrapper = $(sel_$bodyWrapper);
+     * @param $bodyWrapper  ( #body-wrapper ) 漫画封面容器的 jQuery 对象
      * @param pageInfo  PageHelper 分页后的结果集合
      */
     function initWrapperContainer($bodyWrapper, pageInfo) {
@@ -370,9 +372,8 @@
      * @param pageNum
      */
     function pageChangeLoad(pageNum) {
-        let originalData = {pageNum};
-        let postData = getDataTablesPostData(originalData);
-        postData.dataTables.pageNum = pageNum;
+        let dataTablesData = newDataTables(pageNum, null);
+        let postData = newJsonResult( dataTablesData);
         $.ajax({
             type: "POST",
             url: "/MangaInfo/listMangaInfo",
