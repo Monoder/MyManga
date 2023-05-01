@@ -508,10 +508,9 @@
         revokeObjectUrls();
         uploadFiles.length = 0;
         objectUrls.length = 0;
-        // 获取获取数组对象、ObjectUrl对象
+        // 获取获取上传的文件对象、ObjectUrl对象
         uploadFiles = Array.from(document.getElementById("upload-files").files);
         objectUrls = getObjectUrls(uploadFiles);
-
         // 完善信息
         size = uploadFiles.length;  // pageCount
         folderName = uploadFiles[0].webkitRelativePath.split("/")[0]; // mangaName
@@ -537,13 +536,14 @@
         mangaInfoDTO = newMangaInfoDTO();
         // 添加数据
         mangaInfoDTO.mangaName = folderName;
+        mangaInfoDTO.mangaPath = folderName;
         mangaInfoDTO.pageCount = size;
         mangaInfoDTO.createTime = currentTime;
         mangaInfoDTO.updateTime = currentTime;
         mangaInfoDTO.dicEnumCategoryDTO.dicEnumID = $category.val();
         mangaInfoDTO.remark = $remark.val();
 
-        // 1. 异步上传封面图片
+        // 1. 异步上传图片
         // 2. 上传完成返回图片的保存路径
         // 3. 拿到路径后开始提交表单
         handleFileUpload();
@@ -551,17 +551,20 @@
         async function handleFileUpload() {
             try {
                 // 遍历 uploadFiles 获取上传后的文件路径添加到mangaDetailDTOList
-                for (const file of uploadFiles) {
+                for (const [index, file] of uploadFiles.entries()) {
                     let mangaDetailDTO = newMangaDetailDTO();
                     mangaDetailDTO.picName = file.name;
+                    mangaDetailDTO.picNo = index;
+                    // 遍历上传图片
                     mangaDetailDTO.picPath = await uploadMangaFile(file);
                     mangaDetailDTOList.push(mangaDetailDTO);
                 }
                 mangaInfoDTO.wrapper = mangaDetailDTOList[0].picPath;
                 mangaInfoDTO.mangaDetailDTOList = mangaDetailDTOList;
+                // 提交创建请求
                 await submitForm(mangaInfoDTO);
             } catch (error) {
-                console.error("文件上传失败！" + error.responseText);
+                console.error( error.responseText );
             }
         }
 
@@ -571,12 +574,12 @@
                 formData.append("file", file);
                 $.ajax({
                     url: '/upload/mangaUpload',
-                    type: 'POST',
+                    type: 'post',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        resolve(response);
+                        resolve(response.data);
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         reject(xhr.responseText);  // 文件上传失败，将错误信息作为参数 reject Promise
@@ -585,25 +588,23 @@
             });
         }
 
-
         function submitForm(mangaInfoDTO) {
             return $.ajax({
                 type: "POST",
                 url: "/MangaInfo/mangaImport",
                 dataType: "JSON",
                 contentType: "application/json;charset=utf-8",
-                data: JSON.stringify(newJsonResult(mangaInfoDTO)),
+                data: JSON.stringify(newJsonResult(null, null, mangaInfoDTO)),
                 success: (response) => {
                     let successMessage = "上传成功！本次图库共：" + response.rows + " 个文件！";
-                    console.log(successMessage);
-                    if (!confirm(successMessage + "\n是否继续添加？")) {
+                    if (confirm(successMessage + "\n是否继续添加？")) {
+                        window.location.reload();
+                    } else {
                         window.location.href = `/web/MangaDetail.html?mainGuid=${response.data}`;
                     }
                 },
                 error: (xhr, textStatus, errorThrown) => {
-                    let errorMessage = xhr.responseText;
-                    console.error("表单提交失败！" + errorMessage);
-                    alert(errorMessage);
+                    alert( xhr.responseText );
                 }
             });
         }

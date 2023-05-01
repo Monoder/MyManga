@@ -2,17 +2,21 @@ package com.monoder.mymanga.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.monoder.mymanga.common.constant.MangaDetailConstant;
 import com.monoder.mymanga.common.enums.ImageFormatEnum;
+import com.monoder.mymanga.entity.dto.DataTables;
 import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
+import com.monoder.mymanga.entity.dto.JsonResult;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
 import com.monoder.mymanga.entity.po.MangaInfo;
-import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.DicEnumCategoryVO;
-import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import com.monoder.mymanga.mapper.MangaDetailMapper;
 import com.monoder.mymanga.mapper.MangaInfoMapper;
+import com.monoder.mymanga.service.IFileHandleService;
+import com.monoder.mymanga.service.IMangaDetailService;
 import com.monoder.mymanga.service.IMangaInfoService;
+import com.monoder.mymanga.service.exception.FileHandleException;
 import com.monoder.mymanga.service.exception.InsertException;
 import com.monoder.mymanga.service.exception.SelectException;
 import com.monoder.mymanga.tools.SystemInfoTools;
@@ -41,32 +45,69 @@ public class MangaInfoImpl implements IMangaInfoService{
     private final Logger logger = LoggerFactory.getLogger( IMangaInfoService.class );
 
     @Value( "${file.uploadFolder}" )
-    private String uploadFolder;
-
+    private String UPLOAD_HOME;
+    public static final String MANGA_HOME = MangaDetailConstant.MANGA_HOME;     // MANGA_PATH = "J:\\♥EX-Hentai♥\\♥MyManga♥\\"
+    @Autowired
+    private IFileHandleService iFileHandleService;
+    @Autowired
+    private IMangaDetailService iMangaDetailService;
     @Autowired
     private MangaInfoMapper mangaInfoMapper;
-
     @Autowired
     private MangaDetailMapper mangaDetailMapper;
 
     @Override
-    public MangaInfoDTO addMangaInfo( JsonResult< MangaInfoDTO > requestJsonRequest ){
-        // 传入的 DTO 中的 wrapper 是 String 类型，用来存放上传到 uploadFolder 的封面文件名
-        String wrapperPath = uploadFolder + requestJsonRequest.getData().getMangaName() + "/" + requestJsonRequest.getData().getWrapper();
-        // 1. 取出 MangaInfoVO 对象
-        MangaInfoVO mangaInfoVO = BeanConvertUtils.convertWithNested( requestJsonRequest.getData(), MangaInfoVO.class, "dicEnumCategoryDTO", DicEnumCategoryVO.class );
-        mangaInfoVO.setWrapper( ImageUtils.imageToByte( wrapperPath ) );
-        // 2. 根据 mangaName 判断是否存在
+    @Transactional
+    public JsonResult< String > addManga( MangaInfoDTO mangaInfoDTO ){
+        // 1. 取出数据转VO并判断图库是否存在
+        MangaInfoVO mangaInfoVO = BeanConvertUtils.convertWithNested( mangaInfoDTO, MangaInfoVO.class, "dicEnumCategoryDTO", DicEnumCategoryVO.class );
         String existGuid = mangaInfoMapper.getGuidByName( mangaInfoVO.getMangaName() );
+        String uploadMangaPath = mangaInfoDTO.getMangaPath();
         if( existGuid != null ){
             String errorMsg = "ERROR: 该漫画已存在！【MangaName-" + mangaInfoVO.getMangaName() + "】";
             logger.error( errorMsg );
+            iFileHandleService.uploadFolderDelete( uploadMangaPath );
             throw new InsertException( errorMsg );
         }
+        // 1. IFileHandleService 进行处理
+        MangaInfoDTO newMangaInfoDTO = iFileHandleService.mangaFileRename( mangaInfoDTO );
+        String mangaPath = newMangaInfoDTO.getMangaPath();
+        try{
+            // 2. 图片保存到本地
+            iFileHandleService.mangaFileMove( mangaInfoDTO, newMangaInfoDTO );
+            // 3. IMangaInfoService 将封面添加到数据库，并获取添加后的对象
+            newMangaInfoDTO = addMangaInfo( newMangaInfoDTO );
+            // 4. iMangaDetailService 将漫画详情添加到数据库
+            Integer rows = iMangaDetailService.batchAddMangaDetail( newMangaInfoDTO );
+            // 5. 删除上传文件夹中的文件
+            iFileHandleService.uploadFolderDelete( uploadMangaPath );
+            // 6. 包装成 JsonResult 并返回图库 Guid
+            JsonResult< String > jsonResult = new JsonResult<>( newMangaInfoDTO.getGuid() );
+            jsonResult.setRows( rows );
+            return jsonResult;
+        } catch( FileHandleException e ){
+            iFileHandleService.uploadFolderDelete( uploadMangaPath );
+            throw new InsertException( e.getMessage() );
+        } catch( Exception e ){
+            iFileHandleService.uploadFolderDelete( uploadMangaPath );
+            iFileHandleService.mangaFolderDelete( mangaPath );
+            throw new InsertException( e.getMessage() );
+        }
+    }
+
+    @Override
+    public MangaInfoDTO addMangaInfo( MangaInfoDTO mangaInfoDTO ){
+        // 1. 取出数据
+        String wrapperPath = UPLOAD_HOME + mangaInfoDTO.getWrapper();
+        // 2. 转 VO
+        MangaInfoVO mangaInfoVO = BeanConvertUtils.convertWithNested( mangaInfoDTO, MangaInfoVO.class, "dicEnumCategoryDTO", DicEnumCategoryVO.class );
         // 3. 补全其他信息
+        mangaInfoVO.setWrapper( ImageUtils.imageToByte( wrapperPath ) );
         mangaInfoVO.setIsDeleted( 2 );
+        mangaInfoVO.setUpdateTime( SystemInfoTools.getDataBaseTime() );
+        mangaInfoVO.setCreateTime( SystemInfoTools.getDataBaseTime() );
         mangaInfoVO.setCreator( SystemInfoTools.getUser() );
-        // 4. 开始插入，并返回插入行数
+        // 4. 添加数据库，设置了 selectKey，会将生成的 Guid 自动返回到 newMangaInfoVO 中
         Integer rows = mangaInfoMapper.addMangaInfo( mangaInfoVO );
         // 5. 根据 rows 判断是否插入成功
         if( rows != 1 ){
@@ -77,8 +118,9 @@ public class MangaInfoImpl implements IMangaInfoService{
         // 6. 获取插入的数据
         MangaInfoVO resultMangaInfoVO = mangaInfoMapper.getMangaInfoByGuid( mangaInfoVO.getGuid() );
         // 7. 转 DTO 返回
-        MangaInfoDTO resultMangaInfoDTO = BeanConvertUtils.convertWithNested( resultMangaInfoVO, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
-        return resultMangaInfoDTO;
+        MangaInfoDTO newMangaInfoDTO = BeanConvertUtils.convertWithNested( resultMangaInfoVO, MangaInfoDTO.class, "dicEnumCategoryVO", DicEnumCategoryDTO.class );
+        newMangaInfoDTO.setMangaDetailDTOList( mangaInfoDTO.getMangaDetailDTOList() );
+        return newMangaInfoDTO;
     }
 
     @Override
@@ -99,15 +141,14 @@ public class MangaInfoImpl implements IMangaInfoService{
         Integer deleteMangaInfoRows = mangaInfoMapper.batchDeleteMangaInfo( guidList );
         Integer originMangaDetailRows = mangaDetailMapper.getRowsByGuids( guidList );
         Integer deleteMangaDetailRows = mangaDetailMapper.batchDeleteMangaDetail( guidList );
-
-        if (deleteMangaInfoRows != originMangaInfoRows || deleteMangaDetailRows != originMangaDetailRows ) {
-            throw new RuntimeException("删除操作失败，整个事务被回滚");
+        if( deleteMangaInfoRows != originMangaInfoRows || deleteMangaDetailRows != originMangaDetailRows ){
+            throw new RuntimeException( "删除操作失败，整个事务被回滚" );
         }
         return true;
     }
 
     @Override
-    public JsonResult listMangaInfo( JsonResult< Object > requestJsonResult ){
+    public JsonResult listMangaInfo( JsonResult< Void > requestJsonResult ){
         // 从 requestJsonResult 中获取 DataTables 格式的请求参数
         DataTables dataTables = Optional.ofNullable( requestJsonResult.getDataTables() ).orElse( new DataTables() );
 

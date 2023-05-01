@@ -1,7 +1,7 @@
 package com.monoder.mymanga.controller;
 
+import com.monoder.mymanga.entity.dto.JsonResult;
 import com.monoder.mymanga.entity.dto.TagDTO;
-import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.service.ITagDetailService;
 import com.monoder.mymanga.service.exception.InsertException;
 import org.springframework.beans.factory.annotation.Autowired;

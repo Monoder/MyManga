@@ -93,7 +93,7 @@
                     contentType: "application/json;charset=utf-8",
                     data: function (value) {
                         let deleteGuidList = Object.keys(value.data);
-                        return JSON.stringify(newJsonResult(deleteGuidList));
+                        return JSON.stringify(newJsonResult(null, null, deleteGuidList));
                     },
                     success: function (result) {
                         alert("删除成功，本次删除数据: " + result["rows"] + "行！")
@@ -320,8 +320,8 @@
     function initWrapperSource($wrapperBody_Img, mangaGuid) {
         // 在框架中根据封面 Guid 循环请求封面图片
             $.ajax({
-                type: "post",
-                // dataType: "text",
+                type: "get",
+                dataType: "text",
                 data: {mangaGuid: mangaGuid},
                 url: "/MangaInfo/getWrapper",
                 success: (wrapperSource) => {

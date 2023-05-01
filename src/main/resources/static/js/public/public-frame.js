@@ -48,6 +48,17 @@ function getCurrentTime(format) {
     return `${year}${month}${day}${hour}${minute}${second}${millisecond}`;
 }
 
+function getFileUpdateTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${year}${month}${day}${hours}${minutes}${seconds}-`;
+}
+
 /**
  *
  * @param dataTablesData dataTables 发送的原始数据
@@ -110,9 +121,9 @@ function getCategoryList(categoryCode) {
 
 /**
  * 传入参数，返回格式化的与后端交互数据
- * @param dataTables
- * @param searchData
- * @param data
+ * @param dataTables dataTables 数据
+ * @param searchData searchData 数据
+ * @param data 返回的主体数据
  * @returns
  */
 function newJsonResult(dataTables, searchData, data) {
@@ -122,18 +133,6 @@ function newJsonResult(dataTables, searchData, data) {
         rows: null,
         dataTables: dataTables === null ? newDataTables() : dataTables,
         searchData: searchData === null ? newSearchData() : searchData,
-        data: data === null ? null : data,
-    }
-    return jsonResult;
-}
-
-function newJsonResult(data) {
-    let jsonResult = {
-        status: null,
-        message: null,
-        rows: null,
-        dataTables: newDataTables(),
-        searchData: newSearchData(),
         data: data === null ? null : data,
     }
     return jsonResult;
@@ -171,6 +170,7 @@ function newMangaInfoDTO() {
         mangaName: null,
         transName: null,
         wrapper: null,
+        mangaPath:null,
         remark: null,
         isDeleted: null,
         isLiked: null,
@@ -189,6 +189,7 @@ function newMangaDetailDTO() {
     let mangaDetailDTO = {
         guid: null,
         id: null,
+        picNo: null,
         picName: null,
         picPath: null,
         mainGuid: null,

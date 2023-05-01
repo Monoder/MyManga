@@ -10,6 +10,7 @@
         <result column="MANGA_NAME" property="mangaName"/>
         <result column="TRANS_NAME" property="transName"/>
         <result column="WRAPPER" property="wrapper"/>
+        <result column="MANGA_PATH" property="mangaPath"/>
         <result column="REMARK" property="remark"/>
         <result column="IS_DELETED" property="isDeleted"/>
         <result column="IS_LIKED" property="isLiked"/>
@@ -39,13 +40,14 @@
             SELECT sys_guid() AS guid FROM dual
         </selectKey>
         INSERT INTO
-        Manga.MANGA_INFO ( GUID, MANGA_NAME, TRANS_NAME, WRAPPER, REMARK, IS_DELETED, IS_LIKED, PAGE_COUNT,
+        Manga.MANGA_INFO ( GUID, MANGA_NAME, TRANS_NAME, WRAPPER, MANGA_PATH, REMARK, IS_DELETED, IS_LIKED, PAGE_COUNT,
         CATEGORY_GUID, UPDATE_TIME, CREATE_TIME, CREATOR )
         SELECT
         #{guid},
         #{mangaName, jdbcType=VARCHAR},
         #{transName, jdbcType=VARCHAR},
         #{wrapper},
+        #{mangaPath,jdbcType=CLOB},
         #{remark, jdbcType=VARCHAR},
         #{isDeleted, jdbcType=VARCHAR},
         #{isLiked, jdbcType=VARCHAR},
@@ -123,6 +125,7 @@
         SELECT t.guid,
                t.manga_name,
                t.trans_name,
+               t.manga_path,
                t.remark,
                t.is_deleted,
                t.is_liked,

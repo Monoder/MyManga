@@ -10,6 +10,7 @@ public class MangaInfoVO{
     private String mangaName;
     private String transName;
     private byte[] wrapper;
+    private String mangaPath;
     private String remark;
     private Integer isDeleted;
     private Integer isLiked;

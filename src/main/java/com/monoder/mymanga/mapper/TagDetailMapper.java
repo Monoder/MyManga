@@ -1,8 +1,8 @@
 package com.monoder.mymanga.mapper;
 
+import com.monoder.mymanga.entity.dto.DataTables;
 import com.monoder.mymanga.entity.dto.TagDTO;
 import com.monoder.mymanga.entity.po.TagDetail;
-import com.monoder.mymanga.entity.vo.DataTables;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.monoder.mymanga.mapper;
 
 import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
-import com.monoder.mymanga.entity.po.DicEnumCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public interface DicEnumCategoryMapper{
 
     /**
      * 传入 ID 返回对应 Guid
-     * @param cicEnumID
+     * @param dicEnumID
      * @return
      */
     String getGuidByID( Integer dicEnumID );

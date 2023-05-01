@@ -393,6 +393,7 @@
         // 获取漫画资源
         let dataTablesData = newDataTables(pageNum, null);
         let postData = newJsonResult( dataTablesData, null, mangaGuid );
+        console.log( postData )
         let listMangaDetail = $.ajax({
             type: "post",
             url: "/MangaDetail/listMangaDetail",
@@ -423,7 +424,7 @@
          */
         function server_InitInfo($category, $infoDetailValue, mangaGuid) {
             $.ajax({
-                type: "post",
+                type: "get",
                 url: "/MangaInfo/getMangaInfo",
                 dataType: "text",
                 data: {mangaGuid: mangaGuid},
@@ -453,7 +454,7 @@
          */
         function server_InitWrapper($HeadImgWrapper, $HeadImgWrapper_Img, mangaGuid) {
             $.ajax({
-                type: "post",
+                type: "get",
                 dataType: "text",
                 data: {mangaGuid: mangaGuid},
                 url: "/MangaInfo/getWrapper",
@@ -515,7 +516,7 @@
         $bodyWrapper_Img.each((index, element) => {
             let picId = $(element).attr("id");
             $.ajax({
-                type: "post",
+                type: "get",
                 url: "/MangaDetail/getPic",
                 dataType: "text",
                 data: {picId: picId},

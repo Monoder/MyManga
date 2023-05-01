@@ -241,7 +241,7 @@
             let wrapperGuid = $(element).attr("data-id");
             $.ajax({
                 type: "post",
-                // dataType: "text",
+                dataType: "text",
                 data: {mangaGuid: wrapperGuid},
                 url: "/MangaInfo/getWrapper",
                 success: (wrapperSource) => {

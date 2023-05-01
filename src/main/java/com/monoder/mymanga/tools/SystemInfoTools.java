@@ -12,7 +12,7 @@ public class SystemInfoTools{
         System.out.println( "gitTime = " + gitTime );
         String dataBaseTime = getDataBaseTime();
         System.out.println( "dataBaseTime = " + dataBaseTime );
-        String fileTime = getFileTime();
+        String fileTime = getFileUpdateTime();
         System.out.println( "fileTime = " + fileTime );
         String user = getUser();
         System.out.println( "user = " + user );
@@ -46,7 +46,7 @@ public class SystemInfoTools{
      * 上传文件时间字符串
      * @return
      */
-    public static String getFileTime( ) {
+    public static String getFileUpdateTime( ) {
         //设置日期格式
         SimpleDateFormat df = new SimpleDateFormat ( "yyyyMMddHHmmss-" );
         // new Date()为获取当前系统时间

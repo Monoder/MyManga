@@ -7,24 +7,26 @@
     <resultMap id="mangaDetailMap" type="com.monoder.mymanga.entity.vo.MangaDetailVO">
         <id column="GUID" property="guid"/>
         <result column="ID" property="id"/>
+        <result column="PIC_NO" property="picNo"/>
         <result column="PIC_NAME" property="picName"/>
         <result column="PIC_PATH" property="picPath"/>
         <result column="MAIN_GUID" property="mainGuid"/>
     </resultMap>
 
     <insert id="batchAddMangaDetail" parameterType="java.util.List" >
-        INSERT  INTO Manga.Manga_Detail ( GUID, ID, PIC_NAME, PIC_PATH, MAIN_GUID )
-        SELECT t.GUID, MANGA.SEQ_MANGADETAIL_ID.NEXTVAL, t.PIC_NAME, PIC_PATH, MAIN_GUID
+        INSERT  INTO Manga.Manga_Detail ( GUID, ID, PIC_NO, PIC_NAME, PIC_PATH, MAIN_GUID )
+        SELECT t.GUID, MANGA.SEQ_MANGADETAIL_ID.NEXTVAL, t.PIC_NO, t.PIC_NAME, PIC_PATH, MAIN_GUID
         FROM (
             SELECT * FROM(
         <foreach collection="mangaDetailVOList" item="mangaDetail" separator="UNION ALL">
             SELECT sys_guid() AS GUID,
+            #{mangaDetail.picNo,jdbcType=VARCHAR} AS PIC_NO,
             #{mangaDetail.picName,jdbcType=VARCHAR} AS PIC_NAME,
             #{mangaDetail.picPath,jdbcType=CLOB} AS PIC_PATH,
             #{mangaDetail.mainGuid,jdbcType=VARCHAR} AS MAIN_GUID
             FROM dual
         </foreach>
-            ) a  ORDER BY a.PIC_NAME ASC ) t
+            ) a  ORDER BY a.PIC_NO ASC ) t
     </insert>
 
     <delete id="batchDeleteMangaDetail" parameterType="java.util.List">
@@ -45,6 +47,7 @@
         SELECT
             t.GUID,
             t.ID,
+            t.PIC_NO,
             t.PIC_NAME,
             t.PIC_PATH,
             t.MAIN_GUID

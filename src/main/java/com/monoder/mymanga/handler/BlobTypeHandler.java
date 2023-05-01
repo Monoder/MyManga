@@ -1,13 +1,11 @@
 package com.monoder.mymanga.handler;
 
-import com.monoder.mymanga.service.IMangaInfoService;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.sql.*;
 
 /**
@@ -21,7 +19,7 @@ public class BlobTypeHandler extends BaseTypeHandler< byte[] >{
      * 将非 null 的 byte[] 类型参数转换成 InputStream 后设置到 PreparedStatement 中。
      *
      * @param preparedStatement PreparedStatement 对象
-     * @param i                  参数下标
+     * @param columnIndex        参数下标
      * @param parameter          参数值
      * @param jdbcType           JDBC 类型
      * @throws SQLException SQL 异常

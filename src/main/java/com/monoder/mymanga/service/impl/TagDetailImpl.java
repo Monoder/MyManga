@@ -2,10 +2,10 @@ package com.monoder.mymanga.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.monoder.mymanga.entity.dto.DataTables;
+import com.monoder.mymanga.entity.dto.JsonResult;
 import com.monoder.mymanga.entity.dto.TagDTO;
 import com.monoder.mymanga.entity.po.TagDetail;
-import com.monoder.mymanga.entity.vo.DataTables;
-import com.monoder.mymanga.entity.vo.JsonResult;
 import com.monoder.mymanga.mapper.DicEnumCategoryMapper;
 import com.monoder.mymanga.mapper.TagDetailMapper;
 import com.monoder.mymanga.service.ITagDetailService;

@@ -1,4 +1,4 @@
-package com.monoder.mymanga.entity.vo;
+package com.monoder.mymanga.entity.dto;
 
 import lombok.Data;
 

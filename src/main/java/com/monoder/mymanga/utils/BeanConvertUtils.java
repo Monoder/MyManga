@@ -1,6 +1,7 @@
 package com.monoder.mymanga.utils;
 
-import org.apache.commons.beanutils.*;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;

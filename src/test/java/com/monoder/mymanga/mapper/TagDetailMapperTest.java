@@ -1,18 +1,12 @@
 package com.monoder.mymanga.mapper;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.monoder.mymanga.entity.dto.TagDTO;
-import com.monoder.mymanga.entity.po.TagDetail;
-import com.monoder.mymanga.entity.vo.DataTables;
-import com.monoder.mymanga.entity.vo.JsonResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest

@@ -1,15 +1,18 @@
 package com.monoder.mymanga.service;
 
+import com.monoder.mymanga.entity.dto.JsonResult;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
 import com.monoder.mymanga.entity.po.MangaInfo;
-import com.monoder.mymanga.entity.vo.JsonResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface IMangaInfoService{
 
-    MangaInfoDTO addMangaInfo( JsonResult< MangaInfoDTO > requestJsonRequest );
+    @Transactional
+    JsonResult< String > addManga( MangaInfoDTO mangaInfoDTO );
+
+    MangaInfoDTO addMangaInfo( MangaInfoDTO mangaInfoDTO );
 
     Integer batchAddMangaInfo ( List< MangaInfo > mangaInfoList );
 
@@ -18,7 +21,7 @@ public interface IMangaInfoService{
     @Transactional
     boolean batchDeleteMangaInfo( List<String> guidList );
 
-    JsonResult listMangaInfo( JsonResult< Object> requestJsonResult );
+    JsonResult listMangaInfo( JsonResult< Void > requestJsonResult );
 
     JsonResult getMangaInfoByGuid( String mangaGuid );
 

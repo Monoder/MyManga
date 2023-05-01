@@ -1,42 +1,35 @@
 package com.monoder.mymanga.controller;
 
-import com.monoder.mymanga.entity.vo.JsonResult;
+import com.github.pagehelper.PageInfo;
+import com.monoder.mymanga.base.controller.BaseController;
+import com.monoder.mymanga.entity.dto.JsonResult;
+import com.monoder.mymanga.entity.dto.MangaDetailDTO;
 import com.monoder.mymanga.service.IMangaDetailService;
-import com.monoder.mymanga.service.exception.SelectException;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping( "MangaDetail" )
-public class MangaDetailController{
+public class MangaDetailController extends BaseController{
 
     @Autowired
     private IMangaDetailService iMangaDetailService;
 
     @PostMapping( "listMangaDetail" )
     public ResponseEntity listMangaDetailByGuid( @RequestBody JsonResult< String > requestJsonResult ){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType( MediaType.APPLICATION_JSON );
-        return new ResponseEntity<>( iMangaDetailService.listMangaDetailByGuid( requestJsonResult ), headers, HttpStatus.OK );
+        JsonResult< PageInfo< MangaDetailDTO > > mangaDetailDTO = iMangaDetailService.listMangaDetailByGuid( requestJsonResult );
+        return ResponseEntity.ok( mangaDetailDTO );
     }
 
-    @PostMapping( "getPic" )
-    public ResponseEntity listMangaDetailByGuid( String picId ){
+    @GetMapping( "getPic" )
+    public ResponseEntity listMangaDetailByGuid( @Param( "picId" ) String picId ){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType( MediaType.APPLICATION_JSON );
-        try{
-            return new ResponseEntity<>( iMangaDetailService.getPicSource( picId ), headers, HttpStatus.OK );
-        } catch( SelectException e ){
-            return new ResponseEntity<>( e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR );
-        }
+        return ResponseEntity.ok( iMangaDetailService.getPicSource( picId ) );
     }
 
 }

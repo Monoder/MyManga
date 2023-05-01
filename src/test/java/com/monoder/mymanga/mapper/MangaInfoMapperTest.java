@@ -2,9 +2,6 @@ package com.monoder.mymanga.mapper;
 
 import com.monoder.mymanga.entity.dto.DicEnumCategoryDTO;
 import com.monoder.mymanga.entity.dto.MangaInfoDTO;
-import com.monoder.mymanga.entity.po.DicEnumCategory;
-import com.monoder.mymanga.entity.po.MangaInfo;
-import com.monoder.mymanga.entity.vo.DataTables;
 import com.monoder.mymanga.entity.vo.MangaInfoVO;
 import com.monoder.mymanga.utils.BeanConvertUtils;
 import org.junit.Test;

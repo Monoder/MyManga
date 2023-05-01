@@ -1,8 +1,8 @@
 package com.monoder.mymanga.service;
 
+import com.monoder.mymanga.entity.dto.JsonResult;
 import com.monoder.mymanga.entity.dto.TagDTO;
 import com.monoder.mymanga.entity.po.TagDetail;
-import com.monoder.mymanga.entity.vo.JsonResult;
 
 import java.util.List;
 

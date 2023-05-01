@@ -1,6 +1,7 @@
-package com.monoder.mymanga.entity.vo;
+package com.monoder.mymanga.entity.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monoder.mymanga.entity.vo.SearchData;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -38,15 +39,20 @@ public class JsonResult< E > implements Serializable{
         this.dataTables = new DataTables();
         this.searchData = new SearchData();
     }
-
     public JsonResult( Integer status, Integer rows ){
         this.status = status;
         this.rows = rows;
     }
+    public JsonResult( Integer status, String message ){
+        this.status = status;
+        this.message = message;
+    }
+
+    public JsonResult( Throwable e ){
+        this.message = e.getMessage();
+    }
 
     public JsonResult( E data ){
-        this.dataTables = new DataTables();
-        this.searchData = new SearchData();
         this.data = data;
     }
 
