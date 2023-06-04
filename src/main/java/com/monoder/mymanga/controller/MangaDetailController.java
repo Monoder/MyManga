@@ -27,8 +27,6 @@ public class MangaDetailController extends BaseController{
 
     @GetMapping( "getPic" )
     public ResponseEntity listMangaDetailByGuid( @Param( "picId" ) String picId ){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType( MediaType.APPLICATION_JSON );
         return ResponseEntity.ok( iMangaDetailService.getPicSource( picId ) );
     }
 

@@ -22,7 +22,7 @@ public class MangaInfoController extends BaseController{
     @PostMapping( "mangaImport" )
     public ResponseEntity addMangaInfo( @RequestBody JsonResult< MangaInfoDTO > mangaInfoDTOJsonResult ){
         MangaInfoDTO mangaInfoDTO = mangaInfoDTOJsonResult.getData();
-        JsonResult<String> jsonResult = iMangaInfoService.addManga( mangaInfoDTO );
+        JsonResult< String > jsonResult = iMangaInfoService.addManga( mangaInfoDTO );
         return ResponseEntity.ok().body( jsonResult );
     }
 
@@ -45,9 +45,7 @@ public class MangaInfoController extends BaseController{
 
     @GetMapping( "getWrapper" )
     public ResponseEntity getWrapper( @Param( "mangaGuid" ) String mangaGuid ){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType( MediaType.IMAGE_JPEG );
-            return ResponseEntity.ok().headers( headers ).body( iMangaInfoService.getWrapperByGuid( mangaGuid ) );
+        return ResponseEntity.ok( iMangaInfoService.getWrapperByGuid( mangaGuid ) );
     }
 
     @PostMapping( "search" )
